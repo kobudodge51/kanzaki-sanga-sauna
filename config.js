@@ -1,5 +1,7 @@
-// Supabase の接続情報（Project URL と anon public キー）。空のままだと「この端末だけに保存する試作モード」で動きます。
+// データの保存先（非公開リポジトリ）と、パスワードで暗号化した鍵。
+// enc が空のときは「初期設定」画面が出ます。
 window.SANGA_CONFIG = {
-  url: '',
-  key: ''
+  owner: 'kobudodge51',
+  repo: 'kanzaki-sanga-data',
+  enc: ''
 };

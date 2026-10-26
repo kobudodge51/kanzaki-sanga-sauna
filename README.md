@@ -2,9 +2,8 @@
 
 スタッフ用の管理システムです。シフト・勤務時間・給与・経費・在庫・備品・イベント・マニュアル・計画表・忘れ物・リマインドをまとめています。
 
-- 公開：Vercel（このリポジトリの `main` を自動で公開）
-- 画面：`index.html`（ロゴ `logo.webp` / `logo.png`）
-- データ：Supabase のテーブル `sanga_records` に保存し、全スタッフで共有
-- 接続情報：`config.js`（空のままだと、その端末だけに保存する試作モード）
-- データベースの準備：`supabase/setup.sql` を Supabase の SQL Editor で1回実行
-- ログイン：お店のパスワード1つ（Supabase の Authentication に作ったユーザー `kanzaki-sanga@example.com`）＋名前を選ぶ
+- 公開：GitHub Pages（このリポジトリの  を公開）
+- 画面：（ロゴ  / ）
+- データ：非公開リポジトリ  の （写真は ）に保存し、全スタッフで共有。変更のたびにコミットされるので履歴がそのままバックアップになります
+- 接続設定：（ はお店のパスワードで暗号化した GitHub の鍵。空のときは初期設定画面が出ます）
+- 鍵（Fine-grained token）は  だけ・Contents の Read and write だけの権限で作成。期限が切れたら作り直して初期設定をやり直します
