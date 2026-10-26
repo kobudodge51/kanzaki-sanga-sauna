@@ -628,6 +628,20 @@ input.bk[readonly]{cursor:pointer}
 :root[data-theme="dark"] .maincol::before{opacity:.10}
 @media (max-width:860px){.maincol::before{right:-90px;bottom:70px;width:min(420px,92vw)}}
 @media print{.maincol::before{display:none}}
+.sitable th.c1,.sitable td.c1{background:color-mix(in srgb,var(--te) 10%,var(--surface))}
+.sitable th.c2,.sitable td.c2{background:color-mix(in srgb,var(--n2) 9%,var(--surface))}
+.sitable th.c3,.sitable td.c3{background:color-mix(in srgb,var(--tm) 10%,var(--surface))}
+.sitable th.c4,.sitable td.c4{background:color-mix(in srgb,var(--n3) 13%,var(--surface))}
+.sitable th.c5,.sitable td.c5{background:color-mix(in srgb,var(--ink) 10%,var(--surface))}
+.sitable .si-grp th.vgrp.c2{background:var(--n2)}.sitable .si-grp th.vgrp.c3{background:var(--tm)}.sitable .si-grp th.vgrp.c1,.sitable .si-grp th.vgrp.c4,.sitable .si-grp th.vgrp.c5{background:var(--surface2)}
+.sitable thead .si-grp th{position:sticky;top:0;height:26px;box-sizing:border-box;z-index:3}
+.sitable thead tr:nth-child(2) th{top:26px}
+.subgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(460px,1fr));gap:12px}
+.si-calc{min-width:96px;font-family:var(--display);font-size:16px}
+.si-calc small{display:block;font-family:var(--body);font-size:10.5px;color:var(--muted)}
+.sitable td.si-calc.c2,.sitable td.si-calc.c3,.sitable td.si-calc.c5{background:color-mix(in srgb,var(--ink) 14%,var(--surface))}
+.sitable .si-grp th.vgrp.hcol,.sitable .si-grp th.vgrp.vcol{background:var(--n1)}
+
 .mtx .grp{text-align:center;background:var(--n1)!important;color:#fbf6ea;font-size:11.5px;letter-spacing:.08em}
 .mtx .grp.hut{background:var(--tm)!important}
 .mtx .hutc{background:color-mix(in srgb,var(--tm) 9%,transparent)}
@@ -1285,7 +1299,7 @@ const pv=(m,k)=>{const p=S.plans.months[m]||{};const v=p[k];return v===''||v==nu
 const fmtN=v=>v==null?'':(+v).toLocaleString('ja-JP');
 const pct=(a,b)=>a!=null&&b?Math.round(a/b*1000)/10:null;
 const pctPill=(p,good=100)=>p==null?'<span class="muted">—</span>':`<span class="pill ${p>=good?'ok':p>=good*.9?'warn':'bad'}">${p}%</span>`;
-const SF=[['salesT','売上目標'],['salesA','売上実績'],['visT','来客目標'],['visGate','入場者数'],['visHut','小屋サウナ'],['visLate','レイト'],['budget','経費予算']];
+const SF=[['salesT','売上目標'],['salesA','売上実績'],['visT','来客目標'],['visGate','入場者数'],['visHut','小屋サウナ'],['visLate','レイト'],['budget','経費予算'],['salGate','入場料'],['salFood','フード'],['salSoft','ソフトドリンク'],['salAlc','アルコール'],['salSwim','水着'],['salSandal','サンダル'],['salPoncho','ポンチョ'],['salGoods','グッズ']];
 const VK=[['visGate','入場者数'],['visHut','小屋サウナ'],['visLate','レイト']];
 const VT=[['visGate','入場者数'],['visLate','レイト']];
 const hasVB=m=>VT.some(([k])=>pv(m,k)!=null);
@@ -1293,12 +1307,49 @@ const visTot=m=>hasVB(m)?VT.reduce((a,[k])=>a+(pv(m,k)||0),0):pv(m,'visA');
 const hutRate=(h,g)=>h!=null&&g?Math.round(h/g*1000)/10:null;
 const VCOL={visGate:'var(--te)',visHut:'var(--tm)',visLate:'var(--tl)'};
 const stackBar=parts=>{const t=parts.reduce((a,p)=>a+p[1],0);return t?`<div class="stk">${parts.map(([k,v])=>v?`<i style="width:${v/t*100}%;background:${VCOL[k]}" title="${v}"></i>`:'').join('')}</div>`:''};
-function salesInput(){const ms=salesMonths();let fy=null;
-  const rows=ms.map(m=>{const f=fyOf(m+'-01');let hd='';if(f!==fy){fy=f;const fm=fyMonths(f);hd=`<tr class="si-fy"><td colspan="11">${fyLabel(f)}</td></tr>`}
-    const ly=pv(monthAdd(m,-12),'salesA');return hd+`<tr class="${m===ym(TODAY)?'cur':''}"><th>${mLabel(m)}</th>${SF.map(([k,l])=>`<td class="${k==='visHut'?'hcol':k.startsWith('vis')&&k!=='visT'?'vcol':''}"><input class="si num" inputmode="numeric" data-m="${m}" data-f="${k}" value="${pv(m,k)??''}" aria-label="${mLabel(m)} ${l}"></td>${k==='visLate'?`<td class="r num si-tot" data-m="${m}">${visTot(m)!=null?`<b>${fmtN(visTot(m))}</b>${hasVB(m)?'':'<small>内訳なし</small>'}`:'<span class="muted">—</span>'}</td>`:''}`).join('')}<td class="r num muted">${ly!=null?yen(ly):'—'}</td><td class="r">${pctPill(pct(pv(m,'salesA'),pv(m,'salesT')))}</td></tr>`}).join('');
-  return `<div class="bk-help"><b>入力のしかた</b>：数字だけを入れてください（円・カンマは不要）。Excelで縦に並んだ数字をコピーして、いちばん上のマスに貼り付けると、下の月へ順番に入ります（横に並んだ数字は右の欄へ入ります）。入れ終わったら下の「保存」を押してください。来客実績の合計は「入場者数＋レイト」で自動計算します。小屋サウナの方は入場者数にも入っているため、合計には足さず、別に数えます。</div>
-  <div class="tbl-wrap si-wrap"><table class="sitable"><thead><tr class="si-grp"><th></th><th colspan="3"></th><th colspan="4" class="vgrp">来客実績（人）</th><th colspan="3"></th></tr><tr><th>月</th>${SF.map(([k,l])=>`<th class="${k==='visHut'?'hcol':['visGate','visLate'].includes(k)?'vcol':''}">${l}${k==='visHut'?'<small>別に数える</small>':''}${k.startsWith('sales')||k==='budget'?'<small>円</small>':'<small>人</small>'}</th>${k==='visLate'?'<th class="r vcol">合計<small>入場者＋レイト</small></th>':''}`).join('')}<th class="r">前年同月の売上</th><th class="r">達成率</th></tr></thead><tbody>${rows}</tbody></table></div>
+/* ---- 売上の内訳（入場料・フード・レンタル・グッズ） ---- */
+const ICOLS=[
+ {k:'salesT',l:'売上目標',u:'円',g:''},{k:'salesA',l:'売上実績',u:'円',g:''},{k:'visT',l:'来客目標',u:'人',g:''},
+ {k:'visGate',l:'入場者数',u:'人',g:'来客実績（人）',c:'vcol'},{k:'visHut',l:'小屋サウナ',u:'人',sub:'別に数える',g:'来客実績（人）',c:'hcol'},{k:'visLate',l:'レイト',u:'人',g:'来客実績（人）',c:'vcol'},{calc:'visTot',l:'合計',sub:'入場者＋レイト',g:'来客実績（人）',c:'vcol'},
+ {k:'budget',l:'経費予算',u:'円',g:''},
+ {k:'salGate',l:'入場料',u:'円',g:'入場料',c:'c1'},
+ {k:'salFood',l:'フード',u:'円',g:'フード売上',c:'c2'},{k:'salSoft',l:'ソフトドリンク',u:'円',g:'フード売上',c:'c2'},{k:'salAlc',l:'アルコール',u:'円',g:'フード売上',c:'c2'},{calc:'food',l:'フード売上',sub:'自動',g:'フード売上',c:'c2'},
+ {k:'salSwim',l:'水着',u:'円',g:'レンタル',c:'c3'},{k:'salSandal',l:'サンダル',u:'円',g:'レンタル',c:'c3'},{k:'salPoncho',l:'ポンチョ',u:'円',g:'レンタル',c:'c3'},{calc:'rental',l:'レンタル',sub:'自動',g:'レンタル',c:'c3'},
+ {k:'salGoods',l:'グッズ',u:'円',g:'グッズ',c:'c4'},
+ {calc:'brk',l:'内訳の合計',sub:'自動',g:'内訳の合計',c:'c5'}];
+const CALC={visTot:{p:['visGate','visLate'],fb:'visA',u:'人'},food:{p:['salFood','salSoft','salAlc'],u:'円'},rental:{p:['salSwim','salSandal','salPoncho'],u:'円'},brk:{p:['salGate','salFood','salSoft','salAlc','salSwim','salSandal','salPoncho','salGoods'],u:'円'}};
+const calcV=(m,c,get)=>{get=get||(k=>pv(m,k));const d=CALC[c];const v=d.p.map(get);return v.some(x=>x!=null)?v.reduce((a,x)=>a+(x||0),0):(d.fb?get(d.fb):null)};
+const calcHTML=(m,c,get)=>{const v=calcV(m,c,get);const nb=c==='visTot'&&v!=null&&!CALC.visTot.p.some(k=>(get||(x=>pv(m,x)))(k)!=null);return v!=null?`<b>${fmtN(v)}</b>${nb?'<small>内訳なし</small>':''}`:'<span class="muted">—</span>'};
+const SCAT=[['salGate','入場料','var(--te)'],['food','フード売上','var(--n2)'],['rental','レンタル','var(--tm)'],['salGoods','グッズ','var(--n3)']];
+const scatV=(m,k)=>CALC[k]?calcV(m,k):pv(m,k);
+function salesInput(){const ms=salesMonths();let fy=null;const n=ICOLS.length+3;
+  const grp=[];ICOLS.forEach(c=>{const L=grp[grp.length-1];if(L&&L.g===c.g)L.n++;else grp.push({g:c.g,n:1,c:c.c||''})});
+  const rows=ms.map(m=>{const f=fyOf(m+'-01');let hd='';if(f!==fy){fy=f;hd=`<tr class="si-fy"><td colspan="${n}">${fyLabel(f)}</td></tr>`}
+    const ly=pv(monthAdd(m,-12),'salesA');
+    return hd+`<tr class="${m===ym(TODAY)?'cur':''}"><th>${mLabel(m)}</th>${ICOLS.map(c=>c.calc?`<td class="r num si-calc ${c.c||''}" data-m="${m}" data-c="${c.calc}">${calcHTML(m,c.calc)}</td>`:`<td class="${c.c||''}"><input class="si num" inputmode="numeric" data-m="${m}" data-f="${c.k}" value="${pv(m,c.k)??''}" aria-label="${mLabel(m)} ${c.l}"></td>`).join('')}<td class="r num muted">${ly!=null?yen(ly):'—'}</td><td class="r">${pctPill(pct(pv(m,'salesA'),pv(m,'salesT')))}</td></tr>`}).join('');
+  return `<div class="bk-help"><b>入力のしかた</b>：数字だけを入れてください（円・カンマは不要）。Excelで縦に並んだ数字をコピーして、いちばん上のマスに貼り付けると、下の月へ順番に入ります（横に並んだ数字は右の入力欄へ順に入ります）。入れ終わったら下の「保存」を押してください。<br>・来客実績の合計は「入場者数＋レイト」で自動計算します（小屋サウナの方は入場者数にも入っているので別に数えます）。<br>・フード売上は「フード＋ソフトドリンク＋アルコール」、レンタルは「水着＋サンダル＋ポンチョ」で自動計算します。表は右へスクロールできます。</div>
+  <div class="tbl-wrap si-wrap"><table class="sitable"><thead><tr class="si-grp"><th></th>${grp.map(x=>`<th colspan="${x.n}" class="${x.g?'vgrp '+x.c:''}">${x.g&&x.g!=='入場料'&&x.g!=='グッズ'&&x.g!=='内訳の合計'?x.g:''}</th>`).join('')}<th colspan="2"></th></tr>
+  <tr><th>月</th>${ICOLS.map(c=>`<th class="${c.calc?'r ':''}${c.c||''}">${c.l}${c.sub?`<small>${c.sub}</small>`:c.u?`<small>${c.u}</small>`:''}</th>`).join('')}<th class="r">前年同月の売上</th><th class="r">達成率</th></tr></thead><tbody>${rows}</tbody></table></div>
   <div class="bk-bar"><div class="row"><span class="muted">営業開始（${mLabel(SALES_START)}）から今の年度の終わりまで表示しています</span></div><button class="btn primary bk-save" data-a="salesSave">保存<span id="si-count"></span></button></div>`}
+function siRowTot(m){const get=k=>{const e=document.querySelector(`.si[data-m="${m}"][data-f="${k}"]`);if(!e)return pv(m,k);const v=e.value.replace(/[¥,円\s]/g,'');return v===''||isNaN(+v)?null:+v};
+  document.querySelectorAll(`.si-calc[data-m="${m}"]`).forEach(c=>{c.innerHTML=calcHTML(m,c.dataset.c,get)})}
+function salesBreakCard(fys){const ms=salesMonths().filter(m=>m<=ym(TODAY)&&calcV(m,'brk')!=null);const T='売上の内訳（入場料・フード・レンタル・グッズ）';
+  if(!ms.length)return `<div class="card"><h2>${T}</h2><p class="empty">「まとめて入力」で入場料・フード・レンタル・グッズを入れると、ここに分析が出ます。</p></div>`;
+  const sum=(list,k)=>list.reduce((a,m)=>a+(scatV(m,k)||0),0);const sumK=(list,k)=>list.reduce((a,m)=>a+(pv(m,k)||0),0);
+  const bar=(list)=>{const t=SCAT.reduce((a,[k])=>a+sum(list,k),0);return t?`<div class="stk">${SCAT.map(([k,,col])=>{const v=sum(list,k);return v?`<i style="width:${v/t*100}%;background:${col}"></i>`:''}).join('')}</div>`:''};
+  const vis=list=>list.reduce((a,m)=>a+(visTot(m)||0),0);
+  const row=(label,list)=>{const t=sum(list,'brk');const v=vis(list);const sa=list.reduce((a,m)=>a+(pv(m,'salesA')||0),0);return `<tr><th>${label}</th>${SCAT.map(([k])=>{const x=sum(list,k);return `<td class="r num">${fmtN(x)}<small class="muted"> ${t?pct(x,t):0}%</small></td>`}).join('')}<td class="r num"><b>${fmtN(t)}</b></td><td class="r num muted">${sa?fmtN(sa):'—'}</td><td class="r num">${v?yen(Math.round(sum(list,'food')/v)):'—'}</td><td class="sbcell">${bar(list)}</td></tr>`};
+  const fyR=fys.map(f=>{const l=fyMonths(f).filter(m=>ms.includes(m));return l.length?row(`${f}年度<small>${l.length}か月</small>`,l):''}).join('');
+  const mR=[...ms].reverse().map(m=>row(m.replace('-','/'),[m])).join('');
+  const subT=(title,keys)=>`<div><h3 class="sub">${title}の内訳</h3><div class="tbl-wrap"><table class="mtx"><thead><tr><th>年度</th>${keys.map(([,l])=>`<th class="r">${l}</th>`).join('')}<th class="r">合計</th></tr></thead><tbody>${fys.map(f=>{const l=fyMonths(f).filter(m=>ms.includes(m));if(!l.length)return '';const t=keys.reduce((a,[k])=>a+sumK(l,k),0);return `<tr><th>${f}年度</th>${keys.map(([k])=>`<td class="r num">${fmtN(sumK(l,k))}<small class="muted"> ${t?pct(sumK(l,k),t):0}%</small></td>`).join('')}<td class="r num"><b>${fmtN(t)}</b></td></tr>`}).join('')}</tbody></table></div></div>`;
+  const all=sum(ms,'brk');
+  return `<div class="card"><h2>${T}</h2><div class="legend">${SCAT.map(([,l,col])=>`<span class="lg" style="--band:${col}">${l}</span>`).join('')}</div>
+  <div class="stats">${SCAT.map(([k,l])=>`<div class="stat"><span>${l}（営業開始から）</span><b>${yen(sum(ms,k))}</b><span>内訳の ${all?pct(sum(ms,k),all):0}%</span></div>`).join('')}</div>
+  <h3 class="sub">決算期（年度）ごと（円）</h3><div class="tbl-wrap"><table class="mtx"><thead><tr><th>年度</th>${SCAT.map(([,l])=>`<th class="r">${l}</th>`).join('')}<th class="r">内訳の合計</th><th class="r">売上実績</th><th class="r">1人あたりフード</th><th>構成</th></tr></thead><tbody>${fyR}</tbody></table></div>
+  <div class="subgrid">${subT('フード売上',[['salFood','フード'],['salSoft','ソフトドリンク'],['salAlc','アルコール']])}${subT('レンタル',[['salSwim','水着'],['salSandal','サンダル'],['salPoncho','ポンチョ']])}</div>
+  <h3 class="sub">月ごと（新しい月から・円）</h3><div class="tbl-wrap" style="max-height:460px;overflow:auto"><table class="mtx"><thead><tr><th>月</th>${SCAT.map(([,l])=>`<th class="r">${l}</th>`).join('')}<th class="r">内訳の合計</th><th class="r">売上実績</th><th class="r">1人あたりフード</th><th>構成</th></tr></thead><tbody>${mR}</tbody></table></div>
+  <p class="note">%は「内訳の合計」に対する割合です。1人あたりフードは「フード売上 ÷ 来客の合計（入場者数＋レイト）」です。内訳の合計と売上実績が違う月は、内訳に入っていない売上（小屋サウナの料金など）があるか、入力もれがないか確認してください。</p></div>`}
+
 function fyAgg(f){const ms=fyMonths(f).filter(m=>m>=SALES_START);let a=0,t=0,v=0,n=0;ms.forEach(m=>{const x=pv(m,'salesA');if(x!=null){a+=x;n++}t+=pv(m,'salesT')||0;v+=pv(m,'visA')||0});return{ms,a,t,v,n}}
 function salesSum(){const ms=salesMonths().filter(m=>m<=ym(TODAY));const fys=[...new Set(salesMonths().map(m=>fyOf(m+'-01')))];
   const same=(ms_)=>{let a=0,b=0,ok=false;ms_.forEach(m=>{const x=pv(m,'salesA'),y=pv(monthAdd(m,-12),'salesA');if(x!=null&&y!=null){a+=x;b+=y;ok=true}});return ok&&b?pct(a,b):null};
@@ -1314,6 +1365,7 @@ function salesSum(){const ms=salesMonths().filter(m=>m<=ym(TODAY));const fys=[..
   <div class="card"><h2>決算期（年度）ごとの売上<span class="r muted">決算月 ${S.settings.fiscalEnd}月</span></h2><div class="tbl-wrap"><table><thead><tr><th>年度</th><th class="r">入力済み</th><th class="r">売上実績</th><th class="r">売上目標</th><th class="r">達成率</th><th class="r">来客数</th><th class="r">客単価</th><th class="r">前年同期比</th></tr></thead><tbody>${fyRows}</tbody></table></div><p class="note">${fys[0]}年度は営業開始の${mLabel(SALES_START)}からの${fyAgg(fys[0]).ms.length}か月だけです。前年同期比は、前の年の同じ月が入っている月どうしで比べています。</p></div>
   <div class="card"><h2>年（1月〜12月）ごとの売上</h2><div class="tbl-wrap"><table><thead><tr><th>年</th><th class="r">入力済み</th><th class="r">売上実績</th><th class="r">来客数</th><th class="r">客単価</th><th class="r">前年同期比</th></tr></thead><tbody>${yRows}</tbody></table></div></div>
   ${visCard(fys)}
+  ${salesBreakCard(fys)}
   <div class="card"><h2>月ごとの売上を年度で比べる</h2><div class="tbl-wrap">${mat}</div></div>
   <div class="card"><h2>月別の売上の推移<span class="r muted">棒＝実績・オレンジの線＝目標</span></h2>${ms.length?`<div class="bars sbars">${bars}</div>`:'<p class="empty">まだありません</p>'}</div>
   <div class="row"><span class="sp"></span><button class="btn" data-a="salesXlsx">売上の集計をダウンロード（Excel）</button></div>`}
@@ -1362,8 +1414,8 @@ function visCard(fys){const ms=salesMonths().filter(m=>m<=ym(TODAY)&&(visTot(m)!
   <h3 class="sub">月ごと（新しい月から）</h3><div class="tbl-wrap" style="max-height:460px;overflow:auto"><table class="mtx"><thead>${head}<tr><th>月</th>${th}</tr></thead><tbody>${mR}</tbody></table></div>
   <p class="note">来客の％は「入場者数とレイト」の中での割合、小屋サウナの利用率は「小屋サウナ ÷ 入場者数」です。客単価は「売上実績 ÷ 来客の合計」です。${all.nb?`内訳を入れていない月（${all.nb}か月）は合計だけで計算しています。`:''}</p></div>`}
 function salesXlsx(){if(typeof XLSX==='undefined'){toast('Excelの部品を読み込めませんでした');return}const wb=XLSX.utils.book_new();
-  const a1=[['月','売上目標','売上実績','来客目標','入場者数','小屋サウナ','レイト','来客実績（入場者＋レイト）','経費予算','前年同月の売上']];salesMonths().forEach(m=>a1.push([m.replace('-','/'),...['salesT','salesA','visT','visGate','visHut','visLate'].map(k=>pv(m,k)??''),visTot(m)??'',pv(m,'budget')??'',pv(monthAdd(m,-12),'salesA')??'']));
-  const w1=XLSX.utils.aoa_to_sheet(a1);w1['!cols']=[{wch:9},{wch:12},{wch:12},{wch:9},{wch:11},{wch:13},{wch:11},{wch:14},{wch:12},{wch:14}];XLSX.utils.book_append_sheet(wb,w1,'月別');
+  const a1=[['月','売上目標','売上実績','来客目標','入場者数','小屋サウナ','レイト','来客実績（入場者＋レイト）','経費予算','入場料','フード','ソフトドリンク','アルコール','フード売上（計）','水着','サンダル','ポンチョ','レンタル（計）','グッズ','内訳の合計','前年同月の売上']];salesMonths().forEach(m=>a1.push([m.replace('-','/'),...['salesT','salesA','visT','visGate','visHut','visLate'].map(k=>pv(m,k)??''),visTot(m)??'',pv(m,'budget')??'',...['salGate','salFood','salSoft','salAlc'].map(k=>pv(m,k)??''),calcV(m,'food')??'',...['salSwim','salSandal','salPoncho'].map(k=>pv(m,k)??''),calcV(m,'rental')??'',pv(m,'salGoods')??'',calcV(m,'brk')??'',pv(monthAdd(m,-12),'salesA')??'']));
+  const w1=XLSX.utils.aoa_to_sheet(a1);w1['!cols']=[{wch:9},...Array(22).fill({wch:12})];XLSX.utils.book_append_sheet(wb,w1,'月別');
   const fys=[...new Set(salesMonths().map(m=>fyOf(m+'-01')))];const a2=[['年度','期間','売上実績','売上目標','来客数']];fys.forEach(f=>{const r=fyAgg(f);a2.push([`${f}年度`,`${r.ms[0].replace('-','/')}〜${r.ms[r.ms.length-1].replace('-','/')}`,r.a,r.t,r.v])});
   const w2=XLSX.utils.aoa_to_sheet(a2);w2['!cols']=[{wch:10},{wch:18},{wch:12},{wch:12},{wch:9}];XLSX.utils.book_append_sheet(wb,w2,'決算期別');
   if(coll('sales').length){const a3=[['月','区分','品目','金額','数量']];[...coll('sales')].sort((a,b)=>a.month<b.month?-1:1).forEach(x=>a3.push([x.month.replace('-','/'),x.cat,x.item,x.amount,x.qty||'']));XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(a3),'内訳')}
@@ -1371,8 +1423,7 @@ function salesXlsx(){if(typeof XLSX==='undefined'){toast('Excelの部品を読�
 function siPaste(e){const t=e.target;if(!t.classList||!t.classList.contains('si'))return;const txt=(e.clipboardData||window.clipboardData).getData('text');if(!/[\t\n]/.test(txt.trim()))return;e.preventDefault();
   const all=[...document.querySelectorAll('.si')];const cols=SF.map(x=>x[0]);const rows=[...new Set(all.map(x=>x.dataset.m))];const r0=rows.indexOf(t.dataset.m),c0=cols.indexOf(t.dataset.f);let n=0;
   txt.replace(/\r/g,'').replace(/\n$/,'').split('\n').forEach((line,i)=>line.split('\t').forEach((v,j)=>{const m=rows[r0+i],f=cols[c0+j];if(!m||!f)return;const el=all.find(x=>x.dataset.m===m&&x.dataset.f===f);if(!el)return;const nv=String(v).replace(/[¥,円\s]/g,'');el.value=nv===''||isNaN(+nv)?'':nv;siMark(el);n++}));toast(`${n}マスに貼り付けました。「保存」を押すと保存されます`)}
-function siRowTot(m){const c=document.querySelector(`.si-tot[data-m="${m}"]`);if(!c)return;const vals=VT.map(([k])=>{const e=document.querySelector(`.si[data-m="${m}"][data-f="${k}"]`);const v=e?e.value.replace(/[¥,円\s]/g,''):'';return v===''||isNaN(+v)?null:+v});c.innerHTML=vals.some(v=>v!=null)?`<b>${fmtN(vals.reduce((a,v)=>a+(v||0),0))}</b>`:(pv(m,'visA')!=null?`<b>${fmtN(pv(m,'visA'))}</b><small>内訳なし</small>`:'<span class="muted">—</span>')}
-function siMark(el){if(VK.some(([k])=>k===el.dataset.f))siRowTot(el.dataset.m);const cur=pv(el.dataset.m,el.dataset.f);const v=el.value.replace(/[¥,円\s]/g,'');el.classList.toggle('chg',(v===''?null:+v)!==cur);el.classList.toggle('err',v!==''&&isNaN(+v));const n=document.querySelectorAll('.si.chg').length;const b=$('#si-count');if(b)b.textContent=n?`（変更 ${n}マス）`:''}
+function siMark(el){siRowTot(el.dataset.m);const cur=pv(el.dataset.m,el.dataset.f);const v=el.value.replace(/[¥,円\s]/g,'');el.classList.toggle('chg',(v===''?null:+v)!==cur);el.classList.toggle('err',v!==''&&isNaN(+v));const n=document.querySelectorAll('.si.chg').length;const b=$('#si-count');if(b)b.textContent=n?`（変更 ${n}マス）`:''}
 
 /* ====== リマインド計算 ====== */
 function allReminders(){const L=S.settings.leads,out=[];if(!me)return out;
