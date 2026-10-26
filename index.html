@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1c1b19">
 <link rel="icon" href="logo.webp" type="image/webp">
 <link rel="apple-touch-icon" href="logo.png">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
@@ -358,6 +359,9 @@ button.sl-row:hover{background:var(--surface2)}
 .sl-scale{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-family:var(--display);padding:0 6px}
 .gc{font-size:10.5px;line-height:1.15;font-family:var(--display);color:var(--fg)}
 tr.mine .gc{color:var(--n2);font-weight:700}
+.sync{font-size:11px;color:var(--muted);white-space:nowrap}
+.sync.saving{color:var(--warn)}
+.sync.err{color:var(--bad);font-weight:700}
 </style>
 </head>
 <body>
@@ -366,6 +370,8 @@ tr.mine .gc{color:var(--n2);font-weight:700}
 <div id="toast" role="status"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="config.js"></script>
+<script src="vendor/supabase.js"></script>
 <script>
 /* ====== 基本 ====== */
 const KEY='kanzaki-sanga-v3';
@@ -473,9 +479,73 @@ function fyMonths(fy){const sm=(S?S.settings.fiscalEnd:8)%12+1;const out=[];let 
 function fyLabel(fy){const ms=fyMonths(fy);return `${fy}年度（${ms[0].replace('-','/')}〜${ms[11].replace('-','/')}）`}
 
 let S=null;
+/* ====== 保存（クラウド＝Supabase／端末） ====== */
+const CFG=window.SANGA_CONFIG||{};
+const CLOUD=!!(CFG.url&&CFG.key&&window.supabase);
+const TABLE='sanga_records';
+const STORE_MAIL=CFG.email||'kanzaki-sanga@example.com';
+const sb=CLOUD?window.supabase.createClient(CFG.url,CFG.key,{auth:{persistSession:true,autoRefreshToken:true}}):null;
+const CLIENT=Math.random().toString(36).slice(2,10);
+const COLLS=['staff','shifts','hopes','expenses','stock','equip','events','interviews','trainings','manuals','news','lost','reminders','initiatives','closures'];
+const coll=k=>k==='initiatives'?S.plans.initiatives:k==='closures'?S.plans.closures:(S[k]||(S[k]=[]));
+const setColl=(k,v)=>{if(k==='initiatives')S.plans.initiatives=v;else if(k==='closures')S.plans.closures=v;else S[k]=v};
+function snap(){const m=new Map();COLLS.forEach(k=>coll(k).forEach(x=>m.set(k+'|'+x.id,JSON.stringify(x))));m.set('single|settings',JSON.stringify(S.settings));m.set('single|planMonths',JSON.stringify(S.plans.months));return m}
+let last=new Map(),cloudReady=false,saving=Promise.resolve(),SYNC='ok',pendingRender=false;
+function setSync(s){SYNC=s;document.querySelectorAll('.sync').forEach(el=>{el.className='sync '+s;el.textContent=syncTxt()})}
+const syncTxt=()=>({ok:'保存済み',saving:'保存中…',err:'未保存（通信エラー）'}[SYNC]||'');
+async function cloudPush(){const cur=snap();const ups=[],dels={};
+  cur.forEach((v,k)=>{if(last.get(k)!==v){const i=k.indexOf('|');ups.push({kind:k.slice(0,i),id:k.slice(i+1),data:JSON.parse(v),updated_by:CLIENT,updated_at:new Date().toISOString()})}});
+  last.forEach((v,k)=>{if(!cur.has(k)){const i=k.indexOf('|');const kind=k.slice(0,i);(dels[kind]=dels[kind]||[]).push(k.slice(i+1))}});
+  if(!ups.length&&!Object.keys(dels).length)return;
+  setSync('saving');
+  try{
+    for(let i=0;i<ups.length;i+=200){const {error}=await sb.from(TABLE).upsert(ups.slice(i,i+200));if(error)throw error}
+    for(const [kind,ids] of Object.entries(dels)){const {error}=await sb.from(TABLE).delete().eq('kind',kind).in('id',ids);if(error)throw error}
+    ups.forEach(r=>last.set(r.kind+'|'+r.id,JSON.stringify(r.data)));Object.entries(dels).forEach(([kind,ids])=>ids.forEach(id=>last.delete(kind+'|'+id)));
+    setSync('ok')}
+  catch(e){console.error(e);setSync('err');toast('保存できませんでした。通信を確認して、もう一度操作してください')}}
 function load(){try{const t=localStorage.getItem(KEY);return t?JSON.parse(t):null}catch(e){return null}}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('保存できませんでした（写真が多すぎる可能性があります）')}}
-S=load(); if(!S){S={settings:{fiscalEnd:8}};S=seed();save()}
+function save(){
+  if(CLOUD){if(cloudReady)saving=saving.then(cloudPush);return}
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('保存できませんでした（写真が多すぎる可能性があります）')}}
+function blankS(){const B=seed();const keep=['s1','s2','s3','s4','s5','s6'];B.staff=B.staff.filter(s=>keep.includes(s.id));['shifts','hopes','expenses','stock','equip','events','interviews','trainings','manuals','news','lost','reminders'].forEach(k=>B[k]=[]);B.plans={months:{},initiatives:[],closures:[]};B.sample=false;return B}
+async function cloudLoad(){let rows=[],from=0;
+  for(;;){const {data,error}=await sb.from(TABLE).select('kind,id,data').range(from,from+999);if(error)throw error;rows=rows.concat(data);if(data.length<1000)break;from+=1000}
+  if(!rows.length){S=blankS();last=new Map();cloudReady=true;save();await saving;return}
+  const def=blankS();S=def;COLLS.forEach(k=>setColl(k,[]));
+  rows.forEach(r=>{if(r.kind==='single'){if(r.id==='settings')S.settings=Object.assign({},def.settings,r.data);else if(r.id==='planMonths')S.plans.months=r.data||{}}else if(COLLS.includes(r.kind))coll(r.kind).push(r.data)});
+  S.sample=false;last=snap();cloudReady=true}
+function cloudSubscribe(){sb.channel('sanga-'+CLIENT).on('postgres_changes',{event:'*',schema:'public',table:TABLE},p=>{
+  const r=(p.new&&p.new.kind)?p.new:p.old;if(!r||!r.kind)return;const key=r.kind+'|'+r.id;
+  if(p.eventType==='DELETE'){if(COLLS.includes(r.kind))setColl(r.kind,coll(r.kind).filter(x=>x.id!==r.id));last.delete(key)}
+  else{if(r.updated_by===CLIENT)return;const d=p.new.data;
+    if(r.kind==='single'){if(r.id==='settings')S.settings=Object.assign(S.settings,d);else if(r.id==='planMonths')S.plans.months=d||{}}
+    else if(COLLS.includes(r.kind)){const a=coll(r.kind);const i=a.findIndex(x=>x.id===r.id);if(i>=0)a[i]=d;else a.push(d)}
+    last.set(key,JSON.stringify(d))}
+  if(r.kind==='staff'&&me)me=S.staff.find(s=>s.id===me.id)||me;
+  softRender()}).subscribe()}
+function softRender(){const a=document.activeElement;const typing=a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName);if(!$('#modal').hidden||typing){pendingRender=true;return}render()}
+document.addEventListener('focusout',()=>setTimeout(()=>{if(pendingRender&&$('#modal').hidden&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||'')){pendingRender=false;render()}},120));
+const shellMsg=(t,sub='')=>`<div class="login"><div class="lbox"><div class="logo">${logoImg('login-logo')}<h1>神崎サンガサウナ</h1><span class="weave"></span></div><div class="lcard"><p style="margin:0;font-weight:700">${t}</p>${sub}</div></div></div>`;
+function renderStoreLogin(msg=''){
+  $('#app').innerHTML=`<div class="login"><div class="lbox"><div class="logo">${logoImg('login-logo')}<h1>神崎サンガサウナ</h1><span class="weave"></span><p>スタッフ管理システム</p></div>
+  <form class="lcard" id="storeform"><p style="margin:0;font-weight:700">パスワードを入れてください</p><p class="note" style="margin:0">このスマホ・PCで最初の1回だけ必要です。</p>
+  <input type="text" name="username" autocomplete="username" value="${esc(STORE_MAIL)}" hidden>
+  <label class="fld"><span>パスワード</span><input class="inp" id="st-pw" type="password" inputmode="numeric" autocomplete="current-password" required></label>
+  ${msg?`<div class="confirm">${esc(msg)}</div>`:''}<button class="btn primary" type="submit" style="justify-self:start">ログイン</button></form></div></div>`;
+  $('#storeform').addEventListener('submit',async e=>{e.preventDefault();const b=e.target.querySelector('button[type=submit]');b.disabled=true;b.textContent='確認中…';
+    const {error}=await sb.auth.signInWithPassword({email:STORE_MAIL,password:$('#st-pw').value});
+    if(error){renderStoreLogin('パスワードが違います');return}boot()})}
+async function boot(){
+  if(!CLOUD){render();return}
+  $('#app').innerHTML=shellMsg('読み込み中…');
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){renderStoreLogin();return}
+  try{await cloudLoad()}catch(e){console.error(e);$('#app').innerHTML=shellMsg('データを読み込めませんでした',`<p class="note" style="margin:0">${/relation|does not exist|schema cache/i.test(e.message||'')?'データベースの準備（SQLの実行）がまだ終わっていない可能性があります。':'通信を確認して、ページを再読み込みしてください。'}<br><small>${esc(e.message||'')}</small></p><button class="btn" data-a="storeOut">お店のアカウントからログアウト</button>`);return}
+  UI.pay=curPay();UI.planFY=fyOf(todayStr);
+  try{const id=localStorage.getItem(KEY+'-me');me=S.staff.find(s=>s.id===id)||null}catch(e){me=null}
+  cloudSubscribe();render()}
+if(CLOUD){S=blankS()}else{S=load();if(!S){S=seed();save()}}
 let me=null; try{const id=localStorage.getItem(KEY+'-me');me=S.staff.find(s=>s.id===id)||null}catch(e){}
 const isAdmin=()=>!!me&&ADMIN_ROLES.includes(me.role);
 const isLeader=isAdmin;
@@ -518,7 +588,7 @@ let modalSave=null;
 function modal(title,body,o={}){const m=$('#modal');
   m.innerHTML=`<div class="mback" data-a="mclose"></div><div class="mbox ${o.wide?'wide':''}" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="mhead"><h3>${esc(title)}</h3><button type="button" class="icon-btn" data-a="mclose" aria-label="閉じる">×</button></div><form id="mform" class="mbody">${body}</form><div class="mfoot">${o.extra||''}${o.save?`<button class="btn ghost" data-a="mclose" type="button">キャンセル</button><button class="btn primary" data-a="msave" type="button">${o.saveLabel||'保存'}</button>`:`<button class="btn" data-a="mclose" type="button">閉じる</button>`}</div></div>`;
   m.hidden=false;modalSave=o.save||null;const f=m.querySelector('input:not([type=hidden]):not([type=file]),select,textarea');if(f&&!o.nofocus)setTimeout(()=>f.focus(),30)}
-function closeModal(){const m=$('#modal');m.hidden=true;m.innerHTML='';modalSave=null}
+function closeModal(){const m=$('#modal');m.hidden=true;m.innerHTML='';modalSave=null;if(pendingRender){pendingRender=false;setTimeout(render,0)}}
 function fd(){const o={};new FormData($('#mform')).forEach((v,k)=>{if(k in o)o[k]=[].concat(o[k],v);else o[k]=v});return o}
 const fld=(l,inner,c='')=>`<label class="fld ${c}"><span>${l}</span>${inner}</label>`;
 const inp=(n,v='',t='text',a='')=>`<input name="${n}" id="f-${n}" type="${t}" value="${esc(v)}" ${a}>`;
@@ -564,16 +634,17 @@ const whenTxt=d=>{const n=diffDays(d,todayStr);return n<0?`${-n}日過ぎ`:n===0
 const remCls=d=>{const n=diffDays(d,todayStr);return n<0?'bad':n<=1?'warn':'neo'};
 
 /* ====== 画面：ログイン ====== */
-function renderLogin(){const st=S.staff.find(s=>s.id===UI.loginStaff);
+function renderLogin(){if(CLOUD){$('#app').innerHTML=`<div class="login"><div class="lbox"><div class="logo">${logoImg('login-logo')}<h1>神崎サンガサウナ</h1><span class="weave"></span><p>スタッフ管理システム</p></div><div class="lcard"><div class="fld"><span>あなたの名前をタップしてください</span></div><div class="who">${S.staff.map(s=>`<button type="button" data-a="lname" data-id="${s.id}">${esc(s.name)}<small>${s.role}</small></button>`).join('')}</div></div></div></div>`;return}
+  const st=S.staff.find(s=>s.id===UI.loginStaff);
   const methods=[['pattern','パターン','dots'],['pw','パスワード','key'],['face','顔認証','face'],['line','LINE','line']];
   let body='';
   if(!st){body=`<div class="fld"><span>スタッフを選んでください</span></div><div class="who">${S.staff.map(s=>`<button type="button" data-a="lpick" data-id="${s.id}">${esc(s.name)}<small>${s.role}</small></button>`).join('')}</div>`}
   else{body=`<div class="row"><b>${esc(st.name)}</b><span class="pill">${st.role}</span><span class="sp"></span><button class="btn sm ghost" data-a="lpick" data-id="">選び直す</button></div>
    <div class="lmethods">${methods.map(([k,l,ic])=>`<button type="button" class="${UI.loginMethod===k?'on':''}" data-a="lmethod" data-k="${k}">${icon(ic)}${l}</button>`).join('')}</div>`;
-   if(UI.loginMethod==='pattern')body+=`<div class="pat" id="pat"><svg id="patsvg"></svg>${[1,2,3,4,5,6,7,8,9].map(n=>`<div class="dot" data-n="${n}"><i></i></div>`).join('')}</div><p class="note">9つの点を指でなぞって登録パターンを描きます。試作版の初期パターンは「L字」（左上→真ん中左→左下→下中央→右下）です。</p>`;
-   else if(UI.loginMethod==='pw')body+=`<form id="pwform" class="row"><input class="inp" id="lpw" type="password" inputmode="numeric" autocomplete="current-password" placeholder="パスワード" style="flex:1"><button class="btn primary" type="submit">ログイン</button></form><p class="note">試作版の初期パスワードは「1234」です。</p>`;
-   else body+=`<div class="note">${UI.loginMethod==='face'?'顔認証（iPhoneのFace ID・Androidの顔認証）は、Vercel版で「パスキー」という仕組みを使って実装します。':'LINEログインは、Vercel版でLINEの公式ログイン機能を使って実装します。'}<br>試作版では、パターンかパスワードでログインしてください。</div>`}
-  $('#app').innerHTML=`<div class="login"><div class="lbox"><div class="logo">${logoImg('login-logo')}<h1>神崎サンガサウナ</h1><span class="weave"></span><p>スタッフ管理システム（試作版）</p></div><div class="lcard">${body}</div><button class="btn ghost" data-a="lskip" style="justify-self:center">試作確認用：パスワードなしで入る</button></div></div>`;
+   if(UI.loginMethod==='pattern')body+=`<div class="pat" id="pat"><svg id="patsvg"></svg>${[1,2,3,4,5,6,7,8,9].map(n=>`<div class="dot" data-n="${n}"><i></i></div>`).join('')}</div><p class="note">9つの点を指でなぞって登録パターンを描きます。最初のパターンは「L字」（左上→真ん中左→左下→下中央→右下）です。</p>`;
+   else if(UI.loginMethod==='pw')body+=`<form id="pwform" class="row"><input class="inp" id="lpw" type="password" inputmode="numeric" autocomplete="current-password" placeholder="パスワード" style="flex:1"><button class="btn primary" type="submit">ログイン</button></form><p class="note">最初のパスワードは「1234」です。</p>`;
+   else body+=`<div class="note">${UI.loginMethod==='face'?'顔認証（iPhoneのFace ID・Androidの顔認証）は、次の段階で「パスキー」という仕組みを使って追加します。':'LINEログインは、次の段階でLINEの公式ログイン機能を使って追加します。'}<br>今は、パターンかパスワードでログインしてください。</div>`}
+  $('#app').innerHTML=`<div class="login"><div class="lbox"><div class="logo">${logoImg('login-logo')}<h1>神崎サンガサウナ</h1><span class="weave"></span><p>スタッフ管理システム${CLOUD?'':'（試作版）'}</p></div><div class="lcard">${body}</div>${CLOUD?'':'<button class="btn ghost" data-a="lskip" style="justify-self:center">試作確認用：パスワードなしで入る</button>'}</div></div>`;
   if(st&&UI.loginMethod==='pattern')bindPattern(st);
   const pf=$('#pwform');if(pf){pf.addEventListener('submit',e=>{e.preventDefault();if($('#lpw').value===st.pw)doLogin(st);else toast('パスワードが違います')});setTimeout(()=>$('#lpw').focus(),30)}}
 function bindPattern(st){const pad_=$('#pat'),svg=$('#patsvg');let seq=[],drawing=false,cur=null;
@@ -597,8 +668,8 @@ function render(){if(!me){renderLogin();return}
   const V={home:vHome,menu:vMenu,shift:vShift,pay:vPay,expense:vExpense,stock:vStock,equip:vEquip,event:vEvent,people:vPeople,manual:vManual,plan:vPlan,lost:vLost,remind:vRemind,import:vImport,settings:vSettings};
   if(!V[view]||((NAV.find(n=>n[0]===view)||[])[2]&&!isAdmin()))view='home';
   const onMain=k=>k==='menu'?(view!=='home'&&!MAIN.some(m=>m[0]===view)):view===k;
-  $('#app').innerHTML=`<div class="shell"><aside class="side"><div class="strip"></div><button class="brand" data-a="go" data-v="home" title="ホームへ">${logoImg()}<span>ホームへ戻る</span></button><nav class="nav">${MAIN.map(([k,l])=>`<button class="${onMain(k)?'on':''}" data-a="go" data-v="${k}">${icon(k)}<span>${l}</span>${k==='menu'?'':navBadge(k)}</button>`).join('')}</nav><div class="me"><div><b>${esc(me.name)}</b> <span class="pill">${me.role}</span></div><button class="btn sm" data-a="logout">ログアウト</button></div></aside>
-  <div class="maincol"><header class="topbar"><button class="home" data-a="go" data-v="home" aria-label="ホームへ">${logoImg()}<span class="tb-name">Kanzaki Sanga Sauna</span></button><span class="sp"></span><span class="pill">${esc(me.name)}・${me.role}</span><button class="btn sm" data-a="logout">ログアウト</button></header>
+  $('#app').innerHTML=`<div class="shell"><aside class="side"><div class="strip"></div><button class="brand" data-a="go" data-v="home" title="ホームへ">${logoImg()}<span>ホームへ戻る</span></button><nav class="nav">${MAIN.map(([k,l])=>`<button class="${onMain(k)?'on':''}" data-a="go" data-v="${k}">${icon(k)}<span>${l}</span>${k==='menu'?'':navBadge(k)}</button>`).join('')}</nav><div class="me"><div><b>${esc(me.name)}</b> <span class="pill">${me.role}</span></div>${CLOUD?`<span class="sync ${SYNC}">${syncTxt()}</span>`:''}<button class="btn sm" data-a="logout">${CLOUD?'名前を変える':'ログアウト'}</button></div></aside>
+  <div class="maincol"><header class="topbar"><button class="home" data-a="go" data-v="home" aria-label="ホームへ">${logoImg()}<span class="tb-name">Kanzaki Sanga Sauna</span></button><span class="sp"></span>${CLOUD?`<span class="sync ${SYNC}">${syncTxt()}</span>`:''}<span class="pill">${esc(me.name)}・${me.role}</span><button class="btn sm" data-a="logout">${CLOUD?'名前を変える':'ログアウト'}</button></header>
   <main class="main"><div class="wrap">${V[view]()}</div></main></div></div>
   <nav class="bnav">${MAIN.map(([k,l,s])=>`<button class="${onMain(k)?'on':''}" data-a="go" data-v="${k}">${icon(k)}<span>${s}</span>${k==='menu'?'':navBadge(k)}</button>`).join('')}</nav>`}
 
@@ -839,7 +910,7 @@ function vRemind(){const all=allReminders();const now=all.filter(r=>r.show);cons
   `<div class="card"><h2>今お知らせしているもの <span class="badge">${now.length}</span></h2>${now.length?`<div class="alerts">${now.map(row).join('')}</div>`:'<p class="empty">今お知らせするものはありません</p>'}</div>
   <div class="card"><h2>これから（45日以内）</h2>${soon.length?`<div class="alerts">${soon.map(row).join('')}</div>`:'<p class="empty">ありません</p>'}</div>
   <div class="card"><h2>自分で作ったリマインド</h2>${mine.length?`<div class="tbl-wrap"><table><thead><tr><th>内容</th><th>日付</th><th>表示</th><th>対象</th><th>状態</th><th></th></tr></thead><tbody>${mine.map(r=>`<tr><td>${esc(r.title)}</td><td>${dLabel(r.date)}</td><td>${leadTxt(+r.lead)}</td><td>${r.to==='all'||!r.to?'全員':esc(staffName(r.to))}</td><td>${r.done?'<span class="pill ok">完了</span>':'<span class="pill">未完了</span>'}</td><td><button class="btn sm" data-a="remEdit" data-id="${r.id}">編集</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">ありません</p>'}</div>
-  <p class="note">シフト希望の締切・明日の出勤・備品の点検日・イベント準備・在庫不足・忘れ物の保管期限は自動でお知らせします。試作版ではこの画面とホームに表示されます。Vercel版ではアプリ内表示に加えて、LINEへの通知を追加する予定です。</p>`}
+  <p class="note">シフト希望の締切・明日の出勤・備品の点検日・イベント準備・在庫不足・忘れ物の保管期限は自動でお知らせします。今はこの画面とホームに表示されます。次の段階で、LINEへの通知を追加する予定です。</p>`}
 function remModal(id){const r=S.reminders.find(x=>x.id===id)||{title:'',date:addDays(todayStr,7),lead:1,cat:'その他',to:'all',done:false};
   modal(id?'リマインドを編集':'リマインドを追加',`${fld('内容',inp('title',r.title,'text','placeholder="例：消防設備点検の立ち会い"'))}<div class="frow">${fld('日付',inp('date',r.date,'date'))}${fld('いつから表示するか',sel('lead',[[0,'当日'],[1,'前日から'],[3,'3日前から'],[7,'1週間前から'],[14,'2週間前から']],r.lead))}</div><div class="frow">${fld('分類',sel('cat',['シフト','点検・交換','イベント準備','在庫','忘れ物','その他'],r.cat))}${fld('誰に表示するか',sel('to',[['all','全員'],...S.staff.map(s=>[s.id,s.name])],r.to||'all'))}</div>${id?`<label class="check"><input type="checkbox" name="done" value="1" ${r.done?'checked':''}>完了にする</label><div id="delzone"><button type="button" class="btn sm danger" data-a="askDel" data-k="reminders" data-id="${id}">削除</button></div>`:''}`,
   {save:f=>{if(!f.title){toast('内容を入力してください');return false}const o={title:f.title,date:f.date,lead:+f.lead,cat:f.cat,to:f.to};if(id)Object.assign(r,o,{done:!!f.done});else S.reminders.push({id:uid(),...o,done:false})}})}
@@ -893,7 +964,7 @@ function vSettings(){const s=S.settings;
   <div class="card"><h2>カテゴリー（1行に1つ）</h2><div class="grid3">${[['stockCats','在庫のカテゴリー'],['equipCats','備品のカテゴリー'],['expCats','経費の科目'],['eventTypes','イベントの種類'],['manualCats','マニュアルのカテゴリー'],['lostCats','忘れ物の種類'],['places','忘れ物の発見場所']].map(([k,l])=>fld(l,`<textarea class="inp" rows="5" data-list="${k}">${esc(s[k].join('\n'))}</textarea>`)).join('')}</div></div>
   <div class="card"><h2>スタッフ<span class="r"><button class="btn sm primary" data-a="staffNew">スタッフを追加</button></span></h2><div class="tbl-wrap"><table><thead><tr><th>名前</th><th>区分</th><th class="r">時給</th><th class="r">交通費</th><th>給与計算</th><th></th></tr></thead><tbody>${S.staff.map(st=>`<tr><td><b>${esc(st.name)}</b></td><td>${st.role}</td><td class="r num">${yen(st.wage||s.wage)}</td><td class="r num">${yen(st.transit??s.transit)}</td><td>${st.payroll!==false?'含める':'<span class="muted">含めない</span>'}</td><td><button class="btn sm" data-a="staffEdit" data-id="${st.id}">編集</button></td></tr>`).join('')}</tbody></table></div></div>
   <div class="card"><h2>人材育成</h2><label class="check"><input type="checkbox" data-c="skillOn" ${s.skillOn?'checked':''}>スキルチェック表・レベル（ランク）を使う（今は運用予定なし）</label></div>
-  <div class="card"><h2>データ</h2><p class="note">この試作版のデータは、今使っているブラウザの中だけに保存されています。ほかのスマホ・PCとは共有されません（Vercel版で全スタッフ共有になります）。</p><div class="row" id="resetzone"><button class="btn danger" data-a="askReset" data-v="sample">サンプルデータに戻す</button><button class="btn danger" data-a="askReset" data-v="empty">全データを消して空にする</button></div></div>`}
+  <div class="card"><h2>データ</h2>${CLOUD?`<p class="note">データはお店のデータベース（Supabase）に保存され、全スタッフのスマホ・PCで共有されています。状態：<span class="sync ${SYNC}">${syncTxt()}</span></p><div class="row"><button class="btn danger" data-a="storeOut">この端末からログアウト（次回パスワードが必要）</button></div>`:`<p class="note">この試作版のデータは、今使っているブラウザの中だけに保存されています。ほかのスマホ・PCとは共有されません。</p><div class="row" id="resetzone"><button class="btn danger" data-a="askReset" data-v="sample">サンプルデータに戻す</button><button class="btn danger" data-a="askReset" data-v="empty">全データを消して空にする</button></div>`}</div>`}
 function staffModal(id){const st=S.staff.find(x=>x.id===id)||{name:'',role:'バイト',wage:'',transit:'',payroll:true,pw:'1234',pat:'14789'};
   modal(id?'スタッフを編集':'スタッフを追加',`${fld('名前',inp('name',st.name))}<div class="frow">${fld('区分',sel('role',['主宰','社員','バイト'],st.role))}${fld('時給（空欄＝初期値）',inp('wage',st.wage,'number','inputmode="numeric"'))}${fld('交通費/回（空欄＝初期値）',inp('transit',st.transit??'','number','inputmode="numeric"'))}</div><label class="check"><input type="checkbox" name="payroll" value="1" ${st.payroll!==false?'checked':''}>時給で給与計算する（バイト）</label><p class="note">主宰・社員は、経費の承認・シフト作成などの管理画面も使えます。</p><div class="frow">${fld('パスワード',inp('pw',st.pw))}${fld('ログインパターン（点の番号）',inp('pat',st.pat,'text','inputmode="numeric" placeholder="例：14789"'))}</div><p class="note">パターンの番号：上の段が左から1・2・3、真ん中の段が4・5・6、下の段が7・8・9。なぞる順に番号を並べます（例：L字＝14789）。</p>${id&&id!==me.id?`<div id="delzone"><button type="button" class="btn sm danger" data-a="askDel" data-k="staff" data-id="${id}">このスタッフを削除</button></div>`:''}`,
   {save:f=>{if(!f.name){toast('名前を入力してください');return false}if(!/^[1-9]{2,9}$/.test(f.pat)||new Set(f.pat).size!==f.pat.length){toast('パターンは1〜9の数字を重ならないように2つ以上並べてください');return false}const o={name:f.name,role:f.role,wage:f.wage===''?'':+f.wage,transit:f.transit===''?undefined:+f.transit,payroll:!!f.payroll,pw:f.pw,pat:f.pat};if(id){Object.assign(st,o);if(o.transit===undefined)delete st.transit}else{const n={id:'s'+uid(),...o};if(o.transit===undefined)delete n.transit;S.staff.push(n)}}})}
@@ -905,6 +976,8 @@ const ACT={
  logout:()=>{me=null;UI.loginStaff=null;try{localStorage.removeItem(KEY+'-me')}catch(e){}render()},
  lpick:d=>{UI.loginStaff=d.id||null;UI.loginMethod='pattern';renderLogin()},
  lmethod:d=>{UI.loginMethod=d.k;renderLogin()},
+ storeOut:async()=>{try{await sb.auth.signOut()}catch(e){}try{localStorage.removeItem(KEY+'-me')}catch(e){}location.reload()},
+ lname:d=>{const st=S.staff.find(s=>s.id===d.id);if(st)doLogin(st)},
  lskip:()=>{const st=S.staff.find(s=>s.id===UI.loginStaff)||S.staff[0];doLogin(st)},
  mclose:closeModal,
  msave:()=>{if(modalSave&&modalSave(fd())===false)return;save();closeModal();render()},
@@ -973,7 +1046,7 @@ document.addEventListener('change',async e=>{const t=e.target,c=t.dataset.c;
   if(t.dataset.lead){S.settings.leads[t.dataset.lead]=+t.value;save();toast('保存しました');return}
   if(t.dataset.list){const v=t.value.split('\n').map(s=>s.trim()).filter(Boolean);if(!v.length){toast('1つ以上入力してください');return}S.settings[t.dataset.list]=[...new Set(v)];save();toast('カテゴリーを保存しました');return}
 });
-render();
+boot();
 </script>
 </body>
 </html>
