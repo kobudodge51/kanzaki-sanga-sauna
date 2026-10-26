@@ -885,6 +885,18 @@ button.tt-row.dt:hover .tt-track{box-shadow:inset 0 0 0 2px color-mix(in srgb,va
 
 .tabs{max-width:100%;overflow-x:auto;scrollbar-width:thin}
 .row>.tabs{min-width:0}
+
+/* トップのキャンセル早見表 */
+.hero{grid-template-columns:auto minmax(0,1fr) minmax(250px,320px)}
+.hero > .hero-cx{max-width:none}
+.hero-cx{position:relative;display:grid;gap:6px;background:color-mix(in srgb,var(--surface2) 70%,var(--surface));border:1px solid var(--line);border-radius:10px;padding:12px 14px;align-self:center}
+.cx-h{font-family:var(--mincho);font-size:14.5px}
+.cx-r{display:grid;grid-template-columns:52px minmax(0,1fr);gap:8px;align-items:center;font-size:14px;font-weight:700}
+.cx-r small{display:block;font-size:11px;font-weight:500;color:var(--muted)}
+.cx-p{text-align:center;border-radius:6px;padding:4px 0;font-family:var(--display);font-size:14px;color:#fff}
+.c100 .cx-p{background:var(--bad)}.c50 .cx-p{background:var(--warn)}.c0 .cx-p{background:var(--ok)}
+.cx-n{font-size:10.5px;color:var(--muted);line-height:1.5}
+@media (max-width:1100px){.hero{grid-template-columns:auto minmax(0,1fr)}.hero-cx{grid-column:1/-1}}
 </style>
 </head>
 <body>
@@ -1695,10 +1707,17 @@ function todayTimeline(list,offs){const H0=8,H1=23;const span=(H1-H0)*60;const n
   return `<div class="tt-sum"><span class="tt-big">${list.length}<small>人</small></span><span class="pill ${working?'ok':''}">今 勤務中 ${working}人</span>${offs.length?`<span class="pill">休み：${offs.map(o=>esc(staffName(o.staffId))).join('、')}</span>`:''}</div>
   <div class="tt"><div class="tt-axis"><span></span><div class="tt-scale">${ticks.map(h=>`<i style="left:${(h-H0)/(H1-H0)*100}%">${h%2===0?h:''}</i>`).join('')}${nm>=H0*60&&nm<=H1*60?`<b class="tt-now" style="left:${(nm-H0*60)/span*100}%"><em>${pad(nowNow.getHours())}:${pad(nowNow.getMinutes())}</em></b>`:''}</div></div>
   ${list.map(x=>{const E=eff(x);const a=pos(E.start);let b=pos(E.end);if(b<=a)b=100;const st=state(x);return `<div class="tt-row ${st}"><span class="tt-n">${esc(shName(x))}${x.note?`<small>${esc(x.note)}</small>`:''}</span><div class="tt-track">${ticks.map(h=>`<i style="left:${(h-H0)/(H1-H0)*100}%"></i>`).join('')}<div class="tt-bar" style="left:${a}%;width:${Math.max(4,b-a)}%"><span>${fmtT(E.start)}–${fmtT(E.end)}</span></div>${nm>=H0*60&&nm<=H1*60?`<b class="tt-nowl" style="left:${(nm-H0*60)/span*100}%"></b>`:''}</div></div>`}).join('')}</div>`}
+function cxToday(){const dl=+((S.settings.cancel||{}).deadlineDays||5);const dd=n=>addDays(todayStr,n);const L=d=>`${+d.slice(5,7)}/${+d.slice(8)}(${WD[parseD(d).getDay()]})`;
+  const d100=[dd(0),dd(1)];const a=dd(2),b=dd(dl);const free=dd(dl+1);
+  return `<aside class="hero-cx" aria-label="今日キャンセルの連絡があった場合"><b class="cx-h">今日キャンセルの連絡が来たら</b>
+   <div class="cx-r c100"><span class="cx-p">100%</span><span><small>当日・前日のキャンセル</small>${d100.map(L).join('、')}</span></div>
+   <div class="cx-r c50"><span class="cx-p">50%</span><span><small>${dl}日前〜2日前のキャンセル</small>${L(a)}〜${L(b)}</span></div>
+   <div class="cx-r c0"><span class="cx-p">無料</span><span><small>${dl+1}日前までのキャンセル</small>${L(free)}以降</span></div>
+   <small class="cx-n">日付はご予約の日です。くわしくは「キャンセル」画面で計算できます。</small></aside>`}
 function vHome(){const d=TODAY;const today=dayShifts(todayStr);const mine=today.find(x=>x.staffId===me.id);
   const closed=S.plans.closures.find(c=>c.date===todayStr);
   const news=newsFeed();const rem=allReminders().filter(r=>r.show);
-  return `<section class="hero">${logoImg('hero-logo')}<div class="hero-txt"><span class="date">${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}.</span><h1>${isShared()?`おつかれさまです。${closed?`今日は${esc(closed.kind)}の日です`:`今日の出勤は${today.length}人です`}`:`${esc(me.name)}さん、${closed?`今日は${esc(closed.kind)}の日です`:mine?`今日は ${shLabel(mine)} の勤務です`:'今日はお休みです'}`}</h1><p class="muted">パブリック 10:00〜22:00（最終入場21:00）<br>小屋サウナ 1部10:30〜13:30／2部14:00〜17:00／3部17:30〜20:30</p></div></section>
+  return `<section class="hero">${logoImg('hero-logo')}<div class="hero-txt"><span class="date">${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}.</span><h1>${isShared()?`おつかれさまです。${closed?`今日は${esc(closed.kind)}の日です`:`今日の出勤は${today.length}人です`}`:`${esc(me.name)}さん、${closed?`今日は${esc(closed.kind)}の日です`:mine?`今日は ${shLabel(mine)} の勤務です`:'今日はお休みです'}`}</h1><p class="muted">パブリック 10:00〜22:00（最終入場21:00）<br>小屋サウナ 1部10:30〜13:30／2部14:00〜17:00／3部17:30〜20:30</p></div>${cxToday()}</section>
   ${todayCard()}
   <div class="grid2">
    <div class="card"><h2>新着情報<span class="r">${isAdmin()?'<button class="btn sm" data-a="newsNew">お知らせを書く</button>':''}<button class="btn sm" data-a="newsAll">すべて見る</button></span></h2>${news.length?`<div class="alerts">${news.slice(0,5).map(newsRow).join('')}</div>`:'<p class="empty">新着情報はありません</p>'}</div>
