@@ -530,6 +530,72 @@ input.bk[readonly]{cursor:pointer}
 .ho-none{color:var(--warn)}
 .wh{min-width:100px}.wc{padding:8px 8px}.wc b{font-size:14px}.ws{min-width:84px}.wt{min-width:54px}
 .bktable td{min-width:104px}
+/* 今日のシフト（タイムライン） */
+.tt-sum{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tt-big{font-family:var(--display);font-size:30px;line-height:1}
+.tt-big small{font-size:14px;margin-left:2px;font-family:var(--body)}
+.tt{display:grid;gap:6px}
+.tt-axis,.tt-row{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px;align-items:center}
+.tt-scale{position:relative;height:18px}
+.tt-scale i{position:absolute;transform:translateX(-50%);font-style:normal;font-size:11px;color:var(--muted);font-family:var(--display)}
+.tt-now{position:absolute;top:-2px;bottom:-4px;width:0;border-left:2px solid var(--flame)}
+.tt-now em{position:absolute;top:-18px;left:-20px;font-style:normal;font-size:11px;color:var(--n2);font-family:var(--display);background:var(--surface);padding:0 2px}
+.tt-n{font-family:var(--mincho);font-weight:700;font-size:15px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tt-n small{display:block;font-family:var(--body);font-weight:500;font-size:11px;color:var(--n2)}
+.tt-track{position:relative;height:34px;background:var(--surface2);border-radius:6px;overflow:hidden}
+.tt-track>i{position:absolute;top:0;bottom:0;border-left:1px dashed color-mix(in srgb,var(--line) 80%,transparent)}
+.tt-bar{position:absolute;top:4px;bottom:4px;border-radius:5px;background:var(--n1);display:flex;align-items:center;padding:0 8px;min-width:0;overflow:hidden;box-shadow:inset 0 -2px 0 rgba(0,0,0,.12)}
+.tt-bar span{color:#fbf6ea;font-family:var(--display);font-size:12.5px;white-space:nowrap}
+.tt-row.now .tt-bar{background:var(--ink)}
+.tt-row.now .tt-bar span{color:var(--onink)}
+.tt-row.now .tt-n::before{content:"●";color:var(--ok);font-size:10px;margin-right:4px;vertical-align:2px}
+.tt-row.done .tt-bar{background:color-mix(in srgb,var(--tc) 55%,var(--surface2))}
+.tt-nowl{position:absolute;top:0;bottom:0;border-left:2px solid var(--flame);z-index:2}
+:root[data-theme="dark"] .tt-bar span{color:#1c221f}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tt-bar span{color:#1c221f}}
+@media (max-width:560px){.tt-axis,.tt-row{grid-template-columns:64px minmax(0,1fr);gap:6px}.tt-bar span{font-size:11px}.tt-n{font-size:13.5px}}
+/* まとめて入力（プルダウン） */
+.bkc{display:grid;gap:4px;padding:6px;min-width:150px}
+.bk2{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:2px;align-items:center}
+.bk-to{color:var(--muted);font-size:12px}
+.bkc select{font-size:15px;padding:7px 4px;border:1.5px solid var(--line);border-radius:6px;background:var(--surface);min-height:40px;width:100%;box-sizing:border-box;font-family:var(--display)}
+.bkc .bkn{font-family:var(--body);font-size:12.5px;min-height:32px;padding:4px;color:var(--muted)}
+.bkc select:disabled{opacity:.35}
+.bkc.chg{background:color-mix(in srgb,var(--flame) 14%,transparent)}
+.bkc.err{box-shadow:inset 0 0 0 2px var(--bad);background:var(--badbg)}
+.bkc.isoff .bks{color:var(--bad);font-weight:700}
+.bktable.painting .bkc{cursor:pointer}
+.bktable.painting .bkc select{pointer-events:none}
+.bktable td{min-width:160px}
+/* 忘れ物まとめて */
+.lbtable{min-width:900px}
+.lbtable td{padding:4px}
+.lbtable .inp{min-height:46px;font-size:15px;padding:8px}
+.lb-row.err td{background:var(--badbg)}
+/* マニュアル本文 */
+.md{display:grid;gap:10px;font-size:16px;line-height:1.85}
+.md p{margin:0}
+.md-h{margin:10px 0 0;font-family:var(--mincho);font-size:18px;padding:4px 0 4px 12px;border-left:5px solid var(--flame);background:linear-gradient(90deg,var(--surface2),transparent)}
+.md ul,.md ol{margin:0;padding-left:1.4em;display:grid;gap:4px}
+.md li.sub{margin-left:1.2em;list-style:circle;color:var(--muted)}
+.md ul.md-check{list-style:none;padding-left:0}
+.md-check li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;align-items:start;padding:6px 8px;border-bottom:1px dashed var(--line)}
+.md-box{width:18px;height:18px;border:2px solid var(--muted);border-radius:4px;margin-top:5px}
+.md-point,.md-warn{border-radius:8px;padding:12px 14px;display:grid;gap:4px}
+.md-point{background:color-mix(in srgb,var(--ok) 12%,var(--surface));border-left:5px solid var(--ok)}
+.md-warn{background:var(--badbg);border-left:5px solid var(--bad)}
+.md-point b,.md-warn b{font-size:12px;letter-spacing:.1em}
+.md-point b{color:var(--ok)}.md-warn b{color:var(--bad)}
+.md-tbl table{font-size:15px}
+.md-tbl th{width:34%;white-space:normal;text-align:left;font-size:14px;color:var(--fg)}
+.man-photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.man-photos img{width:100%;border-radius:8px;border:1px solid var(--line)}
+.man-chap{font-family:var(--display);color:var(--n2);font-size:13px}
+.md-check li.sub{display:block;padding:2px 8px 2px 38px;border:0;color:var(--muted);font-size:14.5px}
+.bkc select{-webkit-appearance:none;appearance:none;text-align:center;text-align-last:center;padding:6px 2px;font-size:15px;background:var(--surface)}
+.bkc .bkn{text-align:left;text-align-last:left;padding:4px 8px}
+.bktable td{min-width:176px}
+.bk2{grid-template-columns:minmax(64px,1fr) auto minmax(64px,1fr)}
 </style>
 </head>
 <body>
@@ -943,6 +1009,14 @@ function todayCard(){const ws=weeklyOn(todayStr),es=S.events.filter(e=>e.date===
   <div class="chips" style="gap:8px">${ws.map(w=>`<span class="pill evw big">${esc(w.name)}</span>`).join('')}${es.map(e=>`<span class="pill ${evCls(e.type)} big">${e.start?fmtT(e.start)+' ':''}${esc(e.title)}</span>`).join('')}</div>
   ${ws.map(w=>w.desc?`<p class="muted" style="margin:0">${esc(w.name)}：${esc(w.desc)}</p>`:'').join('')}
   ${tk.length?`<div class="tl">${tk.map(t=>`<div class="tl-i ${t.time&&t.time<pad(TODAY.getHours())+':'+pad(TODAY.getMinutes())?'past':''}"><b class="num">${t.time?fmtT(t.time):'終日'}</b><span>${esc(t.text)}</span></div>`).join('')}</div>`:''}</div>`}
+function todayTimeline(list,offs){const H0=8,H1=23;const span=(H1-H0)*60;const now=TODAY.getHours()*60+TODAY.getMinutes();const nowNow=new Date();const nm=nowNow.getHours()*60+nowNow.getMinutes();
+  const pos=t=>Math.max(0,Math.min(100,((toMin(t)<H0*60-120?toMin(t)+1440:toMin(t))-H0*60)/span*100));
+  const ticks=[];for(let h=H0;h<=H1;h+=1)ticks.push(h);
+  const state=x=>{let s=toMin(x.start),e=toMin(x.end);if(e<=s)e+=1440;return nm<s?'next':nm>=e?'done':'now'};
+  const working=list.filter(x=>state(x)==='now').length;
+  return `<div class="tt-sum"><span class="tt-big">${list.length}<small>人</small></span><span class="pill ${working?'ok':''}">今 勤務中 ${working}人</span>${offs.length?`<span class="pill">休み：${offs.map(o=>esc(staffName(o.staffId))).join('、')}</span>`:''}</div>
+  <div class="tt"><div class="tt-axis"><span></span><div class="tt-scale">${ticks.map(h=>`<i style="left:${(h-H0)/(H1-H0)*100}%">${h%2===0?h:''}</i>`).join('')}${nm>=H0*60&&nm<=H1*60?`<b class="tt-now" style="left:${(nm-H0*60)/span*100}%"><em>${pad(nowNow.getHours())}:${pad(nowNow.getMinutes())}</em></b>`:''}</div></div>
+  ${list.map(x=>{const a=pos(x.start);let b=pos(x.end);if(b<=a)b=100;const st=state(x);return `<div class="tt-row ${st}"><span class="tt-n">${esc(staffName(x.staffId))}${x.note?`<small>${esc(x.note)}</small>`:''}</span><div class="tt-track">${ticks.map(h=>`<i style="left:${(h-H0)/(H1-H0)*100}%"></i>`).join('')}<div class="tt-bar" style="left:${a}%;width:${Math.max(4,b-a)}%"><span>${fmtT(x.start)}–${fmtT(x.end)}</span></div>${nm>=H0*60&&nm<=H1*60?`<b class="tt-nowl" style="left:${(nm-H0*60)/span*100}%"></b>`:''}</div></div>`}).join('')}</div>`}
 function vHome(){const d=TODAY;const today=dayShifts(todayStr);const mine=today.find(x=>x.staffId===me.id);
   const closed=S.plans.closures.find(c=>c.date===todayStr);
   const news=newsFeed();const rem=allReminders().filter(r=>r.show);
@@ -952,7 +1026,7 @@ function vHome(){const d=TODAY;const today=dayShifts(todayStr);const mine=today.
    <div class="card"><h2>新着情報<span class="r">${isAdmin()?'<button class="btn sm" data-a="newsNew">お知らせを書く</button>':''}<button class="btn sm" data-a="newsAll">すべて見る</button></span></h2>${news.length?`<div class="alerts">${news.slice(0,5).map(newsRow).join('')}</div>`:'<p class="empty">新着情報はありません</p>'}</div>
    <div class="card"><h2>リマインド${rem.length?` <span class="badge">${rem.length}</span>`:''}<span class="r"><button class="btn sm" data-a="go" data-v="remind">すべて見る</button></span></h2>${rem.length?`<div class="alerts">${rem.slice(0,5).map(r=>`<button class="alert ${remCls(r.date)}" data-a="go" data-v="${r.go}"><span class="dot"></span><span class="al-txt">${esc(r.title)}</span><span class="when">${whenTxt(r.date)}</span></button>`).join('')}</div>`:'<p class="empty">今日のリマインドはありません</p>'}</div>
   </div>
-  <div class="card"><h2>今日のシフト<span class="r muted">${today.length}人・出勤が早い順</span></h2>${today.length||dayOffs(todayStr).length?shiftLines(today,false,dayOffs(todayStr))+'<div class="sl-scale"><span>8:00</span><span>15:00</span><span>22:00</span></div>':'<p class="empty">今日のシフトはありません</p>'}</div>
+  <div class="card"><h2>今日のシフト<span class="r"><button class="btn sm" data-a="go" data-v="shift">シフト表へ</button></span></h2>${today.length||dayOffs(todayStr).length?todayTimeline(today,dayOffs(todayStr)):'<p class="empty">今日のシフトはありません</p>'}</div>
   ${S.sample?`<p class="note">今はサンプルデータが入っています。バイトの名前は「バイト01（仮）」のように仮の名前です。設定 → スタッフ、またはスプレッドシート取込から実際の名前に入れ替えられます。この試作版のデータは、今使っているブラウザの中だけに保存されます。</p>`:''}`}
 function vMenu(){return phead('menu','MENU')+`<div class="tiles">${NAV.filter(n=>!n[2]||isAdmin()).map(([k,l])=>`<button class="tile" data-a="go" data-v="${k}">${icon(k)}<span>${l} ${navBadge(k)}</span></button>`).join('')}</div>`}
 function newsModal(id){const n=(S.news||[]).find(x=>x.id===id)||{title:'',body:''};
@@ -998,16 +1072,27 @@ function parseShiftText(t){t=String(t||'').replace(/[０-９]/g,c=>String.fromCh
   const m=t.match(/^(\d{1,2})(?::?(\d{2}))?-(\d{1,2})(?::?(\d{2}))?$/);
   if(m){const h1=+m[1],m1=+(m[2]||0),h2=+m[3],m2=+(m[4]||0);if(h1<30&&h2<30&&m1<60&&m2<60&&!(h1===h2&&m1===m2))return{start:pad(h1%24)+':'+pad(m1),end:pad(h2%24)+':'+pad(m2),note}}
   return{err:true}}
-const bkVal=x=>x?(x.off?'休':`${fmtT(x.start)}-${fmtT(x.end)}`)+(x.note?' '+x.note:''):'';
+const TOPTS=(()=>{const a=[];for(let m=6*60;m<=23*60+30;m+=30)a.push(pad(Math.floor(m/60))+':'+pad(m%60));return a})();
+const EOPTS=(()=>{const a=[];for(let m=7*60;m<=27*60;m+=30){const h=Math.floor(m/60);a.push([pad(h%24)+':'+pad(m%60),(h>=24?'翌':'')+(h%24)+':'+pad(m%60)])}return a})();
+const bkKey=(st,en,nt)=>st==='off'?'off|'+nt:st?`${st}-${en}|${nt}`:'';
+function bkCell(sid,d,x){const st=x?(x.off?'off':x.start):'';const en=x&&!x.off?x.end:'';const nt=x?x.note||'':'';
+  const so=[['','―'],['off','休み'],...TOPTS.map(t=>[t,fmtT(t)])];if(st&&st!=='off'&&!TOPTS.includes(st))so.push([st,fmtT(st)]);
+  const eo=[['','―'],...EOPTS];if(en&&!EOPTS.some(e=>e[0]===en))eo.push([en,fmtT(en)]);
+  const notes=['',...(S.settings.shiftNotes||[])];if(nt&&!notes.includes(nt))notes.push(nt);
+  return `<div class="bkc" data-s="${sid}" data-d="${d}" data-o="${esc(bkKey(st,en,nt))}"><div class="bk2"><select class="bks" aria-label="出勤">${so.map(([v,l])=>`<option value="${v}" ${v===st?'selected':''}>${l}</option>`).join('')}</select><span class="bk-to">〜</span><select class="bke" aria-label="退勤" ${!st||st==='off'?'disabled':''}>${eo.map(([v,l])=>`<option value="${v}" ${v===en?'selected':''}>${l}</option>`).join('')}</select></div><select class="bkn" aria-label="業務内容">${notes.map(n=>`<option value="${esc(n)}" ${n===nt?'selected':''}>${n?esc(n):'業務内容なし'}</option>`).join('')}</select></div>`}
+function bkRead(c){const st=c.querySelector('.bks').value,en=c.querySelector('.bke').value,nt=c.querySelector('.bkn').value;return{st,en,nt,key:bkKey(st,en,nt)}}
+function bkMark(c){if(!c||!c.classList)return;const r=bkRead(c);c.querySelector('.bke').disabled=!r.st||r.st==='off';const err=r.st&&r.st!=='off'&&(!r.en||r.en===r.st);c.classList.toggle('chg',r.key!==c.dataset.o);c.classList.toggle('err',!!err);c.classList.toggle('isoff',r.st==='off');const n=document.querySelectorAll('.bkc.chg').length;const b=$('#bk-count');if(b)b.textContent=n?`（変更 ${n}件）`:''}
+function bkEnsure(sel,v){if(v&&![...sel.options].some(o=>o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=fmtT(v);sel.appendChild(o)}}
+function bkSet(c,v,note){const s=c.querySelector('.bks'),e=c.querySelector('.bke'),n=c.querySelector('.bkn');if(!v){s.value='';e.value=''}else if(v==='休'){s.value='off';e.value=''}else{const [a,b]=v.split('-');bkEnsure(s,a);bkEnsure(e,b);s.value=a;e.value=b}if(note!==undefined){if(note&&![...n.options].some(o=>o.value===note)){const o=document.createElement('option');o.value=note;o.textContent=note;n.appendChild(o)}n.value=note||''}bkMark(c)}
+const bkFromShift=x=>x?(x.off?'休':`${x.start}-${x.end}`):'';
+const bkDirty=()=>document.querySelectorAll('.bkc.chg').length;
 function bulkView(){if(!isAdmin())return '<p class="empty">主宰・社員だけが使えます</p>';const n=UI.bulkDays||7;const days=[...Array(n)].map((_,i)=>addDays(UI.weekStart,i));const staff=sortStaff(activeStaff());
-  const pal=[...S.settings.presets.map(p=>[`${fmtT(p.s)}-${fmtT(p.e)}`,`${p.name} ${fmtT(p.s)}-${fmtT(p.e)}`]),['休','休み'],['','消す']];
-  return weekNav()+`<div class="bk-help"><b>入力のしかた</b>：マスに「8-17」「13:30-22」「休」のように打ちます。「早」「中」「遅」「朝」だけでもOK。後ろにスペースを空けて「9-12 煙突掃除」のように業務内容も書けます。Enterで下のマス、Tabで右のマスへ進みます。</div>
-  <div class="bk-tools"><span class="bk-tl">ボタンで入れる：</span>${pal.map(([v,l])=>`<button type="button" class="bk-pal ${UI.paint===v?'on':''}" data-a="paint" data-v="${esc(v)}">${esc(l)}</button>`).join('')}<button type="button" class="bk-pal ${UI.paint==null?'on':''}" data-a="paint" data-v="__off">キーボードで入力</button></div>
-  ${UI.paint!=null?`<p class="note">「${esc(UI.paint===''?'消す':UI.paint)}」を選び中です。マスをタップすると、その内容が入ります。</p>`:''}
-  <div class="tbl-wrap"><table class="bktable"><thead><tr><th class="ws">スタッフ</th>${weekHeadCells(days)}</tr></thead><tbody>${staff.map(s=>`<tr><th class="ws">${esc(s.name)}<small>${s.role}</small></th>${days.map(d=>{const x=S.shifts.find(y=>y.staffId===s.id&&y.date===d);const v=bkVal(x);const cl=closureOf(d);return `<td class="${cl?(cl.weekly?'tue':'closed'):''}"><input class="bk" data-s="${s.id}" data-d="${d}" data-o="${esc(v)}" value="${esc(v)}" autocomplete="off" spellcheck="false" aria-label="${esc(s.name)} ${dLabel(d)}" ${UI.paint!=null?'readonly':''}></td>`}).join('')}</tr>`).join('')}</tbody></table></div>
+  const pal=[...S.settings.presets.map(p=>[`${p.s}-${p.e}`,`${p.name} ${fmtT(p.s)}-${fmtT(p.e)}`]),['休','休み'],['','消す']];
+  return weekNav()+`<div class="bk-help"><b>入力のしかた</b>：マスごとに「出勤」「退勤」「業務内容」を選びます（休みは出勤の欄で「休み」を選びます）。同じ時間をたくさん入れるときは、下のボタンを選んでからマスをタップしてください。</div>
+  <div class="bk-tools"><span class="bk-tl">ボタンで入れる：</span>${pal.map(([v,l])=>`<button type="button" class="bk-pal ${UI.paint===v?'on':''}" data-a="paint" data-v="${esc(v)}">${esc(l)}</button>`).join('')}<button type="button" class="bk-pal ${UI.paint==null?'on':''}" data-a="paint" data-v="__off">プルダウンで選ぶ</button></div>
+  ${UI.paint!=null?`<p class="note">「${esc(UI.paint===''?'消す':UI.paint==='休'?'休み':UI.paint.replace(/0(\d):/g,'$1:'))}」を選び中です。マスをタップすると入ります。プルダウンに戻すときは「プルダウンで選ぶ」を押してください。</p>`:''}
+  <div class="tbl-wrap"><table class="bktable ${UI.paint!=null?'painting':''}"><thead><tr><th class="ws">スタッフ</th>${weekHeadCells(days)}</tr></thead><tbody>${staff.map(s=>`<tr><th class="ws">${esc(s.name)}<small>${s.role}</small></th>${days.map(d=>{const x=S.shifts.find(y=>y.staffId===s.id&&y.date===d);const cl=closureOf(d);return `<td class="${cl?(cl.weekly?'tue':'closed'):''}">${bkCell(s.id,d,x)}</td>`}).join('')}</tr>`).join('')}</tbody></table></div>
   <div class="bk-bar"><div class="row"><label class="check"><input type="checkbox" data-c="bulk14" ${n===14?'checked':''}>2週間分を表示</label><button class="btn" data-a="bkCopyPrev">前の${n===14?'2週間':'週'}と同じ内容を入れる</button><button class="btn" data-a="bkReset">変更を取り消す</button></div><button class="btn primary bk-save" data-a="bkSave">この表を保存<span id="bk-count"></span></button></div>`}
-function bkMark(el){const r=parseShiftText(el.value);const ch=el.value.trim()!==el.dataset.o;el.classList.toggle('chg',ch);el.classList.toggle('err',!!r.err);el.title=r.err?'読み取れません（例：8-17、休）':r.off?'休み':r.empty?'':`${fmtT(r.start)}〜${fmtT(r.end)}${r.note?' '+r.note:''}`;const c=document.querySelectorAll('input.bk.chg').length;const b=$('#bk-count');if(b)b.textContent=c?`（変更 ${c}件）`:''}
-const bkDirty=()=>document.querySelectorAll('input.bk.chg').length;
 function myMonth(m){if(isShared())return '';const mine=S.shifts.filter(x=>x.staffId===me.id&&!x.off&&x.date.startsWith(m)).sort((a,b)=>a.date<b.date?-1:1);
   return `<div class="card"><h2>${esc(me.name)}さんの${mLabel(m)}のシフト<span class="r muted">${mine.length}日・${hm(mine.reduce((a,x)=>a+shMin(x),0))}</span></h2>${mine.length?`<div class="chips">${mine.map(x=>`<span class="pill">${dLabel(x.date)} ${shLabel(x)}</span>`).join('')}</div>`:'<p class="empty">この月のシフトはまだありません</p>'}</div>`}
 function dayView(){const m=UI.shiftMonth;let days=daysIn(m);const hidden=m===ym(TODAY)&&!UI.showPast?days.filter(d=>d<todayStr).length:0;if(hidden)days=days.filter(d=>d>=todayStr);const ed=isAdmin();
@@ -1231,20 +1316,33 @@ function trModal(id){const x=S.trainings.find(i=>i.id===id)||{staffId:me.id,name
 
 /* ====== マニュアル ====== */
 function vManual(){const cats=['すべて',...S.settings.manualCats];const q=UI.manQ.trim().toLowerCase();
-  const list=S.manuals.filter(m=>(UI.manCat==='すべて'||m.cat===UI.manCat)&&(!q||(m.title+m.body).toLowerCase().includes(q))).sort((a,b)=>a.updated<b.updated?1:-1);
+  const list=S.manuals.filter(m=>(UI.manCat==='すべて'||m.cat===UI.manCat)&&(!q||(m.title+m.body).toLowerCase().includes(q))).sort((a,b)=>{const ci=c=>{const i=S.settings.manualCats.indexOf(c);return i<0?99:i};return ci(a.cat)-ci(b.cat)||(a.order||0)-(b.order||0)||(a.title<b.title?-1:1)});
   const n=S.staff.length;
   return phead('MANUAL','マニュアル',isAdmin()?'<button class="btn primary" data-a="manNew">マニュアルを追加</button>':'')+
   `<input class="inp" type="search" id="manq" data-c="manQ" placeholder="キーワードで検索（例：ストーブ、清掃）" value="${esc(UI.manQ)}" aria-label="マニュアル検索">
   <div class="chips">${cats.map(c=>`<button class="${UI.manCat===c?'on':''}" data-a="set" data-k="manCat" data-v="${esc(c)}">${esc(c)}</button>`).join('')}</div>
   <div class="list">${list.map(m=>{const read=m.readBy.includes(me.id);return `<button class="item" style="text-align:left;cursor:pointer" data-a="manOpen" data-id="${m.id}"><div class="t1">${read?'':'<span class="pill neo">新着</span>'}${esc(m.title)}<span class="sp"></span><span class="pill">${esc(m.cat)}</span></div><div class="meta"><span>${dLabel(m.updated)} 更新</span>${isAdmin()?`<span>既読 ${m.readBy.length}/${n}人</span>`:read?'<span>読みました</span>':''}${m.photo?'<span>写真あり</span>':''}${m.video?'<span>動画あり</span>':''}</div></button>`}).join('')||'<p class="empty">該当するマニュアルがありません</p>'}</div>
   ${isAdmin()?'<p class="note">お持ちのWord・PDFのマニュアルは、Claudeとのチャットに添付してください。内容をカテゴリーごとに分けて、この画面に取り込みます。</p>':''}`}
+function mdRender(src){const L=String(src||'').split('\n');let h='',list=null,tbl=null;const close=()=>{if(list){h+=`</${list}>`;list=null}if(tbl){h+='</tbody></table></div>';tbl=null}};
+  const inl=t=>esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>');
+  L.forEach(raw=>{const l=raw.replace(/\s+$/,'');let m;
+    if(!l.trim()){close();return}
+    if((m=l.match(/^##\s+(.*)/))){close();h+=`<h4 class="md-h">${inl(m[1])}</h4>`;return}
+    if((m=l.match(/^!!\s*(.*)/))){close();h+=`<div class="md-warn"><b>注意</b>${inl(m[1])}</div>`;return}
+    if((m=l.match(/^>\s*(.*)/))){close();h+=`<div class="md-point"><b>ポイント</b>${inl(m[1])}</div>`;return}
+    if((m=l.match(/^\|(.+)\|$/))){if(list){h+=`</${list}>`;list=null}const cells=m[1].split('|').map(c=>c.trim());if(!tbl){tbl=1;h+=`<div class="tbl-wrap md-tbl"><table><tbody>`}h+=`<tr>${cells.map((c,i)=>i===0?`<th>${inl(c)}</th>`:`<td>${inl(c)}</td>`).join('')}</tr>`;return}
+    if((m=l.match(/^\[\s?\]\s+(.*)/))){if(tbl)close();if(list!=='ul class="md-check"'){if(list)h+=`</${list.split(' ')[0]}>`;h+='<ul class="md-check">';list='ul class="md-check"'}h+=`<li><span class="md-box"></span>${inl(m[1])}</li>`;return}
+    if((m=l.match(/^(\s*)[-・]\s+(.*)/))){if(tbl)close();const sub=m[1].length>=2;if(sub&&list&&list.startsWith('ul class')){h+=`<li class="sub">${inl(m[2])}</li>`;return}if(list!=='ul'){if(list)h+=`</${list.split(' ')[0]}>`;h+='<ul>';list='ul'}h+=`<li class="${sub?'sub':''}">${inl(m[2])}</li>`;return}
+    if((m=l.match(/^(\d+)[.．]\s+(.*)/))){if(tbl)close();if(list!=='ol'){if(list)h+=`</${list.split(' ')[0]}>`;h+='<ol>';list='ol'}h+=`<li>${inl(m[2])}</li>`;return}
+    close();h+=`<p>${inl(l)}</p>`});
+  if(list)h+=`</${list.split(' ')[0]}>`;if(tbl)h+='</tbody></table></div>';return `<div class="md">${h}</div>`}
 function manOpen(id){const m=S.manuals.find(x=>x.id===id);if(!m)return;const read=m.readBy.includes(me.id);
   const unread=S.staff.filter(s=>!m.readBy.includes(s.id));
-  modal(m.title,`<div class="row"><span class="pill">${esc(m.cat)}</span><span class="muted">${dLabel(m.updated)} 更新</span></div><div style="white-space:pre-wrap;line-height:1.8">${esc(m.body)}</div>${m.photo?`<img ${imgSrcAttr(m.photo)} alt="" style="border-radius:10px;max-width:100%">`:''}${m.video?`<p><a href="${esc(m.video)}" target="_blank" rel="noopener">動画を開く（${esc(m.video.slice(0,40))}…）</a></p>`:''}
+  modal(m.title,`<div class="row"><span class="pill">${esc(m.cat)}</span><span class="muted">${dLabel(m.updated)} 更新</span></div>${mdRender(m.body)}${(m.photos||[]).length?`<div class="man-photos">${m.photos.map(ph=>`<img ${imgSrcAttr(ph)} alt="">`).join('')}</div>`:''}${m.photo?`<img ${imgSrcAttr(m.photo)} alt="" style="border-radius:10px;max-width:100%">`:''}${m.video?`<p><a href="${esc(m.video)}" target="_blank" rel="noopener">動画を開く（${esc(m.video.slice(0,40))}…）</a></p>`:''}
    ${isAdmin()?`<div class="note"><b>既読 ${m.readBy.length}/${S.staff.length}人</b>　未読：${unread.map(s=>esc(s.name)).join('、')||'なし'}</div>`:''}`,
    {wide:true,nofocus:true,extra:`${isAdmin()?`<button class="btn ghost" data-a="manEdit" data-id="${id}" type="button">編集</button>`:''}${read?'<span class="pill ok" style="align-self:center">読みました</span>':`<button class="btn primary" type="button" data-a="manRead" data-id="${id}">読みました</button>`}`})}
 function manModal(id){const m=S.manuals.find(x=>x.id===id)||{cat:S.settings.manualCats[0],title:'',body:'',video:'',photo:''};
-  modal(id?'マニュアルを編集':'マニュアルを追加',`<div class="frow">${fld('カテゴリー',sel('cat',S.settings.manualCats,m.cat))}</div>${fld('タイトル',inp('title',m.title))}${fld('本文',ta('body',m.body,10))}${fld('動画のURL（YouTubeなど・任意）',inp('video',m.video,'url','placeholder="https://"'))}${photoField('photo',m.photo)}<label class="check"><input type="checkbox" name="renew" value="1" ${id?'':'checked'}>更新扱いにして全員に「新着」を出す</label>${id?`<div id="delzone"><button type="button" class="btn sm danger" data-a="askDel" data-k="manuals" data-id="${id}">このマニュアルを削除</button></div>`:''}`,
+  modal(id?'マニュアルを編集':'マニュアルを追加',`<div class="frow">${fld('カテゴリー',sel('cat',S.settings.manualCats,m.cat))}</div>${fld('タイトル',inp('title',m.title))}${fld('本文',ta('body',m.body,14))}<p class="note">書き方：「## 見出し」「- 箇条書き」「[ ] チェック項目」「1. 手順」「&gt; ポイント」「!! 注意」「| 項目 | 内容 |（表）」</p>${fld('動画のURL（YouTubeなど・任意）',inp('video',m.video,'url','placeholder="https://"'))}${photoField('photo',m.photo)}<label class="check"><input type="checkbox" name="renew" value="1" ${id?'':'checked'}>更新扱いにして全員に「新着」を出す</label>${id?`<div id="delzone"><button type="button" class="btn sm danger" data-a="askDel" data-k="manuals" data-id="${id}">このマニュアルを削除</button></div>`:''}`,
   {wide:true,save:f=>{if(!f.title){toast('タイトルを入力してください');return false}const o={cat:f.cat,title:f.title,body:f.body,video:f.video,photo:f.photo};if(id){Object.assign(m,o);if(f.renew){m.updated=todayStr;m.readBy=[me.id]}}else S.manuals.push({id:uid(),...o,updated:todayStr,readBy:[me.id]})}})}
 
 /* ====== 計画表 ====== */
@@ -1286,13 +1384,20 @@ function clModal(id){const c=S.plans.closures.find(x=>x.id===id)||{date:todayStr
 /* ====== 忘れ物 ====== */
 function vLost(){const f=UI.lostFilter,cf=UI.lostCat;const list=S.lost.filter(l=>(f==='すべて'||l.status===f)&&(cf==='すべて'||(l.cat||'その他')===cf)).sort((a,b)=>a.date<b.date?1:-1);
   const exp=S.lost.filter(l=>l.status==='保管中'&&lostDue(l)<todayStr).length;
-  return phead('LOST & FOUND','忘れ物','<button class="btn primary" data-a="lostNew">忘れ物を登録</button>')+
+  return phead('LOST & FOUND','忘れ物','<button class="btn" data-a="lostBulk">まとめて登録</button><button class="btn primary" data-a="lostNew">忘れ物を登録</button>')+
   `<div class="chips">${['保管中','返却済','処分','すべて'].map(c=>`<button class="${f===c?'on':''}" data-a="set" data-k="lostFilter" data-v="${c}">${c}${c==='保管中'?`（${S.lost.filter(l=>l.status==='保管中').length}）`:''}</button>`).join('')}</div>
   <div class="chips">${['すべて',...S.settings.lostCats].map(c=>`<button class="${cf===c?'on':''}" data-a="set" data-k="lostCat" data-v="${esc(c)}">${esc(c)}</button>`).join('')}</div>
   ${exp?`<div class="alert bad"><span class="dot"></span><span>保管期限（発見から${S.settings.lostDays}日）を過ぎた忘れ物が ${exp}件 あります。「処分する」か「保管を続ける」を選んでください。</span></div>`:''}
   <div class="list">${list.map(l=>{const due=lostDue(l);const n=diffDays(due,todayStr);const ex=l.status==='保管中'&&n<0;return `<div class="item"><div class="t1"><span class="pill">${esc(l.cat||'その他')}</span>${esc(l.name||'')}<span class="sp"></span>${l.status==='保管中'?`<span class="pill ${ex?'bad':n<=3?'warn':''}">${ex?`期限切れ（${-n}日過ぎ）`:`期限まであと${n}日`}</span>`:`<span class="pill ${l.status==='返却済'?'ok':''}">${l.status}</span>`}</div>
    <div class="meta"><span>発見日 ${dLabel(l.date)}</span><span>発見場所：${esc(l.found)}</span><span>発見者：${esc(finderTxt(l.finder))}</span>${l.storage?`<span>保管：${esc(l.storage)}</span>`:''}${l.keepUntil?`<span>保管延長 ${dLabel(l.keepUntil)}まで</span>`:''}${l.contact?`<span>問い合わせ：${esc(l.contact)}</span>`:''}${l.status==='返却済'?`<span>返却 ${dLabel(l.returnDate)}（${esc(l.method||'')}）</span>`:''}${l.status==='処分'?`<span>処分 ${dLabel(l.disposedDate)}</span>`:''}</div>${l.note?`<div class="meta"><span>${esc(l.note)}</span></div>`:''}
    <div class="acts">${l.status==='保管中'?`<button class="btn sm ok" data-a="lostReturn" data-id="${l.id}">返却を記録</button>${ex?`<button class="btn sm danger" data-a="lostDispose" data-id="${l.id}">処分する</button><button class="btn sm" data-a="lostKeep" data-id="${l.id}">保管を続ける（+${S.settings.lostDays}日）</button>`:''}`:''}<button class="btn sm" data-a="lostEdit" data-id="${l.id}">編集</button></div></div>`}).join('')||'<p class="empty">該当する忘れ物はありません</p>'}</div>`}
+function lostBulkRow(){const cats=S.settings.lostCats,places=S.settings.places;const staffs=[...activeStaff().map(s=>[s.id,s.name]),['guest','お客様']];
+  return `<tr class="lb-row"><td><select class="inp lb-cat"><option value="">―</option>${cats.map(c=>`<option>${esc(c)}</option>`).join('')}</select></td><td><input class="inp lb-name" placeholder="例：黒い長財布"></td><td><input class="inp lb-date" type="date" value="${todayStr}"></td><td><select class="inp lb-found">${places.map(p=>`<option>${esc(p)}</option>`).join('')}</select></td><td><select class="inp lb-finder">${staffs.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join('')}</select></td><td><input class="inp lb-storage" value="受付裏の棚"></td><td><button type="button" class="btn sm danger" data-a="lbDel" aria-label="この行を削除">×</button></td></tr>`}
+function lostBulkModal(){modal('忘れ物をまとめて登録',`<p class="note">1行に1つずつ入れてください。「種類」が空の行は登録されません。「その他」を選んだときは品名を必ず書いてください。日付・場所・発見者は、1行目を変えると下の行も同じ値になります。</p>
+  <div class="tbl-wrap"><table class="lbtable"><thead><tr><th>種類</th><th>品名・特徴</th><th>発見日</th><th>発見場所</th><th>発見者</th><th>保管場所</th><th></th></tr></thead><tbody id="lb-body">${[1,2,3,4,5].map(lostBulkRow).join('')}</tbody></table></div>
+  <div><button type="button" class="btn" data-a="lbAdd">＋ 5行追加</button></div>`,{wide:true,nofocus:true,saveLabel:'まとめて登録',save:()=>{const rows=[...document.querySelectorAll('.lb-row')].map(r=>({cat:r.querySelector('.lb-cat').value,name:r.querySelector('.lb-name').value.trim(),date:r.querySelector('.lb-date').value,found:r.querySelector('.lb-found').value,finder:r.querySelector('.lb-finder').value,storage:r.querySelector('.lb-storage').value,el:r})).filter(r=>r.cat||r.name);
+    if(!rows.length){toast('1行以上入力してください');return false}const bad=rows.filter(r=>!r.cat||(r.cat==='その他'&&!r.name));if(bad.length){bad.forEach(r=>r.el.classList.add('err'));toast(`種類が空か、「その他」で品名がない行が${bad.length}件あります（赤い行）`);return false}
+    rows.forEach(r=>S.lost.push({id:uid(),date:r.date||todayStr,cat:r.cat,name:r.name,found:r.found,finder:r.finder,storage:r.storage,contact:'',note:'',status:'保管中'}));toast(`${rows.length}件の忘れ物を登録しました`)}})}
 function lostModal(id){const l=S.lost.find(x=>x.id===id)||{date:todayStr,cat:'',name:'',found:S.settings.places[0],finder:isShared()?(S.staff[0]||{}).id:me.id,storage:'受付裏の棚',contact:'',note:''};
   modal(id?'忘れ物を編集':'忘れ物を登録',`${fld('種類',seg('cat',S.settings.lostCats,l.cat))}${fld('品名・特徴（「その他」を選んだときは必ず書いてください）',inp('name',l.name,'text','placeholder="例：黒い長財布、緑のフェルトのサウナハット"'))}
   <div class="frow">${fld('発見日',inp('date',l.date,'date'))}${fld('発見場所',sel('found',S.settings.places,l.found))}${fld('発見者',sel('finder',[...activeStaff(l.finder).map(s=>[s.id,s.name]),['guest','お客様']],l.finder))}</div>
@@ -1457,13 +1562,16 @@ const ACT={
  impPaste:d=>{const t=($('#imp-'+d.k).value||'').trim();if(!t){toast('貼り付ける枠が空です');return}const sep=t.includes('\t')?'\t':',';const rows=t.split(/\r?\n/).map(l=>l.split(sep).map(c=>c.replace(/^"|"$/g,'').trim()));UI.imp[d.k]=parseImport(d.k,rows);render()},
  impCommit:d=>impCommit(d.k),
  wnav:d=>{if(UI.shiftTab==='bulk'&&bkDirty()){toast('保存していない変更があります。「この表を保存」か「変更を取り消す」を押してください');return}const n=+d.n;UI.weekStart=n===0?mondayOf(todayStr):addDays(UI.weekStart,n*(UI.shiftTab==='bulk'?(UI.bulkDays||7):7));render()},
- paint:d=>{UI.paint=d.v==='__off'?null:d.v;const keep=[...document.querySelectorAll('input.bk.chg')].map(i=>[i.dataset.s,i.dataset.d,i.value]);render();keep.forEach(([s,dd,v])=>{const el=document.querySelector(`input.bk[data-s="${s}"][data-d="${dd}"]`);if(el){el.value=v;bkMark(el)}})},
- bkReset:()=>{document.querySelectorAll('input.bk').forEach(i=>{i.value=i.dataset.o;bkMark(i)});toast('変更を取り消しました')},
- bkCopyPrev:()=>{const n=UI.bulkDays||7;let k=0;document.querySelectorAll('input.bk').forEach(i=>{const x=S.shifts.find(y=>y.staffId===i.dataset.s&&y.date===addDays(i.dataset.d,-n));const v=bkVal(x);if(v!==i.value){i.value=v;bkMark(i);k++}});toast(k?`${k}マスに前の${n===14?'2週間':'週'}の内容を入れました。確認して「この表を保存」を押してください`:'前の期間にシフトがありません')},
- bkSave:()=>{const els=[...document.querySelectorAll('input.bk.chg')];if(!els.length){toast('変更はありません');return}const bad=els.filter(i=>parseShiftText(i.value).err);if(bad.length){bad.forEach(bkMark);bad[0].focus();toast(`読み取れないマスが${bad.length}件あります（赤いマス）。例：8-17、13:30-22、休`);return}
-   els.forEach(i=>{const r=parseShiftText(i.value);const s=i.dataset.s,d=i.dataset.d;const old=S.shifts.find(x=>x.staffId===s&&x.date===d);S.shifts=S.shifts.filter(x=>!(x.staffId===s&&x.date===d));if(r.empty)return;
-     if(r.off)S.shifts.push({id:uid(),staffId:s,date:d,off:true,start:'',end:'',brk:0,note:r.note||''});else{const brk=old&&!old.off&&old.start===r.start&&old.end===r.end?old.brk:brkDefault(r.start,r.end);S.shifts.push({id:uid(),staffId:s,date:d,start:r.start,end:r.end,brk,note:r.note||''})}});
-   save();render();toast(`${els.length}件のシフトを保存しました`)},
+ paint:d=>{UI.paint=d.v==='__off'?null:d.v;const keep=[...document.querySelectorAll('.bkc.chg')].map(c=>{const r=bkRead(c);return [c.dataset.s,c.dataset.d,r]});render();keep.forEach(([s,dd,r])=>{const c=document.querySelector(`.bkc[data-s="${s}"][data-d="${dd}"]`);if(c)bkSet(c,r.st==='off'?'休':r.st?`${r.st}-${r.en}`:'',r.nt)})},
+ bkReset:()=>{document.querySelectorAll('.bkc.chg').forEach(c=>{const o=c.dataset.o;const [t,nt]=o.split('|');bkSet(c,!o?'':t==='off'?'休':t,nt||'')});toast('変更を取り消しました')},
+ bkCopyPrev:()=>{const n=UI.bulkDays||7;let k=0;document.querySelectorAll('.bkc').forEach(c=>{const x=S.shifts.find(y=>y.staffId===c.dataset.s&&y.date===addDays(c.dataset.d,-n));const before=bkRead(c).key;bkSet(c,bkFromShift(x),x?x.note||'':'');if(bkRead(c).key!==before)k++});toast(k?`${k}マスに前の${n===14?'2週間':'週'}の内容を入れました。確認して「この表を保存」を押してください`:'前の期間と同じ内容です')},
+ bkSave:()=>{const cs=[...document.querySelectorAll('.bkc.chg')];if(!cs.length){toast('変更はありません');return}const bad=cs.filter(c=>c.classList.contains('err'));if(bad.length){bad[0].querySelector('.bke').focus();toast(`退勤の時刻が選ばれていないマスが${bad.length}件あります（赤いマス）`);return}
+   cs.forEach(c=>{const r=bkRead(c);const s=c.dataset.s,d=c.dataset.d;const old=S.shifts.find(x=>x.staffId===s&&x.date===d);S.shifts=S.shifts.filter(x=>!(x.staffId===s&&x.date===d));if(!r.st)return;
+     if(r.st==='off')S.shifts.push({id:uid(),staffId:s,date:d,off:true,start:'',end:'',brk:0,note:r.nt||''});else{const brk=old&&!old.off&&old.start===r.st&&old.end===r.en?old.brk:brkDefault(r.st,r.en);S.shifts.push({id:uid(),staffId:s,date:d,start:r.st,end:r.en,brk,note:r.nt||''})}});
+   save();render();toast(`${cs.length}件のシフトを保存しました`)},
+ lostBulk:()=>lostBulkModal(),
+ lbAdd:()=>{const b=$('#lb-body');if(b)b.insertAdjacentHTML('beforeend',[1,2,3,4,5].map(lostBulkRow).join(''))},
+ lbDel:(d,el)=>{const r=el.closest('.lb-row');if(r&&document.querySelectorAll('.lb-row').length>1)r.remove()},
  hoNew:()=>hoModal(),hoEdit:d=>hoModal(d.id),hoCheck:d=>hoCheckModal(d.id),
  hoClose:d=>{const h=S.handovers.find(x=>x.id===d.id);if(h){h.done=true;save();render();toast('完了にしました')}},
 
@@ -1490,8 +1598,10 @@ document.addEventListener('click',e=>{const a=e.target.closest('[data-a]');if(!a
 document.addEventListener('submit',e=>{if(e.target.id==='mform'){e.preventDefault();ACT.msave()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').hidden)closeModal();
   const t=e.target;if(t.classList&&t.classList.contains('bk')&&(e.key==='Enter'||e.key==='ArrowDown'||e.key==='ArrowUp')){e.preventDefault();const all=[...document.querySelectorAll(`input.bk[data-d="${t.dataset.d}"]`)];const i=all.indexOf(t)+(e.key==='ArrowUp'?-1:1);if(all[i]){all[i].focus();all[i].select()}}});
-document.addEventListener('input',e=>{if(e.target.classList&&e.target.classList.contains('bk'))bkMark(e.target)});
-document.addEventListener('click',e=>{const t=e.target;if(t.classList&&t.classList.contains('bk')&&UI.paint!=null){t.value=UI.paint;bkMark(t)}});
+document.addEventListener('change',e=>{const t=e.target;const c=t.closest&&t.closest('.bkc');if(!c)return;if(t.classList.contains('bks')&&t.value&&t.value!=='off'){const en=c.querySelector('.bke');if(!en.value||en.value===t.value){const p=S.settings.presets.find(p=>p.s===t.value);const v=p?p.e:addMin(t.value,9*60);bkEnsure(en,v);en.value=v}}bkMark(c)});
+document.addEventListener('click',e=>{if(UI.paint==null)return;const c=e.target.closest&&e.target.closest('.bkc');if(!c)return;e.preventDefault();bkSet(c,UI.paint,UI.paint===''?'':undefined)},true);
+document.addEventListener('change',e=>{const t=e.target;const r=t.closest&&t.closest('.lb-row');if(!r)return;r.classList.remove('err');const rows=[...document.querySelectorAll('.lb-row')];if(rows[0]!==r)return;['lb-date','lb-found','lb-finder','lb-storage'].forEach(k=>{if(t.classList.contains(k))rows.slice(1).forEach(x=>{const f=x.querySelector('.'+k);if(f&&!x.querySelector('.lb-cat').value)f.value=t.value})})});
+
 document.addEventListener('input',e=>{const t=e.target;if(t.dataset.c==='manQ'){UI.manQ=t.value;const pos=t.selectionStart;render();const n=$('#manq');if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(_){}}}});
 document.addEventListener('change',async e=>{const t=e.target,c=t.dataset.c;
   if(t.dataset.img&&t.files&&t.files[0]){const url=await compress(t.files[0]);const h=document.getElementById(t.dataset.img);h.value=url;const p=document.getElementById(t.dataset.img.replace('f-','p-'));if(p){p.src=url;p.hidden=!url}return}
