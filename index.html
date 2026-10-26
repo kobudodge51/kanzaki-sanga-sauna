@@ -897,6 +897,31 @@ button.tt-row.dt:hover .tt-track{box-shadow:inset 0 0 0 2px color-mix(in srgb,va
 .c100 .cx-p{background:var(--bad)}.c50 .cx-p{background:var(--warn)}.c0 .cx-p{background:var(--ok)}
 .cx-n{font-size:10.5px;color:var(--muted);line-height:1.5}
 @media (max-width:1100px){.hero{grid-template-columns:auto minmax(0,1fr)}.hero-cx{grid-column:1/-1}}
+
+/* v20 トップのキャンセル（1列）・分析 */
+.hero{grid-template-columns:auto minmax(0,1fr)!important}
+.hero-cx{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-top:6px;background:none!important;border:0!important;padding:0!important}
+.cx-t{font-size:12px;color:var(--muted);font-weight:700;margin-right:2px}
+.cx-i{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;background:var(--surface2);border-radius:999px;padding:3px 12px 3px 3px;white-space:nowrap}
+.cx-i b{color:#fff;border-radius:999px;padding:1px 9px;font-family:var(--display);font-size:12.5px;font-weight:400}
+.cx-i.c100 b{background:var(--bad)}.cx-i.c50 b{background:var(--warn)}.cx-i.c0 b{background:var(--ok)}
+.anasec{display:grid;gap:12px}
+.anatbl th small{display:block;font-weight:500;font-size:10.5px;color:var(--muted)}
+.anatbl td.how{font-size:11.5px;color:var(--muted);white-space:normal;min-width:160px}
+.anatbl tbody th{font-family:var(--body);font-weight:700;font-size:13px}
+.anatext{background:color-mix(in srgb,var(--n1) 7%,var(--surface));border-left:4px solid var(--n1);border-radius:8px;padding:10px 14px;display:grid;gap:6px}
+.anatext>b{font-family:var(--mincho);font-size:14px;color:var(--n1)}
+.anatext p{margin:0;font-size:14px;line-height:1.75}
+.ana-grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.ana-cmpnote{margin:-4px 0 10px;font-size:12.5px}
+@media (max-width:560px){.cx-i{white-space:normal}}
+
+.hero-cx{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none}
+.cx-t{display:grid;line-height:1.15;white-space:nowrap}.cx-t small{font-weight:500;font-size:10.5px}
+.cx-i{font-size:13px;padding:3px 10px 3px 3px;flex:none}
+@media (max-width:560px){.hero-cx{flex-wrap:wrap!important}.cx-t{width:100%;display:block}.cx-t small{margin-left:6px}}
+
+.anatbl td small{display:block;font-size:10.5px}
 </style>
 </head>
 <body>
@@ -1399,7 +1424,8 @@ function payPrintView(){const label=UI.pay;const {from,to}=payRange(label);const
 
 /* ====== 売上：まとめて入力・集計・内訳 ====== */
 const SALES_START='2025-07';
-function salesMonths(){const end=fyMonths(fyOf(todayStr))[11];const a=[];for(let m=SALES_START;m<=end;m=monthAdd(m,1))a.push(m);return a}
+let PERIOD=null;const inPer=m=>!PERIOD||PERIOD.has(m);
+function salesMonths(){const end=fyMonths(fyOf(todayStr))[11];const a=[];for(let m=SALES_START;m<=end;m=monthAdd(m,1))a.push(m);return a.filter(inPer)}
 const pv=(m,k)=>{const p=S.plans.months[m]||{};const v=p[k];return v===''||v==null?null:+v};
 const fmtN=v=>v==null?'':(+v).toLocaleString('ja-JP');
 const pct=(a,b)=>a!=null&&b?Math.round(a/b*1000)/10:null;
@@ -1452,24 +1478,25 @@ function salesBreakCard(fys){const ms=salesMonths().filter(m=>m<=ym(TODAY)&&calc
   const subT=(title,keys)=>`<div><h3 class="sub">${title}の内訳</h3><div class="tbl-wrap"><table class="mtx"><thead><tr><th>年度</th>${keys.map(([,l])=>`<th class="r">${l}</th>`).join('')}<th class="r">合計</th></tr></thead><tbody>${fys.map(f=>{const l=fyMonths(f).filter(m=>ms.includes(m));if(!l.length)return '';const t=keys.reduce((a,[k])=>a+sumK(l,k),0);return `<tr><th>${f}年度</th>${keys.map(([k])=>`<td class="r num">${fmtN(sumK(l,k))}<small class="muted"> ${t?pct(sumK(l,k),t):0}%</small></td>`).join('')}<td class="r num"><b>${fmtN(t)}</b></td></tr>`}).join('')}</tbody></table></div></div>`;
   const all=sum(ms,'brk');
   return `<div class="card"><h2>${T}</h2><div class="legend">${SCAT.map(([,l,col])=>`<span class="lg" style="--band:${col}">${l}</span>`).join('')}</div>
-  <div class="stats">${SCAT.map(([k,l])=>`<div class="stat"><span>${l}（営業開始から）</span><b>${yen(sum(ms,k))}</b><span>内訳の ${all?pct(sum(ms,k),all):0}%</span></div>`).join('')}</div>
+  <div class="stats">${SCAT.map(([k,l])=>`<div class="stat"><span>${l}（この期間）</span><b>${yen(sum(ms,k))}</b><span>内訳の ${all?pct(sum(ms,k),all):0}%</span></div>`).join('')}</div>
   <h3 class="sub">決算期（年度）ごと（円）</h3><div class="tbl-wrap"><table class="mtx"><thead><tr><th>年度</th>${SCAT.map(([,l])=>`<th class="r">${l}</th>`).join('')}<th class="r">内訳の合計</th><th class="r">売上実績</th><th class="r">1人あたりフード</th><th>構成</th></tr></thead><tbody>${fyR}</tbody></table></div>
   <div class="subgrid">${subT('フード売上',[['salFood','フード'],['salSoft','ソフトドリンク'],['salAlc','アルコール']])}${subT('レンタル',[['salSwim','水着'],['salSandal','サンダル'],['salPoncho','ポンチョ']])}</div>
   <h3 class="sub">月ごと（新しい月から・円）</h3><div class="tbl-wrap" style="max-height:460px;overflow:auto"><table class="mtx"><thead><tr><th>月</th>${SCAT.map(([,l])=>`<th class="r">${l}</th>`).join('')}<th class="r">内訳の合計</th><th class="r">売上実績</th><th class="r">1人あたりフード</th><th>構成</th></tr></thead><tbody>${mR}</tbody></table></div>
   <p class="note">%は「内訳の合計」に対する割合です。1人あたりフードは「フード売上 ÷ 来客の合計（入場者数＋レイト）」です。内訳の合計と売上実績が違う月は、内訳に入っていない売上（小屋サウナの料金など）があるか、入力もれがないか確認してください。</p></div>`}
 
-function fyAgg(f){const ms=fyMonths(f).filter(m=>m>=SALES_START);let a=0,t=0,v=0,n=0;ms.forEach(m=>{const x=pv(m,'salesA');if(x!=null){a+=x;n++}t+=pv(m,'salesT')||0;v+=pv(m,'visA')||0});return{ms,a,t,v,n}}
-function salesSum(){const ms=salesMonths().filter(m=>m<=ym(TODAY));const fys=[...new Set(salesMonths().map(m=>fyOf(m+'-01')))];
+function fyAgg(f){const ms=fyMonths(f).filter(m=>m>=SALES_START&&inPer(m));let a=0,t=0,v=0,n=0;ms.forEach(m=>{const x=pv(m,'salesA');if(x!=null){a+=x;n++}t+=pv(m,'salesT')||0;v+=pv(m,'visA')||0});return{ms,a,t,v,n}}
+function salesSum(){const {ms:pm}=anaPeriod();PERIOD=new Set(pm);try{return anaPeriodCtl(0)+salesSumInner()}finally{PERIOD=null}}
+function salesSumInner(){const ms=salesMonths().filter(m=>m<=ym(TODAY));const fys=[...new Set(salesMonths().map(m=>fyOf(m+'-01')))];
   const same=(ms_)=>{let a=0,b=0,ok=false;ms_.forEach(m=>{const x=pv(m,'salesA'),y=pv(monthAdd(m,-12),'salesA');if(x!=null&&y!=null){a+=x;b+=y;ok=true}});return ok&&b?pct(a,b):null};
   const fyRows=fys.map((f,i)=>{const r=fyAgg(f);const sp=same(r.ms);const fm=fyMonths(f);const from=fm.find(m=>m>=SALES_START);return `<tr><th>${f}年度<small>${from.replace('-','/')}〜${fm[11].replace('-','/')}</small></th><td class="r num">${r.n}か月</td><td class="r num"><b>${yen(r.a)}</b></td><td class="r num">${yen(r.t)}</td><td class="r">${pctPill(pct(r.a,r.t))}</td><td class="r num">${fmtN(r.v)}人</td><td class="r num">${r.v?yen(Math.round(r.a/r.v)):'—'}</td><td class="r">${sp!=null?pctPill(sp):'<span class="muted">—</span>'}</td></tr>`}).join('');
-  const ys=[...new Set(salesMonths().filter(m=>m<=ym(TODAY)).map(m=>+m.slice(0,4)))];const yA=y=>{let a=0,v=0,n=0;for(let k=1;k<=12;k++){const m=`${y}-${pad(k)}`;const x=pv(m,'salesA');if(x!=null){a+=x;n++}v+=pv(m,'visA')||0}return{a,v,n}};
+  const ys=[...new Set(salesMonths().filter(m=>m<=ym(TODAY)).map(m=>+m.slice(0,4)))];const yA=y=>{let a=0,v=0,n=0;for(let k=1;k<=12;k++){const m=`${y}-${pad(k)}`;if(!inPer(m))continue;const x=pv(m,'salesA');if(x!=null){a+=x;n++}v+=pv(m,'visA')||0}return{a,v,n}};
   const yRows=ys.map((y,i)=>{const r=yA(y);const sp=same([...Array(12)].map((_,k)=>`${y}-${pad(k+1)}`));return `<tr><th>${y}年<small>1月〜12月</small></th><td class="r num">${r.n}か月</td><td class="r num"><b>${yen(r.a)}</b></td><td class="r num">${fmtN(r.v)}人</td><td class="r num">${r.v?yen(Math.round(r.a/r.v)):'—'}</td><td class="r">${sp!=null?pctPill(sp):'<span class="muted">—</span>'}</td></tr>`}).join('');
   const mx=Math.max(1,...ms.map(m=>Math.max(pv(m,'salesA')||0,pv(m,'salesT')||0)));
   const bars=ms.map(m=>{const a=pv(m,'salesA'),t=pv(m,'salesT');return `<div class="bar ${m.endsWith('-01')?'ystart':''}"><span>${m.replace('-','/')}</span><div class="track"><div class="fill" style="width:${(a||0)/mx*100}%;background:${a!=null&&t&&a>=t?'var(--ok)':'var(--n1)'}"></div>${t?`<div class="tgt" style="left:${t/mx*100}%"></div>`:''}</div><span class="v">${a!=null?yen(a):'—'}</span></div>`}).join('');
   const smStart=(+S.settings.fiscalEnd)%12+1;const order=[...Array(12)].map((_,i)=>(smStart-1+i)%12+1);
-  const mat=`<table class="mtx"><thead><tr><th>月</th>${fys.map(f=>`<th class="r">${f}年度</th>`).join('')}<th class="r">前年比</th></tr></thead><tbody>${order.map(mo=>{const vals=fys.map(f=>{const m=fyMonths(f).find(x=>+x.slice(5)===mo);return m>=SALES_START?pv(m,'salesA'):null});const L=vals.length;const yoy=L>1&&vals[L-1]!=null&&vals[L-2]?pct(vals[L-1],vals[L-2]):null;return `<tr><th>${mo}月</th>${vals.map(v=>`<td class="r num">${v!=null?yen(v):'<span class="muted">—</span>'}</td>`).join('')}<td class="r">${yoy!=null?pctPill(yoy):'<span class="muted">—</span>'}</td></tr>`}).join('')}</tbody><tfoot><tr><th>合計</th>${fys.map(f=>`<td class="r num"><b>${yen(fyAgg(f).a)}</b></td>`).join('')}<td></td></tr></tfoot></table>`;
+  const mat=`<table class="mtx"><thead><tr><th>月</th>${fys.map(f=>`<th class="r">${f}年度</th>`).join('')}<th class="r">前年比</th></tr></thead><tbody>${order.map(mo=>{const vals=fys.map(f=>{const m=fyMonths(f).find(x=>+x.slice(5)===mo);return m>=SALES_START&&inPer(m)?pv(m,'salesA'):null});const L=vals.length;const yoy=L>1&&vals[L-1]!=null&&vals[L-2]?pct(vals[L-1],vals[L-2]):null;return `<tr><th>${mo}月</th>${vals.map(v=>`<td class="r num">${v!=null?yen(v):'<span class="muted">—</span>'}</td>`).join('')}<td class="r">${yoy!=null?pctPill(yoy):'<span class="muted">—</span>'}</td></tr>`}).join('')}</tbody><tfoot><tr><th>合計</th>${fys.map(f=>`<td class="r num"><b>${yen(fyAgg(f).a)}</b></td>`).join('')}<td></td></tr></tfoot></table>`;
   const tot=ms.reduce((a,m)=>a+(pv(m,'salesA')||0),0);const nIn=ms.filter(m=>pv(m,'salesA')!=null).length;
-  return `<div class="stats"><div class="stat"><span>営業開始からの売上合計</span><b>${yen(tot)}</b><span>${mLabel(SALES_START)}〜・${nIn}か月分</span></div><div class="stat"><span>今の年度（${fyOf(todayStr)}年度）</span><b>${yen(fyAgg(fyOf(todayStr)).a)}</b><span>目標 ${yen(fyAgg(fyOf(todayStr)).t)}</span></div><div class="stat"><span>月の平均売上</span><b>${nIn?yen(Math.round(tot/nIn)):'—'}</b></div></div>
+  return `<div class="stats"><div class="stat"><span>この期間の売上合計</span><b>${yen(tot)}</b><span>${nIn}か月分</span></div><div class="stat"><span>今の年度（${fyOf(todayStr)}年度）</span><b>${yen(fyAgg(fyOf(todayStr)).a)}</b><span>目標 ${yen(fyAgg(fyOf(todayStr)).t)}</span></div><div class="stat"><span>月の平均売上</span><b>${nIn?yen(Math.round(tot/nIn)):'—'}</b></div></div>
   <div class="card"><h2>決算期（年度）ごとの売上<span class="r muted">決算月 ${S.settings.fiscalEnd}月</span></h2><div class="tbl-wrap"><table><thead><tr><th>年度</th><th class="r">入力済み</th><th class="r">売上実績</th><th class="r">売上目標</th><th class="r">達成率</th><th class="r">来客数</th><th class="r">客単価</th><th class="r">前年同期比</th></tr></thead><tbody>${fyRows}</tbody></table></div><p class="note">${fys[0]}年度は営業開始の${mLabel(SALES_START)}からの${fyAgg(fys[0]).ms.length}か月だけです。前年同期比は、前の年の同じ月が入っている月どうしで比べています。</p></div>
   <div class="card"><h2>年（1月〜12月）ごとの売上</h2><div class="tbl-wrap"><table><thead><tr><th>年</th><th class="r">入力済み</th><th class="r">売上実績</th><th class="r">来客数</th><th class="r">客単価</th><th class="r">前年同期比</th></tr></thead><tbody>${yRows}</tbody></table></div></div>
   ${visCard(fys)}
@@ -1515,16 +1542,6 @@ const ANA_PRESETS=[['last','最新の月'],['m3','直近3か月'],['m6','直近6
 function laborOf(m){let cost=0,hours=0,days=new Set(),pt=0;S.shifts.forEach(x=>{if(!x.date.startsWith(m)||x.off||isAbsent(x))return;if(isOffOnly(x.staffId))return;const mins=shMin(x);hours+=mins;if(isTimee(x))return;const st=S.staff.find(s=>s.id===x.staffId);if(!st||st.payroll===false)return;const w=+(st.wage||S.settings.wage);cost+=Math.floor(mins*w/60);pt+=mins;days.add(st.id+'|'+x.date)});
   const tr1=+S.settings.transit||0;cost+=days.size*tr1;return{cost,hours:hours/60,ptHours:pt/60}}
 function expOf(m){return S.expenses.filter(e=>isOut(e)&&e.status==='承認'&&e.date.startsWith(m)).reduce((a,e)=>a+(+e.amount||0),0)}
-function anaMonth(m){const v=k=>pv(m,k);const sa=v('salesA'),st=v('salesT'),vt=visTot(m),lab=laborOf(m),ex=expOf(m);
-  return{m,sa,st,vis:vt,visT:v('visT'),gate:v('visGate'),late:v('visLate'),hut:v('visHut'),herb:v('visHerb'),salGate:v('salGate'),food:calcV(m,'food'),rental:calcV(m,'rental'),goods:v('salGoods'),brk:calcV(m,'brk'),exp:ex,labor:lab.cost,hours:lab.hours,budget:v('budget')}}
-function anaAgg(ms){const R=ms.map(anaMonth);const sum=k=>{const xs=R.map(r=>r[k]).filter(x=>x!=null);return xs.length?xs.reduce((a,x)=>a+x,0):null};
-  const o={n:R.filter(r=>r.sa!=null).length,months:ms.length,R};['sa','st','vis','visT','gate','late','hut','herb','salGate','food','rental','goods','brk','exp','labor','hours','budget'].forEach(k=>o[k]=sum(k));
-  o.hours=R.reduce((a,r)=>a+r.hours,0);o.exp=R.reduce((a,r)=>a+r.exp,0);o.labor=R.reduce((a,r)=>a+r.labor,0);
-  const div=(a,b)=>a!=null&&b?a/b:null;
-  o.ach=div(o.sa,o.st);o.unit=div(o.sa,o.vis);o.foodPer=div(o.food,o.vis);o.gatePer=div(o.salGate,o.gate);o.hutRate=div(o.hut,o.gate);o.lateShare=div(o.late,o.vis);
-  o.foodRatio=div(o.food,o.brk);o.expRatio=div(o.exp,o.sa);o.laborRatio=div(o.labor,o.sa);o.mhs=div(o.sa,o.hours);o.profit=o.sa!=null?o.sa-o.exp-o.labor:null;o.avg=o.n?o.sa/o.n:null;
-  const xs=R.filter(r=>r.sa!=null);if(xs.length>1){const mean=o.avg;o.cv=Math.sqrt(xs.reduce((a,r)=>a+(r.sa-mean)**2,0)/xs.length)/mean;const n=xs.length,xi=xs.map((_,i)=>i),mx=(n-1)/2;o.slope=xi.reduce((a,x,i)=>a+(x-mx)*(xs[i].sa-mean),0)/xi.reduce((a,x)=>a+(x-mx)**2,0)}
-  o.best=xs.slice().sort((a,b)=>b.sa-a.sa)[0];o.worst=xs.slice().sort((a,b)=>a.sa-b.sa)[0];return o}
 /* --- SVG グラフ --- */
 function svgChart(o){const W=760,H=o.h||250,P={l:62,r:o.y2?58:16,t:14,b:36};const n=o.labels.length;if(!n)return '';const iw=W-P.l-P.r,ih=H-P.t-P.b;const bw=iw/n;
   const bars=o.bars||[],lines=o.lines||[];let mx=0;if(o.stacked)for(let i=0;i<n;i++)mx=Math.max(mx,bars.reduce((a,b)=>a+(b.values[i]||0),0));else bars.forEach(b=>b.values.forEach(v=>{if(v!=null)mx=Math.max(mx,v)}));
@@ -1542,36 +1559,91 @@ function niceMax(v){const p=Math.pow(10,Math.floor(Math.log10(v)));const f=v/p;r
 const shortN=v=>v>=1e8?(v/1e8).toFixed(1).replace(/\.0$/,'')+'億':v>=1e4?(v/1e4).toFixed(v>=1e6?0:1).replace(/\.0$/,'')+'万':Math.round(v).toLocaleString('ja-JP');
 const pctS=v=>v==null?'—':(Math.round(v*1000)/10)+'%';
 function anaDelta(a,b,good='up',isRate){if(a==null||b==null||(!isRate&&!b))return '<span class="dl muted">比較なし</span>';const d=isRate?(a-b)*100:(a/b-1)*100;const up=d>=0;const ok=good==='up'?up:!up;return `<span class="dl ${Math.abs(d)<0.05?'':ok?'good':'bad'}">${up?'▲':'▼'} ${Math.abs(Math.round(d*10)/10)}${isRate?'pt':'%'}</span>`}
-function vAnalysis(){const def=anaPreset(UI.anaPre||'m12');const from=UI.anaFrom||def[0],to=UI.anaTo||def[1];const ms=monthsBetween(from,to);const cmp=UI.anaCmp||'yoy';
-  const cms=cmp==='yoy'?ms.map(m=>monthAdd(m,-12)):ms.map(m=>monthAdd(m,-ms.length));const A=anaAgg(ms),B=anaAgg(cms);const pair=ms.map((m,i)=>i).filter(i=>pv(ms[i],'salesA')!=null&&pv(cms[i],'salesA')!=null);const Ap=anaAgg(pair.map(i=>ms[i])),Bp=anaAgg(pair.map(i=>cms[i]));
-  const opts=salesMonths().filter(m=>m<=monthAdd(ym(TODAY),3));const mopt=v=>opts.map(m=>`<option value="${m}" ${m===v?'selected':''}>${m.replace('-','年')}月</option>`).join('');
-  const cmpLabel=cmp==='yoy'?`前年同期（${cms[0].replace('-','/')}〜${cms[cms.length-1].replace('-','/')}）`:`直前の${ms.length}か月（${cms[0].replace('-','/')}〜${cms[cms.length-1].replace('-','/')}）`;
-  const kpi=(l,v,fv,cv,good,isRate,sub,key)=>{const a=pair.length?Ap[key]:null,b=pair.length?Bp[key]:null;return `<div class="kpi"><span class="k-l">${l}</span><b class="k-v">${fv(v)}</b><span class="k-c">${anaDelta(a,b,good,isRate)}<small>${pair.length?`同じ月どうし ${fv(a)} ← ${fv(b)}`:''}</small></span>${sub?`<small class="k-s">${sub}</small>`:''}</div>`};
-  const Y=v=>v==null?'—':yen(Math.round(v)),N=v=>v==null?'—':fmtN(Math.round(v))+'人',H=v=>v==null?'—':(Math.round(v*10)/10).toLocaleString('ja-JP')+'h';
+function opDays(m){const [y,mo]=m.split('-').map(Number);const n=new Date(y,mo,0).getDate();let c=0;for(let d=1;d<=n;d++){const ds=`${m}-${pad(d)}`;if(!closureOf(ds))c++}return c}
+function anaMonth(m){const v=k=>pv(m,k);const sa=v('salesA'),st=v('salesT'),vt=visTot(m),lab=laborOf(m),ex=expOf(m);
+  return{m,sa,st,vis:vt,visT:v('visT'),gate:v('visGate'),late:v('visLate'),hut:v('visHut'),herb:v('visHerb'),salGate:v('salGate'),food:calcV(m,'food'),fd:v('salFood'),soft:v('salSoft'),alc:v('salAlc'),rental:calcV(m,'rental'),swim:v('salSwim'),sandal:v('salSandal'),poncho:v('salPoncho'),goods:v('salGoods'),brk:calcV(m,'brk'),exp:ex,labor:lab.cost,hours:lab.hours,budget:v('budget'),days:sa!=null?opDays(m):0}}
+function anaAgg(ms){const R=ms.map(anaMonth);const sum=k=>{const xs=R.map(r=>r[k]).filter(x=>x!=null);return xs.length?xs.reduce((a,x)=>a+x,0):null};
+  const o={n:R.filter(r=>r.sa!=null).length,months:ms.length,R};['sa','st','vis','visT','gate','late','hut','herb','salGate','food','fd','soft','alc','rental','swim','sandal','poncho','goods','brk','budget'].forEach(k=>o[k]=sum(k));
+  o.hours=R.reduce((a,r)=>a+r.hours,0);o.exp=R.reduce((a,r)=>a+r.exp,0);o.labor=R.reduce((a,r)=>a+r.labor,0);o.days=R.reduce((a,r)=>a+r.days,0);
+  const div=(a,b)=>a!=null&&b?a/b:null;
+  o.ach=div(o.sa,o.st);o.visAch=div(o.vis,o.visT);o.unit=div(o.sa,o.vis);o.gatePer=div(o.salGate,o.gate);o.foodPer=div(o.food,o.vis);o.rentalPer=div(o.rental,o.vis);o.goodsPer=div(o.goods,o.vis);
+  o.hutRate=div(o.hut,o.gate);o.lateShare=div(o.late,o.vis);o.herbRate=div(o.herb,o.vis);o.visDay=div(o.vis,o.days);o.saDay=div(o.sa,o.days);
+  o.gateShare=div(o.salGate,o.brk);o.foodRatio=div(o.food,o.brk);o.rentalShare=div(o.rental,o.brk);o.goodsShare=div(o.goods,o.brk);o.alcInFood=div(o.alc,o.food);o.softInFood=div(o.soft,o.food);
+  o.expRatio=div(o.exp,o.sa);o.budgetUse=div(o.exp,o.budget);o.laborRatio=div(o.labor,o.sa);o.mhs=div(o.sa,o.hours);o.vph=div(o.vis,o.hours);o.profit=o.sa!=null?o.sa-o.exp-o.labor:null;o.margin=div(o.profit,o.sa);o.avg=o.n?o.sa/o.n:null;
+  const xs=R.filter(r=>r.sa!=null);if(xs.length>1){const mean=o.avg;o.cv=Math.sqrt(xs.reduce((a,r)=>a+(r.sa-mean)**2,0)/xs.length)/mean;const n=xs.length,mx=(n-1)/2;o.slope=xs.reduce((a,r,i)=>a+(i-mx)*(r.sa-mean),0)/xs.reduce((a,r,i)=>a+(i-mx)**2,0)}
+  o.best=xs.slice().sort((a,b)=>b.sa-a.sa)[0];o.worst=xs.slice().sort((a,b)=>a.sa-b.sa)[0];o.below=xs.filter(r=>r.st&&r.sa<r.st);return o}
+function anaPeriod(){const def=anaPreset(UI.anaPre||'m12');const from=UI.anaFrom||def[0],to=UI.anaTo||def[1];return{from,to,ms:monthsBetween(from,to)}}
+function anaPeriodCtl(withCmp){const {from,to,ms}=anaPeriod();const cmp=UI.anaCmp||'yoy';const opts=[];for(let m=SALES_START;m<=monthAdd(ym(TODAY),3);m=monthAdd(m,1))opts.push(m);if(from<SALES_START)opts.unshift(from);
+  const mopt=v=>opts.map(m=>`<option value="${m}" ${m===v?'selected':''}>${m.replace('-','年')}月</option>`).join('');const n=ms.filter(m=>pv(m,'salesA')!=null).length;
+  return `<div class="card ana-ctl"><h2>見る期間</h2><div class="chips ana-pre">${ANA_PRESETS.map(([k,l])=>`<button class="${!UI.anaFrom&&(UI.anaPre||'m12')===k?'on':''}" data-a="anaPre" data-v="${k}">${l}</button>`).join('')}</div>
+   <div class="row ana-range"><label class="fld"><span>はじめ</span><select class="inp" data-c="anaFrom">${mopt(from)}</select></label><span class="muted">〜</span><label class="fld"><span>おわり</span><select class="inp" data-c="anaTo">${mopt(to)}</select></label>${withCmp?`<label class="fld"><span>くらべる相手</span><select class="inp" data-c="anaCmp"><option value="yoy" ${cmp==='yoy'?'selected':''}>前年の同じ期間</option><option value="prev" ${cmp==='prev'?'selected':''}>すぐ前の同じ長さの期間</option></select></label>`:''}</div>
+   <p class="muted" style="margin:0">いま見ている期間：<b>${from.replace('-','/')}〜${to.replace('-','/')}（${ms.length}か月・売上入力済み${n}か月）</b></p></div>`}
+/* 指標の表と文章 */
+const fY=v=>v==null?'—':yen(Math.round(v)),fN=v=>v==null?'—':fmtN(Math.round(v))+'人',fH=v=>v==null?'—':(Math.round(v*10)/10).toLocaleString('ja-JP')+'時間',fP=v=>v==null?'—':(Math.round(v*1000)/10)+'%',fD=v=>v==null?'—':(Math.round(v*10)/10).toLocaleString('ja-JP')+'人';
+const chg=(a,b)=>a!=null&&b?a/b-1:null;const pp=(a,b)=>a!=null&&b!=null?(a-b)*100:null;
+const sgn=v=>v==null?'—':(v>=0?'+':'')+(Math.round(v*1000)/10)+'%';const sgnp=v=>v==null?'—':(v>=0?'+':'')+(Math.round(v*10)/10)+'ポイント';
+function anaTable(rows,A,Ap,Bp,np,PG){return `<div class="tbl-wrap"><table class="mtx anatbl"><thead><tr><th>指標</th><th class="r">この期間</th><th class="r">同じ月どうし<small>この期間 ← 比較</small></th><th class="r">増減</th><th>見かた</th></tr></thead><tbody>${rows.map(([l,k,f,good,isRate,how,req])=>{const g=PG(req||['sa']);return `<tr><th>${l}</th><td class="r num"><b>${f(A[k])}</b></td><td class="r num muted">${g.n&&g.A[k]!=null&&g.B[k]!=null?`${f(g.A[k])} ← ${f(g.B[k])}${g.n!==A.n?`<small>${g.n}か月分</small>`:''}`:'—'}</td><td class="r">${g.n?anaDelta(g.A[k],g.B[k],good,isRate):'<span class="muted">比較なし</span>'}</td><td class="how">${how||''}</td></tr>`}).join('')}</tbody></table></div>`}
+function anaSec(title,lead,rows,text,A,Ap,Bp,np,extra,PG){return `<section class="card anasec"><h2>${title}<span class="r muted">${lead||''}</span></h2>${anaTable(rows,A,Ap,Bp,np,PG)}${extra||''}<div class="anatext"><b>分析</b>${text.filter(Boolean).map(t=>`<p>${t}</p>`).join('')||'<p class="muted">データが入ると、ここに分析の文章が出ます。</p>'}</div></section>`}
+function vAnalysis(){const {from,to,ms}=anaPeriod();const cmp=UI.anaCmp||'yoy';
+  const cms=cmp==='yoy'?ms.map(m=>monthAdd(m,-12)):ms.map(m=>monthAdd(m,-ms.length));const A=anaAgg(ms),B=anaAgg(cms);const pair=ms.map((m,i)=>i).filter(i=>pv(ms[i],'salesA')!=null&&pv(cms[i],'salesA')!=null);const np=pair.length;const Ap=anaAgg(pair.map(i=>ms[i])),Bp=anaAgg(pair.map(i=>cms[i]));
+  const PA={};const PG=req=>{const key=req.join(',');if(PA[key])return PA[key];const idx=ms.map((m,i)=>i).filter(i=>req.every(k=>{const a=A.R[i][k],b=B.R[i][k];return a!=null&&b!=null&&a!==0&&b!==0}));return PA[key]={A:anaAgg(idx.map(i=>ms[i])),B:anaAgg(idx.map(i=>cms[i])),n:idx.length}};
+  const cm=g=>(cmp==='yoy'?'前年の同じ月':'前の期間の同じ月')+(g.n<A.n?`（くらべられる${g.n}か月分）`:'');
+  const c=(cmp==='yoy'?'前年の同じ月':'すぐ前の期間の同じ月')+(np&&np<A.n?`（くらべられる${np}か月分）`:'');const P=v=>Math.round(v*1000)/10;
   const labels=ms.map(m=>`${+m.slice(5)}月`);const R=A.R,RB=B.R;
+  /* 1 売上 */
+  const sR=[['売上合計','sa',fY,'up',0,'期間の売上実績の合計'],['売上目標','st',fY,'up',0,''],['目標達成率','ach',fP,'up',1,'100%以上で達成'],['月の平均売上','avg',fY,'up',0,''],['1営業日あたり売上','saDay',fY,'up',0,'定休日・店休日を除いた日数で割った額'],['営業日数','days',v=>v==null?'—':v+'日','up',0,'売上が入っている月の営業日']];
+  const sT=[A.sa!=null?`この期間の売上は <b>${fY(A.sa)}</b>、月の平均は ${fY(A.avg)}、1営業日あたりでは ${fY(A.saDay)} でした。`:'',
+    A.ach!=null?`目標 ${fY(A.st)} に対する達成率は <b>${fP(A.ach)}</b>。${A.below.length?`目標に届かなかったのは ${A.below.map(r=>+r.m.slice(5)+'月').join('・')} の${A.below.length}か月で、不足額の合計は ${fY(A.below.reduce((a,r)=>a+r.st-r.sa,0))} です。`:'すべての月で目標を達成しています。'}`:'',
+    np?`${c}とくらべると、売上は <b>${sgn(chg(Ap.sa,Bp.sa))}</b>（${fY(Ap.sa-Bp.sa)}）、1営業日あたりでは ${sgn(chg(Ap.saDay,Bp.saDay))} です。${Math.abs((chg(Ap.sa,Bp.sa)||0)-(chg(Ap.saDay,Bp.saDay)||0))>0.03?'営業日数の違いの影響もあるので、1営業日あたりの数字もあわせて見てください。':''}`:'くらべる相手の期間に売上の数字がないため、比較はしていません。',
+    A.best&&A.worst&&A.best!==A.worst?`一番売れた月は ${A.best.m.replace('-','/')}（${fY(A.best.sa)}）、一番少なかった月は ${A.worst.m.replace('-','/')}（${fY(A.worst.sa)}）で、${P(A.best.sa/A.worst.sa-1)}% の差があります。`:'',
+    A.slope!=null&&A.n>=3?`期間の流れ（傾向線）では、売上は1か月あたり ${A.slope>=0?'+':''}${fY(A.slope)} のペースで${A.slope>=0?'伸びています':'下がっています'}。月ごとのばらつき（変動係数）は ${P(A.cv)}% で、${A.cv>0.15?'季節・天候の影響が大きめです。少ない月に向けてイベントやハーバルを前もって計画すると安定します。':'比較的安定しています。'}`:''];
+  /* 2 来客 */
+  const vR=[['来客の合計（入場者＋レイト）','vis',fN,'up',0,'小屋サウナは入場者数に含まれるため足していません',['vis']],['来客目標の達成率','visAch',fP,'up',1,'',['vis','visT']],['入場者数','gate',fN,'up',0,'',['gate']],['レイト','late',fN,'up',0,'',['late']],['レイトの割合','lateShare',fP,'up',1,'来客のうちレイトの割合',['late','vis']],['1営業日あたり来客','visDay',fD,'up',0,'',['vis']],['小屋サウナ','hut',fN,'up',0,'別に数えた人数',['hut']],['小屋サウナ利用率','hutRate',fP,'up',1,'小屋サウナ ÷ 入場者数',['hut','gate']],['ハーバル受付','herb',fN,'up',0,'',['herb']],['ハーバル受付率','herbRate',fP,'up',1,'ハーバル ÷ 来客の合計',['herb','vis']]];
+  const vT=[A.vis!=null?`来客は <b>${fN(A.vis)}</b>（1営業日あたり ${fD(A.visDay)}）。そのうち入場者が ${fN(A.gate)}、レイトが ${fN(A.late)} で、レイトの割合は ${fP(A.lateShare)} です。`:'',
+    (g=>g.n?`${cm(g)}とくらべると、来客は ${sgn(chg(g.A.vis,g.B.vis))}、1営業日あたりは ${sgn(chg(g.A.visDay,g.B.visDay))}。`:'')(PG(['vis'])),(g=>g.n?`入場者とレイトを分けて見ると（${cm(g)}）、入場者は ${sgn(chg(g.A.gate,g.B.gate))}、レイトは ${sgn(chg(g.A.late,g.B.late))} で、${Math.abs(chg(g.A.gate,g.B.gate))>Math.abs(chg(g.A.late,g.B.late))?'入場者':'レイト'}の動きが大きいです。`:'')(PG(['gate','late'])),
+    A.hut!=null?`小屋サウナは ${fN(A.hut)} が利用し、入場者のうち <b>${fP(A.hutRate)}</b> にあたります${(g=>g.n?`（${cm(g)}：${fP(g.A.hutRate)} ← ${fP(g.B.hutRate)}、${sgnp(pp(g.A.hutRate,g.B.hutRate))}）`:'')(PG(['hut','gate']))}。${A.hutRate!=null&&A.hutRate<0.15?'利用率はまだ伸ばせる余地があります。受付での案内やSNSでの予約導線を強めるのが効果的です。':''}`:'',
+    A.herb!=null?`ハーバルの受付は ${fN(A.herb)}、来客の ${fP(A.herbRate)} です${(g=>g.n?`（${cm(g)}より ${sgn(chg(g.A.herb,g.B.herb))}）`:'')(PG(['herb']))}。`:'',
+    A.visAch!=null?`来客目標の達成率は ${fP(A.visAch)} です。`:''];
+  /* 3 単価 */
+  const uR=[['客単価','unit',fY,'up',0,'売上 ÷ 来客の合計',['sa','vis']],['1人あたり入場料','gatePer',fY,'up',0,'入場料 ÷ 入場者数',['salGate','gate']],['1人あたりフード売上','foodPer',fY,'up',0,'フード売上 ÷ 来客',['food','vis']],['1人あたりレンタル','rentalPer',fY,'up',0,'',['rental','vis']],['1人あたりグッズ','goodsPer',fY,'up',0,'',['goods','vis']]];
+  const ups=[['入場料','gatePer',['salGate','gate']],['フード','foodPer',['food','vis']],['レンタル','rentalPer',['rental','vis']],['グッズ','goodsPer',['goods','vis']]].map(([l,k,rq])=>{const g=PG(rq);return [l,g.n?chg(g.A[k],g.B[k]):null]}).filter(x=>x[1]!=null).sort((a,b)=>b[1]-a[1]);
+  const uT=[A.unit!=null?`客単価は <b>${fY(A.unit)}</b>。1人あたりで見ると、入場料 ${fY(A.gatePer)}、フード ${fY(A.foodPer)}、レンタル ${fY(A.rentalPer)}、グッズ ${fY(A.goodsPer)} です。`:'',
+    (g=>g.n?`${cm(g)}とくらべて客単価は ${sgn(chg(g.A.unit,g.B.unit))}。売上の増減 ${sgn(chg(g.A.sa,g.B.sa))} は「来客数 ${sgn(chg(g.A.vis,g.B.vis))}」×「客単価 ${sgn(chg(g.A.unit,g.B.unit))}」に分けられ、${Math.abs(chg(g.A.vis,g.B.vis)||0)>Math.abs(chg(g.A.unit,g.B.unit)||0)?'<b>来客数</b>の影響のほうが大きい':'<b>客単価</b>の影響のほうが大きい'}です。`:'')(PG(['sa','vis'])),
+    ups.length?`1人あたりで一番伸びたのは <b>${ups[0][0]}（${sgn(ups[0][1])}）</b>${ups.length>1?`、${ups[ups.length-1][1]<0?'一番下がった':'一番伸びが小さかった'}のは <b>${ups[ups.length-1][0]}（${sgn(ups[ups.length-1][1])}）</b>`:''} です。${ups[ups.length-1][1]<0?`${ups[ups.length-1][0]}は声かけ・セット提案・POPで1人あたりを上げる余地があります。`:''}`:''];
+  /* 4 売上の構成 */
+  const mR=[['入場料','salGate',fY,'up',0,'',['brk']],['フード売上','food',fY,'up',0,'フード＋ソフトドリンク＋アルコール',['brk']],['　フード','fd',fY,'up',0,'',['brk']],['　ソフトドリンク','soft',fY,'up',0,'',['brk']],['　アルコール','alc',fY,'up',0,'',['brk']],['レンタル','rental',fY,'up',0,'水着＋サンダル＋ポンチョ',['brk']],['グッズ','goods',fY,'up',0,'',['brk']],['入場料の割合','gateShare',fP,'up',1,'内訳の合計に対する割合',['brk']],['フード売上の割合','foodRatio',fP,'up',1,'',['brk']],['レンタルの割合','rentalShare',fP,'up',1,'',['brk']],['グッズの割合','goodsShare',fP,'up',1,'',['brk']],['フード売上のうちアルコール','alcInFood',fP,'up',1,'',['brk']]];
+  const GB=PG(['brk']);const shifts=[['入場料','gateShare'],['フード売上','foodRatio'],['レンタル','rentalShare'],['グッズ','goodsShare']].map(([l,k])=>[l,GB.n?pp(GB.A[k],GB.B[k]):null]).filter(x=>x[1]!=null).sort((a,b)=>b[1]-a[1]);
+  const mT=[A.brk?`売上の内訳は、入場料 ${fP(A.gateShare)}・フード売上 ${fP(A.foodRatio)}・レンタル ${fP(A.rentalShare)}・グッズ ${fP(A.goodsShare)} です。入場料以外（フード・レンタル・グッズ）の割合は <b>${fP(1-(A.gateShare||0))}</b> です。`:'「まとめて入力」の②で売上の内訳を入れると、構成の分析が出ます。',
+    A.food?`フード売上の中身は、フード ${fP(A.fd/A.food)}・ソフトドリンク ${fP(A.softInFood)}・アルコール ${fP(A.alcInFood)} です。`:'',
+    shifts.length&&GB.n?`${cm(GB)}とくらべて割合が一番増えたのは ${shifts[0][0]}（${sgnp(shifts[0][1])}）${shifts.length>1?`、一番減ったのは ${shifts[shifts.length-1][0]}（${sgnp(shifts[shifts.length-1][1])}）`:''} です。`:'',
+    A.brk&&A.sa&&Math.abs(A.brk/A.sa-1)>0.05?`内訳の合計（${fY(A.brk)}）は売上実績より ${P(Math.abs(1-A.brk/A.sa))}% ${A.brk<A.sa?'少なく':'多く'}、内訳に入っていない売上（小屋サウナの料金など）があると考えられます。`:''];
+  /* 5 コスト・生産性 */
+  const cR=[['経費（承認済み）','exp',fY,'down',0,'経費画面で承認された金額'],['経費率','expRatio',fP,'down',1,'経費 ÷ 売上'],['経費の予算消化率','budgetUse',fP,'down',1,'経費 ÷ 経費予算'],['バイト人件費','labor',fY,'down',0,'シフトから計算した給与＋交通費',['sa','hours']],['人件費率（バイト）','laborRatio',fP,'down',1,'バイト人件費 ÷ 売上',['sa','hours']],['勤務時間の合計','hours',fH,'down',0,'全員の勤務時間',['sa','hours']],['人時売上高','mhs',fY,'up',0,'売上 ÷ 勤務時間（1時間あたりの売上）',['sa','hours']],['1時間あたり来客','vph',v=>v==null?'—':(Math.round(v*10)/10)+'人','up',0,'来客 ÷ 勤務時間',['sa','hours']],['簡易の利益','profit',fY,'up',0,'売上 − 経費 − バイト人件費',['sa','hours']],['利益率','margin',fP,'up',1,'簡易の利益 ÷ 売上',['sa','hours']]];
+  const cT=[A.sa?`経費は ${fY(A.exp)}（売上の <b>${fP(A.expRatio)}</b>${A.budget?`、予算の ${fP(A.budgetUse)}`:''}）、バイト人件費は ${fY(A.labor)}（人件費率 <b>${fP(A.laborRatio)}</b>）でした。`:'',
+    A.hours?`全員の勤務時間は ${fH(A.hours)}。1時間あたりの売上（人時売上高）は <b>${fY(A.mhs)}</b>、1時間あたりの来客は ${(Math.round((A.vph||0)*10)/10)}人です。${(g=>g.n?`${cm(g)}とくらべて人時売上高は ${sgn(chg(g.A.mhs,g.B.mhs))}、${g.A.mhs>=g.B.mhs?'少ない人数でも売上を作れています。':'勤務時間に対して売上が伸びていません。来客の少ない時間帯のシフト人数を見直す余地があります。'}`:'')(PG(['sa','hours']))}`:'シフト（勤務時間）が入っていないため、人件費・生産性は計算できません。',
+    A.profit!=null?`売上から経費とバイト人件費を引いた簡易の利益は <b>${fY(A.profit)}</b>（利益率 ${fP(A.margin)}）です${(g=>g.n?`（${cm(g)}より ${g.A.profit-g.B.profit>=0?'+':''}${fY(g.A.profit-g.B.profit)}）`:'')(PG(['sa','hours']))}。社員の給与・家賃など、経費に入っていない費用は含みません。`:'',
+    A.laborRatio!=null&&A.laborRatio>0.3?'人件費率が30%を超えています。忙しい時間帯と静かな時間帯でシフトの人数を変えると、効率が上がります。':'',
+    A.expRatio!=null&&A.budgetUse!=null&&A.budgetUse>1?`経費が予算を ${fP(A.budgetUse-1)} 超えています。経費画面で大きい項目を確認してください。`:''];
+  /* グラフ */
   const ch1=svgChart({title:'月別の売上',labels,bars:[{name:'売上実績',values:R.map(r=>r.sa),color:'var(--n1)'}],lines:[{name:'目標',values:R.map(r=>r.st),color:'var(--n2)'},{name:cmp==='yoy'?'前年同月':'比較期間',values:RB.map(r=>r.sa),color:'var(--muted)',dash:1}],yFmt:shortN,tipFmt:v=>yen(v)});
   const ch2=svgChart({title:'来客数と客単価',labels,stacked:1,bars:[{name:'入場者数',values:R.map(r=>r.gate!=null||r.late!=null?r.gate:r.vis),color:'#3d8bbd'},{name:'レイト',values:R.map(r=>r.late),color:'#dc6f3a'}],lines:[{name:'客単価（右）',values:R.map(r=>r.sa&&r.vis?r.sa/r.vis:null),color:'var(--ink)',axis2:1,fmt:v=>yen(v)},{name:'小屋サウナ',values:R.map(r=>r.hut),color:'#47975f'}],yFmt:shortN,y2:v=>'¥'+shortN(v)});
   const ch3=svgChart({title:'売上の構成',labels,stacked:1,bars:[{name:'入場料',values:R.map(r=>r.salGate),color:'#3d8bbd'},{name:'フード売上',values:R.map(r=>r.food),color:'#dc6f3a'},{name:'レンタル',values:R.map(r=>r.rental),color:'#47975f'},{name:'グッズ',values:R.map(r=>r.goods),color:'#c9971f'}],yFmt:shortN,tipFmt:v=>yen(v)});
   const ch4=svgChart({title:'コストの割合',labels,h:220,bars:[],lines:[{name:'人件費率（バイト）',values:R.map(r=>r.sa?r.labor/r.sa*100:null),color:'#dc6f3a',fmt:v=>v.toFixed(1)+'%'},{name:'経費率',values:R.map(r=>r.sa?r.exp/r.sa*100:null),color:'#3d8bbd',fmt:v=>v.toFixed(1)+'%'}],yFmt:v=>Math.round(v)+'%'});
-  const ch5=svgChart({title:'人時売上高',labels,h:220,bars:[{name:'人時売上高（売上÷全員の勤務時間）',values:R.map(r=>r.sa&&r.hours?r.sa/r.hours:null),color:'#47975f',op:.85}],lines:[],yFmt:v=>'¥'+shortN(v),tipFmt:v=>yen(v)});
-  const ins=anaInsights(A,Ap,Bp,R,cmp,pair.length);const chk=anaChecks(R);
+  const ch5=svgChart({title:'人時売上高',labels,h:200,bars:[{name:'人時売上高',values:R.map(r=>r.sa&&r.hours?r.sa/r.hours:null),color:'#47975f',op:.85}],lines:[],yFmt:v=>'¥'+shortN(v),tipFmt:v=>yen(v)});
   const row=r=>{const ly=pv(monthAdd(r.m,-12),'salesA');return `<tr><th>${r.m.replace('-','/')}</th><td class="r num">${r.sa!=null?fmtN(r.sa):'—'}</td><td class="r">${r.sa!=null&&r.st?pctPill(pct(r.sa,r.st)):'<span class="muted">—</span>'}</td><td class="r">${r.sa!=null&&ly?pctPill(pct(r.sa,ly)):'<span class="muted">—</span>'}</td><td class="r num">${r.vis!=null?fmtN(r.vis):'—'}</td><td class="r num">${r.sa&&r.vis?fmtN(Math.round(r.sa/r.vis)):'—'}</td><td class="r num">${r.food!=null&&r.vis?fmtN(Math.round(r.food/r.vis)):'—'}</td><td class="r num">${r.hut!=null&&r.gate?pctS(r.hut/r.gate):'—'}</td><td class="r num">${r.sa?pctS(r.labor/r.sa):'—'}</td><td class="r num">${r.sa?pctS(r.exp/r.sa):'—'}</td><td class="r num">${r.sa&&r.hours?fmtN(Math.round(r.sa/r.hours)):'—'}</td><td class="r num">${r.sa!=null?fmtN(r.sa-r.exp-r.labor):'—'}</td></tr>`};
-  return `<div class="card ana-ctl"><h2>分析する期間</h2>
-   <div class="chips ana-pre">${ANA_PRESETS.map(([k,l])=>`<button class="${!UI.anaFrom&&(UI.anaPre||'m12')===k?'on':''}" data-a="anaPre" data-v="${k}">${l}</button>`).join('')}</div>
-   <div class="row ana-range"><label class="fld"><span>はじめ</span><select class="inp" data-c="anaFrom">${mopt(from)}</select></label><span class="muted">〜</span><label class="fld"><span>おわり</span><select class="inp" data-c="anaTo">${mopt(to)}</select></label><label class="fld"><span>くらべる相手</span><select class="inp" data-c="anaCmp"><option value="yoy" ${cmp==='yoy'?'selected':''}>前年の同じ期間</option><option value="prev" ${cmp==='prev'?'selected':''}>すぐ前の同じ長さの期間</option></select></label></div>
-   <p class="muted" style="margin:0">いま見ている期間：<b>${from.replace('-','/')}〜${to.replace('-','/')}（${ms.length}か月・売上入力済み${A.n}か月）</b>　くらべる相手：${cmpLabel}</p></div>
+  const ins=anaInsights(A,Ap,Bp,R,cmp,np);
+  return anaPeriodCtl(1)+`<p class="muted ana-cmpnote">くらべる相手：${cmp==='yoy'?'前年の同じ期間':'すぐ前の同じ長さの期間'}（${cms[0].replace('-','/')}〜${cms[cms.length-1].replace('-','/')}）。増減は、両方に数字が入っている月どうしでくらべています（項目によって月数が違うときは「○か月分」と出ます）。</p>
   ${A.n?'':'<p class="note">この期間は売上実績がまだ入っていません。「まとめて入力」で入れると分析が出ます。</p>'}
-  <div class="kpis">${kpi('売上',A.sa,Y,0,'up',0,'','sa')}${kpi('目標達成率',A.ach,pctS,0,'up',1,`目標 ${Y(A.st)}`,'ach')}${kpi('来客（入場者＋レイト）',A.vis,N,0,'up',0,'','vis')}${kpi('客単価',A.unit,Y,0,'up',0,'','unit')}
-   ${kpi('1人あたりフード',A.foodPer,Y,0,'up',0,'','foodPer')}${kpi('小屋サウナ利用率',A.hutRate,pctS,0,'up',1,`小屋 ${N(A.hut)}`,'hutRate')}${kpi('ハーバル受付',A.herb,N,0,'up',0,'','herb')}${kpi('月の平均売上',A.avg,Y,0,'up',0,'','avg')}
-   ${kpi('人件費率（バイト）',A.laborRatio,pctS,0,'down',1,`人件費 ${Y(A.labor)}`,'laborRatio')}${kpi('経費率',A.expRatio,pctS,0,'down',1,`経費 ${Y(A.exp)}`,'expRatio')}${kpi('人時売上高',A.mhs,Y,0,'up',0,`勤務 ${H(A.hours)}`,'mhs')}${kpi('簡易の利益',A.profit,Y,0,'up',0,'売上−経費−バイト人件費','profit')}</div>
-  <div class="card"><h2>気づき<span class="r muted">数字から自動で出しています</span></h2>${ins.length?`<ul class="ins">${ins.map(x=>`<li class="${x[0]}">${x[1]}</li>`).join('')}</ul>`:'<p class="empty">データが増えると、ここに気づきが出ます</p>'}</div>
-  <div class="ana-grid"><div class="card"><h2>月別の売上（目標・${cmp==='yoy'?'前年':'比較期間'}とくらべる）</h2>${ch1}</div><div class="card"><h2>来客数と客単価</h2>${ch2}</div>
-  <div class="card"><h2>売上の構成（入場料・フード・レンタル・グッズ）</h2>${ch3}${anaMix(A,B)}</div><div class="card"><h2>コストの割合（人件費率・経費率）</h2>${ch4}<h3 class="sub">人時売上高</h3>${ch5}</div></div>
-  <div class="card"><h2>月ごとの指標</h2><div class="tbl-wrap"><table class="mtx anatable"><thead><tr><th>月</th><th class="r">売上</th><th class="r">目標比</th><th class="r">前年比</th><th class="r">来客</th><th class="r">客単価</th><th class="r">1人あたり<br>フード</th><th class="r">小屋<br>利用率</th><th class="r">人件費率</th><th class="r">経費率</th><th class="r">人時<br>売上高</th><th class="r">簡易の<br>利益</th></tr></thead><tbody>${R.map(row).join('')}</tbody>
-   <tfoot><tr><th>期間計</th><td class="r num"><b>${A.sa!=null?fmtN(A.sa):'—'}</b></td><td class="r">${A.ach!=null?pctPill(Math.round(A.ach*1000)/10):'—'}</td><td class="r">${cmp==='yoy'&&A.sa&&B.sa?pctPill(pct(A.sa,B.sa)):'—'}</td><td class="r num">${A.vis!=null?fmtN(A.vis):'—'}</td><td class="r num">${A.unit?fmtN(Math.round(A.unit)):'—'}</td><td class="r num">${A.foodPer?fmtN(Math.round(A.foodPer)):'—'}</td><td class="r num">${pctS(A.hutRate)}</td><td class="r num">${pctS(A.laborRatio)}</td><td class="r num">${pctS(A.expRatio)}</td><td class="r num">${A.mhs?fmtN(Math.round(A.mhs)):'—'}</td><td class="r num">${A.profit!=null?fmtN(A.profit):'—'}</td></tr></tfoot></table></div>
-   <p class="note">人件費はシフト（出勤確認で直した時間を含む）から計算したバイトの給与＋交通費です。社員の給与・家賃など、経費に入っていない費用は含みません。人時売上高は「売上 ÷ 全員の勤務時間」で、1時間の労働でどれだけ売上を作れたかを表します。簡易の利益は「売上 − 経費 − バイト人件費」の目安です。</p></div>
-  <div class="card"><h2>データの検証<span class="r muted">入力もれ・数字のずれ</span></h2>${chk.length?`<ul class="ins">${chk.map(x=>`<li class="warn">${x}</li>`).join('')}</ul>`:'<p class="empty">気になる点はありません</p>'}</div>
+  ${anaSec('① 売上','目標と前年にくらべてどうだったか',sR,sT,A,Ap,Bp,np,ch1,PG)}
+  ${anaSec('② 来客','どれだけの人が来たか',vR,vT,A,Ap,Bp,np,ch2,PG)}
+  ${anaSec('③ 単価','1人あたりいくら使ったか',uR,uT,A,Ap,Bp,np,'',PG)}
+  ${anaSec('④ 売上の構成','何で売上を作ったか',mR,mT,A,Ap,Bp,np,ch3,PG)}
+  ${anaSec('⑤ コストと生産性','どれだけ効率よく売上を作れたか',cR,cT,A,Ap,Bp,np,`<div class="ana-grid2">${ch4}${ch5}</div>`,PG)}
+  <div class="card"><h2>月ごとの指標</h2><div class="tbl-wrap"><table class="mtx anatable"><thead><tr><th>月</th><th class="r">売上</th><th class="r">目標比</th><th class="r">前年比</th><th class="r">来客</th><th class="r">客単価</th><th class="r">1人あたり<br>フード</th><th class="r">小屋<br>利用率</th><th class="r">人件費率</th><th class="r">経費率</th><th class="r">人時<br>売上高</th><th class="r">簡易の<br>利益</th></tr></thead><tbody>${R.map(row).join('')}</tbody></table></div>
+   <p class="note">人件費はシフト（出勤確認で直した時間を含む）から計算したバイトの給与＋交通費です。社員の給与・家賃など、経費に入っていない費用は含みません。</p></div>
+  <div class="card"><h2>気づき（まとめ）<span class="r muted">数字から自動で出しています</span></h2>${ins.length?`<ul class="ins">${ins.map(x=>`<li class="${x[0]}">${x[1]}</li>`).join('')}</ul>`:'<p class="empty">データが増えると、ここに気づきが出ます</p>'}</div>
   <div class="row"><span class="sp"></span><button class="btn" data-a="anaXlsx">この期間の分析をダウンロード（Excel）</button></div>`}
+
 function anaMix(A,B){const cats=[['salGate','入場料'],['food','フード売上'],['rental','レンタル'],['goods','グッズ']];const ta=cats.reduce((a,[k])=>a+(A[k]||0),0),tb=cats.reduce((a,[k])=>a+(B[k]||0),0);if(!ta)return '<p class="muted">「まとめて入力」の②で売上の内訳を入れると、構成が比べられます。</p>';
   return `<div class="tbl-wrap"><table class="mtx"><thead><tr><th>項目</th><th class="r">金額</th><th class="r">構成比</th><th class="r">比較の構成比</th><th class="r">伸び</th></tr></thead><tbody>${cats.map(([k,l])=>`<tr><th>${l}</th><td class="r num">${fmtN(A[k]||0)}</td><td class="r num">${pctS((A[k]||0)/ta)}</td><td class="r num muted">${tb?pctS((B[k]||0)/tb):'—'}</td><td class="r">${B[k]?anaDelta(A[k]||0,B[k],'up'):'<span class="muted">—</span>'}</td></tr>`).join('')}</tbody></table></div>`}
 function anaInsights(A,Ap,B,R,cmp,np){const o=[];const P=v=>Math.round(v*1000)/10;const c=(cmp==='yoy'?'前年の同じ月':'前の期間の同じ月')+(np&&np<R.length?`（くらべられる${np}か月分）`:'');if(!np)o.push(['','くらべる相手の期間に売上の数字がないため、比較はしていません。']);
@@ -1606,7 +1678,7 @@ function visCard(fys){const ms=salesMonths().filter(m=>m<=ym(TODAY)&&(visTot(m)!
   const all=agg(ms);const best=VK.map(([k,l])=>{const b=ms.filter(m=>pv(m,k)!=null).sort((a,c)=>(pv(c,k)||0)-(pv(a,k)||0))[0];return b?`<span class="pill">${l}が一番多い月：${b.replace('-','/')}（${fmtN(pv(b,k))}人）</span>`:''}).join('');
   const th=`<th class="r">入場者数</th><th class="r">レイト</th><th class="r">来客合計</th><th class="r">客単価</th><th class="r">前年比</th><th class="r hutc">人数</th><th class="r hutc">利用率</th><th class="r hutc">前年比</th><th class="r herbc">受付人数</th><th>構成</th>`;
   return `<div class="card"><h2>${T}</h2><div class="legend">${VT.map(([k,l])=>`<span class="lg" style="--band:${VCOL[k]}">${l}</span>`).join('')}<span class="muted">小屋サウナの方は入場者数にも入っているので、来客合計には足さずに別に数えています</span></div>
-  <div class="stats"><div class="stat"><span>入場者数（営業開始から）</span><b>${fmtN(all.visGate)}<small> 人</small></b><span>来客の ${all.vb?pct(all.visGate,all.vb):0}%</span></div><div class="stat"><span>レイト（営業開始から）</span><b>${fmtN(all.visLate)}<small> 人</small></b><span>来客の ${all.vb?pct(all.visLate,all.vb):0}%</span></div><div class="stat"><span>来客の合計（入場者＋レイト）</span><b>${fmtN(all.tot)}<small> 人</small></b><span>客単価 ${all.tot?yen(Math.round(all.sa/all.tot)):'—'}</span></div><div class="stat"><span>ハーバル（受付人数）</span><b>${fmtN(ms.reduce((a,m)=>a+(pv(m,'visHerb')||0),0))}<small> 人</small></b><span>${ms.filter(m=>pv(m,'visHerb')!=null).length}か月分</span></div><div class="stat hutst"><span>小屋サウナ（別に数える）</span><b>${fmtN(all.visHut)}<small> 人</small></b><span>入場者の ${hutRate(all.visHut,all.gh)??'—'}% が利用</span></div></div>
+  <div class="stats"><div class="stat"><span>入場者数（この期間）</span><b>${fmtN(all.visGate)}<small> 人</small></b><span>来客の ${all.vb?pct(all.visGate,all.vb):0}%</span></div><div class="stat"><span>レイト（この期間）</span><b>${fmtN(all.visLate)}<small> 人</small></b><span>来客の ${all.vb?pct(all.visLate,all.vb):0}%</span></div><div class="stat"><span>来客の合計（入場者＋レイト）</span><b>${fmtN(all.tot)}<small> 人</small></b><span>客単価 ${all.tot?yen(Math.round(all.sa/all.tot)):'—'}</span></div><div class="stat"><span>ハーバル（受付人数）</span><b>${fmtN(ms.reduce((a,m)=>a+(pv(m,'visHerb')||0),0))}<small> 人</small></b><span>${ms.filter(m=>pv(m,'visHerb')!=null).length}か月分</span></div><div class="stat hutst"><span>小屋サウナ（別に数える）</span><b>${fmtN(all.visHut)}<small> 人</small></b><span>入場者の ${hutRate(all.visHut,all.gh)??'—'}% が利用</span></div></div>
   ${best?`<div class="chips">${best}</div>`:''}
   <h3 class="sub">決算期（年度）ごと</h3><div class="tbl-wrap"><table class="mtx"><thead>${head}<tr><th>年度</th>${th}</tr></thead><tbody>${fyR}</tbody></table></div>
   <h3 class="sub">月ごと（新しい月から）</h3><div class="tbl-wrap" style="max-height:460px;overflow:auto"><table class="mtx"><thead>${head}<tr><th>月</th>${th}</tr></thead><tbody>${mR}</tbody></table></div>
@@ -1708,16 +1780,11 @@ function todayTimeline(list,offs){const H0=8,H1=23;const span=(H1-H0)*60;const n
   <div class="tt"><div class="tt-axis"><span></span><div class="tt-scale">${ticks.map(h=>`<i style="left:${(h-H0)/(H1-H0)*100}%">${h%2===0?h:''}</i>`).join('')}${nm>=H0*60&&nm<=H1*60?`<b class="tt-now" style="left:${(nm-H0*60)/span*100}%"><em>${pad(nowNow.getHours())}:${pad(nowNow.getMinutes())}</em></b>`:''}</div></div>
   ${list.map(x=>{const E=eff(x);const a=pos(E.start);let b=pos(E.end);if(b<=a)b=100;const st=state(x);return `<div class="tt-row ${st}"><span class="tt-n">${esc(shName(x))}${x.note?`<small>${esc(x.note)}</small>`:''}</span><div class="tt-track">${ticks.map(h=>`<i style="left:${(h-H0)/(H1-H0)*100}%"></i>`).join('')}<div class="tt-bar" style="left:${a}%;width:${Math.max(4,b-a)}%"><span>${fmtT(E.start)}–${fmtT(E.end)}</span></div>${nm>=H0*60&&nm<=H1*60?`<b class="tt-nowl" style="left:${(nm-H0*60)/span*100}%"></b>`:''}</div></div>`}).join('')}</div>`}
 function cxToday(){const dl=+((S.settings.cancel||{}).deadlineDays||5);const dd=n=>addDays(todayStr,n);const L=d=>`${+d.slice(5,7)}/${+d.slice(8)}(${WD[parseD(d).getDay()]})`;
-  const d100=[dd(0),dd(1)];const a=dd(2),b=dd(dl);const free=dd(dl+1);
-  return `<aside class="hero-cx" aria-label="今日キャンセルの連絡があった場合"><b class="cx-h">今日キャンセルの連絡が来たら</b>
-   <div class="cx-r c100"><span class="cx-p">100%</span><span><small>当日・前日のキャンセル</small>${d100.map(L).join('、')}</span></div>
-   <div class="cx-r c50"><span class="cx-p">50%</span><span><small>${dl}日前〜2日前のキャンセル</small>${L(a)}〜${L(b)}</span></div>
-   <div class="cx-r c0"><span class="cx-p">無料</span><span><small>${dl+1}日前までのキャンセル</small>${L(free)}以降</span></div>
-   <small class="cx-n">日付はご予約の日です。くわしくは「キャンセル」画面で計算できます。</small></aside>`}
+  return `<div class="hero-cx" aria-label="今日キャンセルの連絡があった場合のキャンセル料（ご予約日ごと）"><span class="cx-t">キャンセル料<small>今日連絡が来たら</small></span><span class="cx-i c100"><b>100%</b>${L(dd(0))}・${L(dd(1))}</span><span class="cx-i c50"><b>50%</b>${L(dd(2))}〜${L(dd(dl))}</span><span class="cx-i c0"><b>無料</b>${L(dd(dl+1))}〜</span></div>`}
 function vHome(){const d=TODAY;const today=dayShifts(todayStr);const mine=today.find(x=>x.staffId===me.id);
   const closed=S.plans.closures.find(c=>c.date===todayStr);
   const news=newsFeed();const rem=allReminders().filter(r=>r.show);
-  return `<section class="hero">${logoImg('hero-logo')}<div class="hero-txt"><span class="date">${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}.</span><h1>${isShared()?`おつかれさまです。${closed?`今日は${esc(closed.kind)}の日です`:`今日の出勤は${today.length}人です`}`:`${esc(me.name)}さん、${closed?`今日は${esc(closed.kind)}の日です`:mine?`今日は ${shLabel(mine)} の勤務です`:'今日はお休みです'}`}</h1><p class="muted">パブリック 10:00〜22:00（最終入場21:00）<br>小屋サウナ 1部10:30〜13:30／2部14:00〜17:00／3部17:30〜20:30</p></div>${cxToday()}</section>
+  return `<section class="hero">${logoImg('hero-logo')}<div class="hero-txt"><span class="date">${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}.</span><h1>${isShared()?`おつかれさまです。${closed?`今日は${esc(closed.kind)}の日です`:`今日の出勤は${today.length}人です`}`:`${esc(me.name)}さん、${closed?`今日は${esc(closed.kind)}の日です`:mine?`今日は ${shLabel(mine)} の勤務です`:'今日はお休みです'}`}</h1>${cxToday()}</div></section>
   ${todayCard()}
   <div class="grid2">
    <div class="card"><h2>新着情報<span class="r">${isAdmin()?'<button class="btn sm" data-a="newsNew">お知らせを書く</button>':''}<button class="btn sm" data-a="newsAll">すべて見る</button></span></h2>${news.length?`<div class="alerts">${news.slice(0,5).map(newsRow).join('')}</div>`:'<p class="empty">新着情報はありません</p>'}</div>
