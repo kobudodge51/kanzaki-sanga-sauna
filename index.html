@@ -653,8 +653,8 @@ input.bk[readonly]{cursor:pointer}
 .sitable th.hcol,.sitable td.hcol{background:color-mix(in srgb,var(--tm) 14%,var(--surface))}
 .si-tot{background:color-mix(in srgb,var(--n1) 16%,var(--surface))!important;min-width:84px;font-family:var(--display);font-size:16px}
 .si-tot small{display:block;font-family:var(--body);font-size:10.5px;color:var(--muted)}
-.stk{display:flex;height:12px;border-radius:3px;overflow:hidden;background:var(--surface2);min-width:120px}
-.stk i{display:block;height:100%}
+.stkbar{display:flex;height:12px;border-radius:3px;overflow:hidden;background:var(--surface2);min-width:120px}
+.stkbar i{display:block;height:100%}
 .sbcell{min-width:140px;vertical-align:middle}
 .mtx td.c{text-align:center}
 
@@ -811,6 +811,80 @@ button.tt-row.dt:hover .tt-track{box-shadow:inset 0 0 0 2px color-mix(in srgb,va
 }
 @media print{.attsheet{border:0;padding:0}.attsheet:last-child{page-break-after:auto}}
 
+
+/* ====== v18 週の表：明るく・見やすく ====== */
+.wk2{--tkbg:#fffdf8;--am:#3d8bbd;--pm:#47975f;--ev:#dc6f3a;--tmc:#c9971f}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .wk2{--tkbg:var(--surface)}}
+:root[data-theme="dark"] .wk2{--tkbg:var(--surface)}
+.wk2 .b-am{--band:var(--am)}.wk2 .b-pm{--band:var(--pm)}.wk2 .b-ev{--band:var(--ev)}.wk2 .tm{--band:var(--tmc)}
+.wk2 th,.wk2 td{background:var(--tkbg);border-color:color-mix(in srgb,var(--line) 70%,transparent)}
+.wk2 thead th{background:color-mix(in srgb,var(--surface2) 55%,var(--tkbg))}
+.wk2 .ws{background:color-mix(in srgb,var(--surface2) 45%,var(--tkbg))!important}
+.wk2 td.tue,.wk2 .wh.tue{background:color-mix(in srgb,var(--am) 7%,var(--tkbg))!important}
+.wk2 td.closed,.wk2 .wh.closed{background:repeating-linear-gradient(135deg,var(--tkbg) 0 7px,color-mix(in srgb,var(--line) 45%,var(--tkbg)) 7px 14px)!important}
+.wk2 td.tcol{background:color-mix(in srgb,var(--flame) 5%,var(--tkbg))}
+.wk2 .wh.today{box-shadow:inset 0 -3px 0 var(--flame);background:color-mix(in srgb,var(--flame) 10%,var(--tkbg))}
+.wk2 .tk{background:color-mix(in srgb,var(--band) 11%,var(--tkbg));border:1px solid color-mix(in srgb,var(--band) 30%,transparent);border-left:5px solid var(--band);border-radius:10px;box-shadow:0 1px 2px rgba(60,40,20,.06);padding:7px 8px 6px 9px}
+.wk2 .tk b{color:color-mix(in srgb,var(--band) 75%,var(--fg));font-size:18px}
+.wk2 .tk span{color:var(--fg);opacity:.8}
+.wk2 .tk small{color:var(--muted)}
+.wk2 .tk.tm{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--tmc) 14%,var(--tkbg)) 0 6px,color-mix(in srgb,var(--tmc) 6%,var(--tkbg)) 6px 12px)}
+.wk2 .tk.off{--band:#c4553f;background:color-mix(in srgb,#c4553f 8%,var(--tkbg));border-left-width:5px;font-size:17px}
+.wk2 .wh-n{background:var(--coal);color:var(--onink);border-radius:999px;padding:2px 8px;font-size:14px;line-height:1.2}
+.wk2 .wh-n small{color:inherit;opacity:.75}
+.legend .lg.b-am{--band:#3d8bbd}.legend .lg.b-pm{--band:#47975f}.legend .lg.b-ev{--band:#dc6f3a}
+.dtl .b-am{--band:#3d8bbd}.dtl .b-pm{--band:#47975f}.dtl .b-ev{--band:#dc6f3a}
+
+/* イベント：複数回の時間 */
+#mform [hidden]{display:none!important}
+.evtimes{display:grid;gap:8px;background:var(--surface2);border-radius:10px;padding:12px 14px}
+.evt-h{display:grid;gap:2px}.evt-h b{font-size:15px}.evt-h .muted{font-size:13px}
+.evt-herb{display:grid;gap:6px}
+.evt-row{display:grid;grid-template-columns:5.5em minmax(0,1fr) auto minmax(0,1fr) auto;gap:8px;align-items:end}
+.evt-row .fld{margin:0}.evt-row input{font-size:18px;min-height:48px}
+.evt-n{align-self:center;font-family:var(--mincho)}.evt-n small{display:block;font-family:var(--body);font-weight:500;font-size:11px;color:var(--muted)}
+.evt-to{align-self:center;padding-bottom:4px;color:var(--muted)}
+.evmore{border:1px dashed var(--line);border-radius:8px;padding:8px 12px}
+.evmore summary{cursor:pointer;font-weight:700;font-size:14px;padding:4px 0}
+.evmore[open]{display:grid;gap:14px}
+.tempcard{margin-bottom:14px}
+@media (max-width:760px){.evt-row{grid-template-columns:1fr 1fr;}.evt-n{grid-column:1/-1}.evt-to{display:none}}
+
+.evg-times{display:flex;flex-wrap:wrap;gap:8px}
+.evg-t{display:grid;gap:2px;text-align:left;border:1px solid var(--line);border-left:4px solid var(--n2);background:var(--surface);border-radius:8px;padding:8px 12px;cursor:pointer;min-width:150px;position:relative}
+.evg-t b{font-family:var(--display);font-size:17px;font-weight:400}
+.evg-t small{font-size:11.5px;color:var(--muted)}
+.evg-e{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--n2);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+.evg-t{padding-right:56px!important}
+.evg-t:hover{border-color:var(--n2)}
+.evg-add{border:1px dashed var(--line);background:none;border-radius:8px;padding:8px 14px;color:var(--muted);cursor:pointer;font-size:14px}
+.evg-add:hover{border-color:var(--n2);color:var(--n2)}
+.wk2 tbody tr td:not(.tue):not(.closed):not(.tcol){background:var(--tkbg)}
+
+/* 経営分析 */
+.ana-ctl{display:grid;gap:10px}
+.ana-range{align-items:end;gap:10px;flex-wrap:wrap}.ana-range .fld{margin:0;min-width:150px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin:4px 0 14px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:3px;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+.k-l{font-size:12.5px;color:var(--muted);font-weight:700}
+.k-v{font-family:var(--display);font-size:24px;font-weight:400;letter-spacing:-.02em}
+.k-c{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.k-c small{font-size:11.5px;color:var(--muted)}
+.k-s{font-size:11.5px;color:var(--muted)}
+.dl{font-weight:700;font-size:13px}.dl.good{color:var(--ok)}.dl.bad{color:var(--bad)}
+.ana-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(460px,1fr));gap:14px}
+.chart{margin:0}.chart svg{width:100%;height:auto;display:block}
+.chart .cg{stroke:var(--line);stroke-width:1}.chart .cl{fill:var(--muted);font-size:11px;font-family:var(--body)}
+.ch-lg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;margin-bottom:4px}
+.ch-lg span{display:inline-flex;align-items:center;gap:5px}.ch-lg i{width:12px;height:10px;border-radius:2px;display:inline-block}
+.ch-lg i.ln{width:18px;height:0;border-top:3px solid;border-radius:0}.ch-lg i.ln.dash{border-top-style:dashed}
+.ins{margin:0;padding-left:0;list-style:none;display:grid;gap:6px}
+.ins li{padding:8px 12px 8px 14px;border-radius:8px;background:var(--surface2);border-left:4px solid var(--n1);font-size:14px;line-height:1.6}
+.ins li.good{border-left-color:var(--ok)}.ins li.bad{border-left-color:var(--bad)}.ins li.warn{border-left-color:var(--warn)}
+.anatable th,.anatable td{font-size:12.5px}
+@media (max-width:760px){.ana-grid{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}.k-v{font-size:20px}}
+
+.tabs{max-width:100%;overflow-x:auto;scrollbar-width:thin}
+.row>.tabs{min-width:0}
 </style>
 </head>
 <body>
@@ -856,7 +930,7 @@ const isOffOnly=id=>!!(S.staff.find(s=>s.id===id)||{}).offOnly;
 const addMin=(t,n)=>{const m=((toMin(t)+n)%1440+1440)%1440;return pad(Math.floor(m/60))+':'+pad(m%60)};
 function weeklyOn(d){if(closureOf(d))return [];const w=parseD(d).getDay();return (S.settings.weeklyEvents||[]).filter(x=>+x.dow===w)}
 function dayTasks(d){const out=[];weeklyOn(d).forEach(w=>(w.tasks||[]).forEach(t=>out.push({time:t.time||'',text:t.text,from:w.name})));
-  S.events.filter(e=>e.date===d&&e.type==='ハーバルプログラム'&&e.start).forEach(e=>{out.push({time:addMin(e.start,-60),text:`サウナ室の温度を${e.temp||86}℃前後に変更（${fmtT(e.start)}からハーバル）`,from:e.title||'ハーバルプログラム'});out.push({time:e.start,text:`ハーバルプログラム開始：${e.title||''}`,from:'ハーバル'})});
+  S.events.filter(e=>e.date===d&&e.type==='ハーバルプログラム'&&e.start).forEach(e=>{out.push({time:addMin(e.start,-60),text:`サウナ室の温度を${e.temp||(S.settings.herbTemp||86)}℃前後に変更（${fmtT(e.start)}からハーバル）`,from:e.title||'ハーバルプログラム'});out.push({time:e.start,text:`ハーバルプログラム開始：${e.title||''}`,from:'ハーバル'})});
   return out.sort((a,b)=>(a.time||'99')<(b.time||'99')?-1:1)}
 const evCls=t=>t==='ハーバルプログラム'?'evh':/お客様|インフルエンサー|撮影|貸切/.test(t||'')?'evg':'';
 
@@ -1037,7 +1111,7 @@ function renderStoreLogin(msg=''){
   setTimeout(()=>{const i=$('#st-pw');if(i)i.focus()},30);
   $('#storeform').addEventListener('submit',async e=>{e.preventDefault();const b=e.target.querySelector('button[type=submit]');b.disabled=true;b.textContent='確認中…';
     let tok=null;try{tok=await decTok(CFG.enc,$('#st-pw').value)}catch(err){renderStoreLogin('パスワードが違います');return}
-    TOKEN=tok;try{localStorage.setItem(TOKKEY,tok)}catch(err){}boot()})}
+    TOKEN=tok;try{sessionStorage.setItem(TOKKEY,tok)}catch(err){}boot()})}
 function renderSetup(){
   $('#app').innerHTML=`<div class="login"><div class="lbox"><div class="logo">${logoImg('login-logo')}<h1>神崎サンガサウナ</h1><span class="weave"></span><p>初期設定（最初の1回だけ）</p></div>
   <form class="lcard" id="setupform"><p class="note" style="margin:0">GitHubで作った鍵（github_pat_ で始まる文字）と、ログイン用のパスワードを入れて「暗号化する」を押してください。鍵はGitHubへの確認以外には送られません。</p>
@@ -1054,12 +1128,12 @@ function renderSetup(){
 async function boot(){
   if(SETUP){renderSetup();return}
   if(!CLOUD){render();return}
-  try{TOKEN=localStorage.getItem(TOKKEY)}catch(e){TOKEN=null}
+  try{localStorage.removeItem(TOKKEY)}catch(e){}try{TOKEN=sessionStorage.getItem(TOKKEY)}catch(e){TOKEN=null}
   if(!TOKEN){renderStoreLogin();return}
   $('#app').innerHTML=shellMsg('読み込み中…');
   try{
     const r=await gh(`/git/ref/heads/${GH.branch}`);
-    if(r.status===401){try{localStorage.removeItem(TOKKEY)}catch(e){}$('#app').innerHTML=shellMsg('鍵の期限が切れているか、無効になっています','<p class="note" style="margin:0">主宰・社員が新しい鍵を作り直す必要があります。</p><button class="btn" data-a="storeOut">ログイン画面に戻る</button>');return}
+    if(r.status===401){try{sessionStorage.removeItem(TOKKEY)}catch(e){}$('#app').innerHTML=shellMsg('鍵の期限が切れているか、無効になっています','<p class="note" style="margin:0">主宰・社員が新しい鍵を作り直す必要があります。</p><button class="btn" data-a="storeOut">ログイン画面に戻る</button>');return}
     if(!r.ok)throw Object.assign(new Error(r.status===404||r.status===409?'データ用リポジトリが空か、見つかりません（README付きで作成してください）':'GitHub '+r.status),{status:r.status});
     refEtag=r.headers.get('ETag')||null;const ref=await r.json();
     last=snap();await pullFrom(ref.object.sha);
@@ -1121,7 +1195,7 @@ function modal(title,body,o={}){const m=$('#modal');
 function closeModal(){const m=$('#modal');m.hidden=true;m.innerHTML='';modalSave=null;if(pendingRender){pendingRender=false;setTimeout(render,0)}}
 function fd(){const o={};new FormData($('#mform')).forEach((v,k)=>{if(k in o)o[k]=[].concat(o[k],v);else o[k]=v});return o}
 const fld=(l,inner,c='')=>`<label class="fld ${c}"><span>${l}</span>${inner}</label>`;
-const inp=(n,v='',t='text',a='')=>`<input name="${n}" id="f-${n}" type="${t}" value="${esc(v)}" ${a}>`;
+const inp=(n,v='',t='text',a='')=>`<input name="${n}" id="f-${n}" type="${t}" value="${esc(v)}" ${t==='time'&&!/step=/.test(a)?'step="900" ':''}${a}>`;
 const sel=(n,opts,v,a='')=>`<select name="${n}" id="f-${n}" ${a}>${opts.map(o=>{const [val,l]=Array.isArray(o)?o:[o,o];return `<option value="${esc(val)}" ${String(val)===String(v)?'selected':''}>${esc(l)}</option>`}).join('')}</select>`;
 const ta=(n,v='',r=4)=>`<textarea name="${n}" id="f-${n}" rows="${r}">${esc(v)}</textarea>`;
 const seg=(n,opts,v)=>`<div class="seg">${opts.map(o=>{const [val,l]=Array.isArray(o)?o:[o,o];return `<label><input type="radio" name="${n}" value="${esc(val)}" ${String(val)===String(v)?'checked':''}><span>${esc(l)}</span></label>`}).join('')}</div>`;
@@ -1288,9 +1362,9 @@ function attXlsx(){if(typeof XLSX==='undefined'){toast('Excelの部品を読み�
 /* ====== 管理用パスワード（給与・売上） ====== */
 const ADMIN_HASH='885fd639b62878b1ab3f3fa97499df49927cda945a411b4622d701786c75f647';
 const adminHash=()=>S.settings.adminHash||ADMIN_HASH;
-let adminOK=false;try{adminOK=!!sessionStorage.getItem('kanzaki-admin')}catch(e){}
+let adminOK=false;try{sessionStorage.removeItem('kanzaki-admin')}catch(e){}
 async function sha256hex(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-function adminGate(what){return `<div class="card gate"><div class="gate-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg></div><h2 class="gate-t">${what}は管理用パスワードで開きます</h2><p class="muted">スタッフ全員が見られないように、ここだけ別のパスワードをかけています。</p><div class="gate-f"><input type="password" class="inp" id="gate-pw" autocomplete="off" placeholder="管理用パスワード" aria-label="管理用パスワード"><button class="btn primary" data-a="gateGo">開く</button></div><p class="note">一度開くと、このブラウザを閉じるまで開いたままです。終わったら右上の「管理用の画面を閉じる」を押してください。</p></div>`}
+function adminGate(what){return `<div class="card gate"><div class="gate-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg></div><h2 class="gate-t">${what}は管理用パスワードで開きます</h2><p class="muted">スタッフ全員が見られないように、ここだけ別のパスワードをかけています。</p><div class="gate-f"><input type="password" class="inp" id="gate-pw" autocomplete="off" placeholder="管理用パスワード" aria-label="管理用パスワード"><button class="btn primary" data-a="gateGo">開く</button></div><p class="note">ほかの画面に移ったり、ページを開き直したりすると、また閉じます（開くたびにパスワードが必要です）。</p></div>`}
 const gateLockBtn=()=>adminOK?'<button class="btn" data-a="gateLock">管理用の画面を閉じる</button>':'';
 
 /* ====== 勤務・給与：一覧表の出力 ====== */
@@ -1325,7 +1399,7 @@ const hasVB=m=>VT.some(([k])=>pv(m,k)!=null);
 const visTot=m=>hasVB(m)?VT.reduce((a,[k])=>a+(pv(m,k)||0),0):pv(m,'visA');
 const hutRate=(h,g)=>h!=null&&g?Math.round(h/g*1000)/10:null;
 const VCOL={visGate:'var(--te)',visHut:'var(--tm)',visLate:'var(--tl)'};
-const stackBar=parts=>{const t=parts.reduce((a,p)=>a+p[1],0);return t?`<div class="stk">${parts.map(([k,v])=>v?`<i style="width:${v/t*100}%;background:${VCOL[k]}" title="${v}"></i>`:'').join('')}</div>`:''};
+const stackBar=parts=>{const t=parts.reduce((a,p)=>a+p[1],0);return t?`<div class="stkbar">${parts.map(([k,v])=>v?`<i style="width:${v/t*100}%;background:${VCOL[k]}" title="${v}"></i>`:'').join('')}</div>`:''};
 /* ---- 売上の内訳（入場料・フード・レンタル・グッズ） ---- */
 const SEC2=new Set(['salGate','salFood','salSoft','salAlc','food','salSwim','salSandal','salPoncho','rental','salGoods','brk']);
 const ICOLS=[
@@ -1358,7 +1432,7 @@ function siRowTot(m){const get=k=>{const e=document.querySelector(`.si[data-m="$
 function salesBreakCard(fys){const ms=salesMonths().filter(m=>m<=ym(TODAY)&&calcV(m,'brk')!=null);const T='売上の内訳（入場料・フード・レンタル・グッズ）';
   if(!ms.length)return `<div class="card"><h2>${T}</h2><p class="empty">「まとめて入力」で入場料・フード・レンタル・グッズを入れると、ここに分析が出ます。</p></div>`;
   const sum=(list,k)=>list.reduce((a,m)=>a+(scatV(m,k)||0),0);const sumK=(list,k)=>list.reduce((a,m)=>a+(pv(m,k)||0),0);
-  const bar=(list)=>{const t=SCAT.reduce((a,[k])=>a+sum(list,k),0);return t?`<div class="stk">${SCAT.map(([k,,col])=>{const v=sum(list,k);return v?`<i style="width:${v/t*100}%;background:${col}"></i>`:''}).join('')}</div>`:''};
+  const bar=(list)=>{const t=SCAT.reduce((a,[k])=>a+sum(list,k),0);return t?`<div class="stkbar">${SCAT.map(([k,,col])=>{const v=sum(list,k);return v?`<i style="width:${v/t*100}%;background:${col}"></i>`:''}).join('')}</div>`:''};
   const vis=list=>list.reduce((a,m)=>a+(visTot(m)||0),0);
   const row=(label,list)=>{const t=sum(list,'brk');const v=vis(list);const sa=list.reduce((a,m)=>a+(pv(m,'salesA')||0),0);return `<tr><th>${label}</th>${SCAT.map(([k])=>{const x=sum(list,k);return `<td class="r num">${fmtN(x)}<small class="muted"> ${t?pct(x,t):0}%</small></td>`}).join('')}<td class="r num"><b>${fmtN(t)}</b></td><td class="r num muted">${sa?fmtN(sa):'—'}</td><td class="r num">${v?yen(Math.round(sum(list,'food')/v)):'—'}</td><td class="sbcell">${bar(list)}</td></tr>`};
   const fyR=fys.map(f=>{const l=fyMonths(f).filter(m=>ms.includes(m));return l.length?row(`${f}年度<small>${l.length}か月</small>`,l):''}).join('');
@@ -1418,7 +1492,97 @@ function salesDetail(){const u=UI.sx;const r=sxRows();const fy=UI.planFY;const f
    <div class="tbl-wrap"><table class="mtx"><thead><tr><th>区分</th>${fm.map(m=>`<th class="r">${+m.slice(5)}月</th>`).join('')}<th class="r">合計</th></tr></thead><tbody>${catTot.map(([c,a])=>`<tr><th>${esc(c)}</th>${fm.map(m=>`<td class="r num">${byCM[c+'|'+m]?fmtN(byCM[c+'|'+m]):''}</td>`).join('')}<td class="r num"><b>${fmtN(a)}</b></td></tr>`).join('')}</tbody><tfoot><tr><th>合計</th>${fm.map(m=>`<td class="r num">${(t=>t?fmtN(t):'')(list.filter(x=>x.month===m).reduce((s,x)=>s+x.amount,0))}</td>`).join('')}<td class="r num"><b>${fmtN(tot)}</b></td></tr></tfoot></table></div>
    <h3 class="sub">よく売れた品目（金額の多い順・上位20）</h3><div class="tbl-wrap"><table><thead><tr><th>#</th><th>区分｜品目</th><th class="r">金額</th><th class="r">数量</th><th class="r">割合</th></tr></thead><tbody>${top.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.k)}</td><td class="r num">${yen(x.a)}</td><td class="r num">${x.q?fmtN(x.q):''}</td><td class="r">${pct(x.a,tot)}%</td></tr>`).join('')}</tbody></table></div>
    <div class="row"><span class="sp"></span>${fm.filter(m=>list.some(x=>x.month===m)).map(m=>`<button class="btn sm danger" data-a="sxDelMonth" data-m="${m}">${+m.slice(5)}月の内訳を消す</button>`).join('')}</div>`:'<p class="empty">この年度の内訳はまだありません。上からExcelを取り込むと、ここに区分ごと・品目ごとの集計が出ます。</p>'}</div>`}
-function vSales(){const t=UI.salesTab||'input';return `<div class="tabs">${[['input','まとめて入力'],['sum','年間・決算期の集計'],['detail','内訳（Excel取込・分析）']].map(([k,l])=>`<button class="${t===k?'on':''}" data-a="set" data-k="salesTab" data-v="${k}">${l}</button>`).join('')}</div>`+(t==='sum'?salesSum():t==='detail'?salesDetail():salesInput())}
+/* ====== 経営分析（期間を選んで比べる） ====== */
+const monthsBetween=(a,b)=>{const r=[];if(!a||!b||a>b)return r;for(let m=a;m<=b;m=monthAdd(m,1))r.push(m);return r};
+const lastDataMonth=()=>{const ms=salesMonths().filter(m=>m<=ym(TODAY)&&pv(m,'salesA')!=null);return ms.length?ms[ms.length-1]:monthAdd(ym(TODAY),-1)};
+function anaPreset(k){const L=lastDataMonth();const fy=fyOf(todayStr);const y=+ym(TODAY).slice(0,4);
+  switch(k){case 'fy':return [fyMonths(fy)[0],fyMonths(fy)[11]];case 'pfy':return [fyMonths(fy-1)[0],fyMonths(fy-1)[11]];
+    case 'm3':return [monthAdd(L,-2),L];case 'm6':return [monthAdd(L,-5),L];case 'm12':return [monthAdd(L,-11),L];
+    case 'y':return [`${y}-01`,`${y}-12`];case 'py':return [`${y-1}-01`,`${y-1}-12`];case 'all':return [SALES_START,L];case 'last':return [L,L]}return [monthAdd(L,-11),L]}
+const ANA_PRESETS=[['last','最新の月'],['m3','直近3か月'],['m6','直近6か月'],['m12','直近12か月'],['fy','今年度'],['pfy','前年度'],['y','今年（1〜12月）'],['py','去年（1〜12月）'],['all','営業開始から']];
+function laborOf(m){let cost=0,hours=0,days=new Set(),pt=0;S.shifts.forEach(x=>{if(!x.date.startsWith(m)||x.off||isAbsent(x))return;if(isOffOnly(x.staffId))return;const mins=shMin(x);hours+=mins;if(isTimee(x))return;const st=S.staff.find(s=>s.id===x.staffId);if(!st||st.payroll===false)return;const w=+(st.wage||S.settings.wage);cost+=Math.floor(mins*w/60);pt+=mins;days.add(st.id+'|'+x.date)});
+  const tr1=+S.settings.transit||0;cost+=days.size*tr1;return{cost,hours:hours/60,ptHours:pt/60}}
+function expOf(m){return S.expenses.filter(e=>isOut(e)&&e.status==='承認'&&e.date.startsWith(m)).reduce((a,e)=>a+(+e.amount||0),0)}
+function anaMonth(m){const v=k=>pv(m,k);const sa=v('salesA'),st=v('salesT'),vt=visTot(m),lab=laborOf(m),ex=expOf(m);
+  return{m,sa,st,vis:vt,visT:v('visT'),gate:v('visGate'),late:v('visLate'),hut:v('visHut'),herb:v('visHerb'),salGate:v('salGate'),food:calcV(m,'food'),rental:calcV(m,'rental'),goods:v('salGoods'),brk:calcV(m,'brk'),exp:ex,labor:lab.cost,hours:lab.hours,budget:v('budget')}}
+function anaAgg(ms){const R=ms.map(anaMonth);const sum=k=>{const xs=R.map(r=>r[k]).filter(x=>x!=null);return xs.length?xs.reduce((a,x)=>a+x,0):null};
+  const o={n:R.filter(r=>r.sa!=null).length,months:ms.length,R};['sa','st','vis','visT','gate','late','hut','herb','salGate','food','rental','goods','brk','exp','labor','hours','budget'].forEach(k=>o[k]=sum(k));
+  o.hours=R.reduce((a,r)=>a+r.hours,0);o.exp=R.reduce((a,r)=>a+r.exp,0);o.labor=R.reduce((a,r)=>a+r.labor,0);
+  const div=(a,b)=>a!=null&&b?a/b:null;
+  o.ach=div(o.sa,o.st);o.unit=div(o.sa,o.vis);o.foodPer=div(o.food,o.vis);o.gatePer=div(o.salGate,o.gate);o.hutRate=div(o.hut,o.gate);o.lateShare=div(o.late,o.vis);
+  o.foodRatio=div(o.food,o.brk);o.expRatio=div(o.exp,o.sa);o.laborRatio=div(o.labor,o.sa);o.mhs=div(o.sa,o.hours);o.profit=o.sa!=null?o.sa-o.exp-o.labor:null;o.avg=o.n?o.sa/o.n:null;
+  const xs=R.filter(r=>r.sa!=null);if(xs.length>1){const mean=o.avg;o.cv=Math.sqrt(xs.reduce((a,r)=>a+(r.sa-mean)**2,0)/xs.length)/mean;const n=xs.length,xi=xs.map((_,i)=>i),mx=(n-1)/2;o.slope=xi.reduce((a,x,i)=>a+(x-mx)*(xs[i].sa-mean),0)/xi.reduce((a,x)=>a+(x-mx)**2,0)}
+  o.best=xs.slice().sort((a,b)=>b.sa-a.sa)[0];o.worst=xs.slice().sort((a,b)=>a.sa-b.sa)[0];return o}
+/* --- SVG グラフ --- */
+function svgChart(o){const W=760,H=o.h||250,P={l:62,r:o.y2?58:16,t:14,b:36};const n=o.labels.length;if(!n)return '';const iw=W-P.l-P.r,ih=H-P.t-P.b;const bw=iw/n;
+  const bars=o.bars||[],lines=o.lines||[];let mx=0;if(o.stacked)for(let i=0;i<n;i++)mx=Math.max(mx,bars.reduce((a,b)=>a+(b.values[i]||0),0));else bars.forEach(b=>b.values.forEach(v=>{if(v!=null)mx=Math.max(mx,v)}));
+  lines.filter(l=>!l.axis2).forEach(l=>l.values.forEach(v=>{if(v!=null)mx=Math.max(mx,v)}));mx=niceMax(mx||1);
+  let mx2=0;lines.filter(l=>l.axis2).forEach(l=>l.values.forEach(v=>{if(v!=null)mx2=Math.max(mx2,v)}));mx2=o.y2max||niceMax(mx2||1);
+  const y=v=>P.t+ih-(v/mx)*ih,y2=v=>P.t+ih-(v/mx2)*ih;let g='';
+  for(let k=0;k<=4;k++){const v=mx*k/4,yy=y(v);g+=`<line x1="${P.l}" x2="${W-P.r}" y1="${yy}" y2="${yy}" class="cg"/><text x="${P.l-6}" y="${yy+4}" class="cl" text-anchor="end">${(o.yFmt||shortN)(v)}</text>`;if(o.y2)g+=`<text x="${W-P.r+6}" y="${yy+4}" class="cl">${o.y2(mx2*k/4)}</text>`}
+  const step=Math.ceil(n/12);o.labels.forEach((l,i)=>{if(i%step===0||i===n-1)g+=`<text x="${P.l+bw*i+bw/2}" y="${H-P.b+16}" class="cl" text-anchor="middle">${l}</text>`});
+  const nb=o.stacked?1:Math.max(1,bars.length);const gw=bw*.72,bwi=gw/nb;
+  for(let i=0;i<n;i++){let acc=0;bars.forEach((b,j)=>{const v=b.values[i];if(v==null)return;const x0=P.l+bw*i+(bw-gw)/2+(o.stacked?0:j*bwi);const top=o.stacked?y(acc+v):y(v),hh=o.stacked?y(acc)-y(acc+v):y(0)-y(v);if(o.stacked)acc+=v;g+=`<rect x="${x0.toFixed(1)}" y="${top.toFixed(1)}" width="${(bwi-1).toFixed(1)}" height="${Math.max(0,hh).toFixed(1)}" rx="2" fill="${b.color}"${b.op?` opacity="${b.op}"`:''}><title>${o.labels[i]} ${b.name}：${(o.tipFmt||fmtN)(v)}</title></rect>`})}
+  lines.forEach(l=>{const yy=l.axis2?y2:y;let d='',pen=false;l.values.forEach((v,i)=>{if(v==null){pen=false;return}d+=`${pen?'L':'M'}${(P.l+bw*i+bw/2).toFixed(1)},${yy(v).toFixed(1)} `;pen=true});g+=`<path d="${d.trim()}" fill="none" stroke="${l.color}" stroke-width="${l.w||2.4}" ${l.dash?'stroke-dasharray="6 5"':''} stroke-linejoin="round" stroke-linecap="round"/>`;l.values.forEach((v,i)=>{if(v!=null)g+=`<circle cx="${(P.l+bw*i+bw/2).toFixed(1)}" cy="${yy(v).toFixed(1)}" r="${l.dash?2.5:3.4}" fill="${l.dash?'var(--surface)':l.color}" stroke="${l.color}" stroke-width="1.6"><title>${o.labels[i]} ${l.name}：${(l.fmt||fmtN)(v)}</title></circle>`})});
+  const lg=[...bars.map(b=>`<span><i style="background:${b.color}"></i>${b.name}</span>`),...lines.map(l=>`<span><i class="ln ${l.dash?'dash':''}" style="border-color:${l.color}"></i>${l.name}</span>`)].join('');
+  return `<figure class="chart"><div class="ch-lg">${lg}</div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.title||'グラフ')}">${g}</svg></figure>`}
+function niceMax(v){const p=Math.pow(10,Math.floor(Math.log10(v)));const f=v/p;return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p}
+const shortN=v=>v>=1e8?(v/1e8).toFixed(1).replace(/\.0$/,'')+'億':v>=1e4?(v/1e4).toFixed(v>=1e6?0:1).replace(/\.0$/,'')+'万':Math.round(v).toLocaleString('ja-JP');
+const pctS=v=>v==null?'—':(Math.round(v*1000)/10)+'%';
+function anaDelta(a,b,good='up',isRate){if(a==null||b==null||(!isRate&&!b))return '<span class="dl muted">比較なし</span>';const d=isRate?(a-b)*100:(a/b-1)*100;const up=d>=0;const ok=good==='up'?up:!up;return `<span class="dl ${Math.abs(d)<0.05?'':ok?'good':'bad'}">${up?'▲':'▼'} ${Math.abs(Math.round(d*10)/10)}${isRate?'pt':'%'}</span>`}
+function vAnalysis(){const def=anaPreset(UI.anaPre||'m12');const from=UI.anaFrom||def[0],to=UI.anaTo||def[1];const ms=monthsBetween(from,to);const cmp=UI.anaCmp||'yoy';
+  const cms=cmp==='yoy'?ms.map(m=>monthAdd(m,-12)):ms.map(m=>monthAdd(m,-ms.length));const A=anaAgg(ms),B=anaAgg(cms);const pair=ms.map((m,i)=>i).filter(i=>pv(ms[i],'salesA')!=null&&pv(cms[i],'salesA')!=null);const Ap=anaAgg(pair.map(i=>ms[i])),Bp=anaAgg(pair.map(i=>cms[i]));
+  const opts=salesMonths().filter(m=>m<=monthAdd(ym(TODAY),3));const mopt=v=>opts.map(m=>`<option value="${m}" ${m===v?'selected':''}>${m.replace('-','年')}月</option>`).join('');
+  const cmpLabel=cmp==='yoy'?`前年同期（${cms[0].replace('-','/')}〜${cms[cms.length-1].replace('-','/')}）`:`直前の${ms.length}か月（${cms[0].replace('-','/')}〜${cms[cms.length-1].replace('-','/')}）`;
+  const kpi=(l,v,fv,cv,good,isRate,sub,key)=>{const a=pair.length?Ap[key]:null,b=pair.length?Bp[key]:null;return `<div class="kpi"><span class="k-l">${l}</span><b class="k-v">${fv(v)}</b><span class="k-c">${anaDelta(a,b,good,isRate)}<small>${pair.length?`同じ月どうし ${fv(a)} ← ${fv(b)}`:''}</small></span>${sub?`<small class="k-s">${sub}</small>`:''}</div>`};
+  const Y=v=>v==null?'—':yen(Math.round(v)),N=v=>v==null?'—':fmtN(Math.round(v))+'人',H=v=>v==null?'—':(Math.round(v*10)/10).toLocaleString('ja-JP')+'h';
+  const labels=ms.map(m=>`${+m.slice(5)}月`);const R=A.R,RB=B.R;
+  const ch1=svgChart({title:'月別の売上',labels,bars:[{name:'売上実績',values:R.map(r=>r.sa),color:'var(--n1)'}],lines:[{name:'目標',values:R.map(r=>r.st),color:'var(--n2)'},{name:cmp==='yoy'?'前年同月':'比較期間',values:RB.map(r=>r.sa),color:'var(--muted)',dash:1}],yFmt:shortN,tipFmt:v=>yen(v)});
+  const ch2=svgChart({title:'来客数と客単価',labels,stacked:1,bars:[{name:'入場者数',values:R.map(r=>r.gate!=null||r.late!=null?r.gate:r.vis),color:'#3d8bbd'},{name:'レイト',values:R.map(r=>r.late),color:'#dc6f3a'}],lines:[{name:'客単価（右）',values:R.map(r=>r.sa&&r.vis?r.sa/r.vis:null),color:'var(--ink)',axis2:1,fmt:v=>yen(v)},{name:'小屋サウナ',values:R.map(r=>r.hut),color:'#47975f'}],yFmt:shortN,y2:v=>'¥'+shortN(v)});
+  const ch3=svgChart({title:'売上の構成',labels,stacked:1,bars:[{name:'入場料',values:R.map(r=>r.salGate),color:'#3d8bbd'},{name:'フード売上',values:R.map(r=>r.food),color:'#dc6f3a'},{name:'レンタル',values:R.map(r=>r.rental),color:'#47975f'},{name:'グッズ',values:R.map(r=>r.goods),color:'#c9971f'}],yFmt:shortN,tipFmt:v=>yen(v)});
+  const ch4=svgChart({title:'コストの割合',labels,h:220,bars:[],lines:[{name:'人件費率（バイト）',values:R.map(r=>r.sa?r.labor/r.sa*100:null),color:'#dc6f3a',fmt:v=>v.toFixed(1)+'%'},{name:'経費率',values:R.map(r=>r.sa?r.exp/r.sa*100:null),color:'#3d8bbd',fmt:v=>v.toFixed(1)+'%'}],yFmt:v=>Math.round(v)+'%'});
+  const ch5=svgChart({title:'人時売上高',labels,h:220,bars:[{name:'人時売上高（売上÷全員の勤務時間）',values:R.map(r=>r.sa&&r.hours?r.sa/r.hours:null),color:'#47975f',op:.85}],lines:[],yFmt:v=>'¥'+shortN(v),tipFmt:v=>yen(v)});
+  const ins=anaInsights(A,Ap,Bp,R,cmp,pair.length);const chk=anaChecks(R);
+  const row=r=>{const ly=pv(monthAdd(r.m,-12),'salesA');return `<tr><th>${r.m.replace('-','/')}</th><td class="r num">${r.sa!=null?fmtN(r.sa):'—'}</td><td class="r">${r.sa!=null&&r.st?pctPill(pct(r.sa,r.st)):'<span class="muted">—</span>'}</td><td class="r">${r.sa!=null&&ly?pctPill(pct(r.sa,ly)):'<span class="muted">—</span>'}</td><td class="r num">${r.vis!=null?fmtN(r.vis):'—'}</td><td class="r num">${r.sa&&r.vis?fmtN(Math.round(r.sa/r.vis)):'—'}</td><td class="r num">${r.food!=null&&r.vis?fmtN(Math.round(r.food/r.vis)):'—'}</td><td class="r num">${r.hut!=null&&r.gate?pctS(r.hut/r.gate):'—'}</td><td class="r num">${r.sa?pctS(r.labor/r.sa):'—'}</td><td class="r num">${r.sa?pctS(r.exp/r.sa):'—'}</td><td class="r num">${r.sa&&r.hours?fmtN(Math.round(r.sa/r.hours)):'—'}</td><td class="r num">${r.sa!=null?fmtN(r.sa-r.exp-r.labor):'—'}</td></tr>`};
+  return `<div class="card ana-ctl"><h2>分析する期間</h2>
+   <div class="chips ana-pre">${ANA_PRESETS.map(([k,l])=>`<button class="${!UI.anaFrom&&(UI.anaPre||'m12')===k?'on':''}" data-a="anaPre" data-v="${k}">${l}</button>`).join('')}</div>
+   <div class="row ana-range"><label class="fld"><span>はじめ</span><select class="inp" data-c="anaFrom">${mopt(from)}</select></label><span class="muted">〜</span><label class="fld"><span>おわり</span><select class="inp" data-c="anaTo">${mopt(to)}</select></label><label class="fld"><span>くらべる相手</span><select class="inp" data-c="anaCmp"><option value="yoy" ${cmp==='yoy'?'selected':''}>前年の同じ期間</option><option value="prev" ${cmp==='prev'?'selected':''}>すぐ前の同じ長さの期間</option></select></label></div>
+   <p class="muted" style="margin:0">いま見ている期間：<b>${from.replace('-','/')}〜${to.replace('-','/')}（${ms.length}か月・売上入力済み${A.n}か月）</b>　くらべる相手：${cmpLabel}</p></div>
+  ${A.n?'':'<p class="note">この期間は売上実績がまだ入っていません。「まとめて入力」で入れると分析が出ます。</p>'}
+  <div class="kpis">${kpi('売上',A.sa,Y,0,'up',0,'','sa')}${kpi('目標達成率',A.ach,pctS,0,'up',1,`目標 ${Y(A.st)}`,'ach')}${kpi('来客（入場者＋レイト）',A.vis,N,0,'up',0,'','vis')}${kpi('客単価',A.unit,Y,0,'up',0,'','unit')}
+   ${kpi('1人あたりフード',A.foodPer,Y,0,'up',0,'','foodPer')}${kpi('小屋サウナ利用率',A.hutRate,pctS,0,'up',1,`小屋 ${N(A.hut)}`,'hutRate')}${kpi('ハーバル受付',A.herb,N,0,'up',0,'','herb')}${kpi('月の平均売上',A.avg,Y,0,'up',0,'','avg')}
+   ${kpi('人件費率（バイト）',A.laborRatio,pctS,0,'down',1,`人件費 ${Y(A.labor)}`,'laborRatio')}${kpi('経費率',A.expRatio,pctS,0,'down',1,`経費 ${Y(A.exp)}`,'expRatio')}${kpi('人時売上高',A.mhs,Y,0,'up',0,`勤務 ${H(A.hours)}`,'mhs')}${kpi('簡易の利益',A.profit,Y,0,'up',0,'売上−経費−バイト人件費','profit')}</div>
+  <div class="card"><h2>気づき<span class="r muted">数字から自動で出しています</span></h2>${ins.length?`<ul class="ins">${ins.map(x=>`<li class="${x[0]}">${x[1]}</li>`).join('')}</ul>`:'<p class="empty">データが増えると、ここに気づきが出ます</p>'}</div>
+  <div class="ana-grid"><div class="card"><h2>月別の売上（目標・${cmp==='yoy'?'前年':'比較期間'}とくらべる）</h2>${ch1}</div><div class="card"><h2>来客数と客単価</h2>${ch2}</div>
+  <div class="card"><h2>売上の構成（入場料・フード・レンタル・グッズ）</h2>${ch3}${anaMix(A,B)}</div><div class="card"><h2>コストの割合（人件費率・経費率）</h2>${ch4}<h3 class="sub">人時売上高</h3>${ch5}</div></div>
+  <div class="card"><h2>月ごとの指標</h2><div class="tbl-wrap"><table class="mtx anatable"><thead><tr><th>月</th><th class="r">売上</th><th class="r">目標比</th><th class="r">前年比</th><th class="r">来客</th><th class="r">客単価</th><th class="r">1人あたり<br>フード</th><th class="r">小屋<br>利用率</th><th class="r">人件費率</th><th class="r">経費率</th><th class="r">人時<br>売上高</th><th class="r">簡易の<br>利益</th></tr></thead><tbody>${R.map(row).join('')}</tbody>
+   <tfoot><tr><th>期間計</th><td class="r num"><b>${A.sa!=null?fmtN(A.sa):'—'}</b></td><td class="r">${A.ach!=null?pctPill(Math.round(A.ach*1000)/10):'—'}</td><td class="r">${cmp==='yoy'&&A.sa&&B.sa?pctPill(pct(A.sa,B.sa)):'—'}</td><td class="r num">${A.vis!=null?fmtN(A.vis):'—'}</td><td class="r num">${A.unit?fmtN(Math.round(A.unit)):'—'}</td><td class="r num">${A.foodPer?fmtN(Math.round(A.foodPer)):'—'}</td><td class="r num">${pctS(A.hutRate)}</td><td class="r num">${pctS(A.laborRatio)}</td><td class="r num">${pctS(A.expRatio)}</td><td class="r num">${A.mhs?fmtN(Math.round(A.mhs)):'—'}</td><td class="r num">${A.profit!=null?fmtN(A.profit):'—'}</td></tr></tfoot></table></div>
+   <p class="note">人件費はシフト（出勤確認で直した時間を含む）から計算したバイトの給与＋交通費です。社員の給与・家賃など、経費に入っていない費用は含みません。人時売上高は「売上 ÷ 全員の勤務時間」で、1時間の労働でどれだけ売上を作れたかを表します。簡易の利益は「売上 − 経費 − バイト人件費」の目安です。</p></div>
+  <div class="card"><h2>データの検証<span class="r muted">入力もれ・数字のずれ</span></h2>${chk.length?`<ul class="ins">${chk.map(x=>`<li class="warn">${x}</li>`).join('')}</ul>`:'<p class="empty">気になる点はありません</p>'}</div>
+  <div class="row"><span class="sp"></span><button class="btn" data-a="anaXlsx">この期間の分析をダウンロード（Excel）</button></div>`}
+function anaMix(A,B){const cats=[['salGate','入場料'],['food','フード売上'],['rental','レンタル'],['goods','グッズ']];const ta=cats.reduce((a,[k])=>a+(A[k]||0),0),tb=cats.reduce((a,[k])=>a+(B[k]||0),0);if(!ta)return '<p class="muted">「まとめて入力」の②で売上の内訳を入れると、構成が比べられます。</p>';
+  return `<div class="tbl-wrap"><table class="mtx"><thead><tr><th>項目</th><th class="r">金額</th><th class="r">構成比</th><th class="r">比較の構成比</th><th class="r">伸び</th></tr></thead><tbody>${cats.map(([k,l])=>`<tr><th>${l}</th><td class="r num">${fmtN(A[k]||0)}</td><td class="r num">${pctS((A[k]||0)/ta)}</td><td class="r num muted">${tb?pctS((B[k]||0)/tb):'—'}</td><td class="r">${B[k]?anaDelta(A[k]||0,B[k],'up'):'<span class="muted">—</span>'}</td></tr>`).join('')}</tbody></table></div>`}
+function anaInsights(A,Ap,B,R,cmp,np){const o=[];const P=v=>Math.round(v*1000)/10;const c=(cmp==='yoy'?'前年の同じ月':'前の期間の同じ月')+(np&&np<R.length?`（くらべられる${np}か月分）`:'');if(!np)o.push(['','くらべる相手の期間に売上の数字がないため、比較はしていません。']);
+  if(np&&Ap.sa!=null&&B.sa){const d=Ap.sa/B.sa-1;o.push([d>=0?'good':'bad',`売上は${c}より <b>${d>=0?'+':''}${P(d)}%</b>（${yen(Ap.sa-B.sa)}）でした。`]);
+    if(Ap.vis&&B.vis&&Ap.unit&&B.unit){const dv=Ap.vis/B.vis-1,du=Ap.unit/B.unit-1;o.push(['',`内訳は「来客数 ${dv>=0?'+':''}${P(dv)}%」×「客単価 ${du>=0?'+':''}${P(du)}%」。${Math.abs(dv)>Math.abs(du)?'売上の変化は<b>来客数</b>の影響が大きいです。':'売上の変化は<b>客単価</b>の影響が大きいです。'}`])}}
+  if(A.ach!=null){const short=R.filter(r=>r.sa!=null&&r.st&&r.sa<r.st);o.push([A.ach>=1?'good':'bad',`目標達成率は <b>${P(A.ach)}%</b>。${short.length?`目標に届かなかった月：${short.map(r=>+r.m.slice(5)+'月').join('、')}`:'すべての月で目標を達成しています。'}`])}
+  if(A.best&&A.worst&&A.best!==A.worst)o.push(['',`一番売れた月は <b>${A.best.m.replace('-','/')}（${yen(A.best.sa)}）</b>、一番少なかった月は <b>${A.worst.m.replace('-','/')}（${yen(A.worst.sa)}）</b>。差は ${P(A.best.sa/A.worst.sa-1)}% です。`]);
+  if(A.slope!=null&&A.n>=3)o.push([A.slope>=0?'good':'bad',`期間の流れ（傾向線）では、売上は1か月あたり <b>${A.slope>=0?'+':''}${yen(Math.round(A.slope))}</b> のペースで${A.slope>=0?'伸びて':'下がって'}います。`]);
+  if(A.cv!=null&&A.n>=3)o.push(['',`月ごとの売上のばらつき（変動係数）は ${P(A.cv)}%。${A.cv>0.15?'季節や天候の影響が大きいので、売上が少ない月の対策（イベント・ハーバル）を計画表に入れておくと安定します。':'安定しています。'}`]);
+  if(A.laborRatio!=null){o.push([A.laborRatio>0.3?'bad':'',`期間全体のバイトの人件費率は <b>${P(A.laborRatio)}%</b>${np&&B.laborRatio!=null&&Ap.laborRatio!=null?`（同じ月どうしでは ${P(Ap.laborRatio)}% ← ${c} ${P(B.laborRatio)}%）`:''}。${A.laborRatio>0.3?'30%を超えています。来客の少ない時間帯のシフトを見直す余地があります。':''}`])}
+  if(np&&Ap.mhs!=null&&B.mhs)o.push([Ap.mhs>=B.mhs?'good':'bad',`人時売上高は ${yen(Math.round(Ap.mhs))}（${c} ${yen(Math.round(B.mhs))}）。${Ap.mhs>=B.mhs?'人の動きが効率よく売上につながっています。':'勤務時間に対して売上が伸びていません。'}`]);
+  if(np&&Ap.foodPer!=null&&B.foodPer)o.push([Ap.foodPer>=B.foodPer?'good':'bad',`1人あたりのフード売上は ${yen(Math.round(Ap.foodPer))}（${c} ${yen(Math.round(B.foodPer))}）。${Ap.foodPer<B.foodPer?'声かけ・セットメニュー・POPでの提案を強めるとよさそうです。':''}`]);
+  if(A.hutRate!=null)o.push(['',`入場者のうち <b>${P(A.hutRate)}%</b> が小屋サウナを利用しています${np&&B.hutRate!=null?`（${c} ${P(B.hutRate)}%）`:''}。`]);
+  if(A.lateShare!=null)o.push(['',`来客のうちレイトは ${P(A.lateShare)}% です。`]);
+  return o}
+function anaChecks(R){const o=[];R.filter(r=>r.m<ym(TODAY)).forEach(r=>{const M=r.m.replace('-','/');if(r.sa==null)o.push(`${M}：売上実績が入っていません`);else{if(r.vis==null)o.push(`${M}：来客実績が入っていません（客単価が出せません）`);if(r.brk!=null&&Math.abs(r.brk-r.sa)/r.sa>0.05)o.push(`${M}：売上の内訳の合計（${yen(r.brk)}）と売上実績（${yen(r.sa)}）が ${Math.round(Math.abs(r.brk/r.sa-1)*100)}% ずれています`);if(!r.st)o.push(`${M}：売上目標が入っていません`);if(!r.hours)o.push(`${M}：シフト（勤務時間）が入っていないため、人件費・人時売上高が出せません`);else if(r.hours<150)o.push(`${M}：勤務時間の合計が ${Math.round(r.hours)}時間と少ないです（シフトの入力もれがあると、人件費率・人時売上高が正しく出ません）`)}});return o.slice(0,20)}
+function anaXlsx(){if(typeof XLSX==='undefined'){toast('Excelの部品を読み込めませんでした');return}const def=anaPreset(UI.anaPre||'m12');const from=UI.anaFrom||def[0],to=UI.anaTo||def[1];const R=anaAgg(monthsBetween(from,to)).R;
+  const a=[['月','売上','目標','来客（入場者＋レイト）','入場者数','レイト','小屋サウナ','ハーバル','客単価','入場料','フード売上','レンタル','グッズ','経費（承認済み）','バイト人件費','勤務時間（全員）','人件費率','経費率','人時売上高','簡易の利益']];
+  R.forEach(r=>a.push([r.m.replace('-','/'),r.sa??'',r.st??'',r.vis??'',r.gate??'',r.late??'',r.hut??'',r.herb??'',r.sa&&r.vis?Math.round(r.sa/r.vis):'',r.salGate??'',r.food??'',r.rental??'',r.goods??'',r.exp,r.labor,Math.round(r.hours*10)/10,r.sa?Math.round(r.labor/r.sa*1000)/10:'',r.sa?Math.round(r.exp/r.sa*1000)/10:'',r.sa&&r.hours?Math.round(r.sa/r.hours):'',r.sa!=null?r.sa-r.exp-r.labor:'']));
+  const wb=XLSX.utils.book_new();const ws=XLSX.utils.aoa_to_sheet(a);ws['!cols']=[{wch:9},...Array(19).fill({wch:12})];XLSX.utils.book_append_sheet(wb,ws,'月ごとの指標');
+  try{XLSX.writeFile(wb,`経営分析_${from.replace('-','.')}-${to.replace('-','.')}.xlsx`);toast('保存しました')}catch(e){toast('この画面ではファイルを保存できません')}}
+
+function vSales(){const t=UI.salesTab||'input';return `<div class="tabs">${[['input','まとめて入力'],['ana','経営分析'],['sum','年間・決算期の集計'],['detail','内訳（Excel取込・分析）']].map(([k,l])=>`<button class="${t===k?'on':''}" data-a="set" data-k="salesTab" data-v="${k}">${l}</button>`).join('')}</div>`+(t==='sum'?salesSum():t==='detail'?salesDetail():t==='ana'?vAnalysis():salesInput())}
 function visCard(fys){const ms=salesMonths().filter(m=>m<=ym(TODAY)&&(visTot(m)!=null||pv(m,'visHut')!=null||pv(m,'visHerb')!=null));const T='来客の内訳（入場者数・レイト）と小屋サウナ・ハーバル';if(!ms.length)return `<div class="card"><h2>${T}</h2><p class="empty">「まとめて入力」で来客実績を入れると、ここに分析が出ます。</p></div>`;
   const agg=list=>{const o={visGate:0,visHut:0,visLate:0,tot:0,nb:0,sa:0,vb:0,gh:0,hutN:0};list.forEach(m=>{VT.forEach(([k])=>{o[k]+=pv(m,k)||0;o.vb+=pv(m,k)||0});const h=pv(m,'visHut');if(h!=null){o.visHut+=h;o.hutN++;o.gh+=pv(m,'visGate')||0}o.tot+=visTot(m)||0;if(!hasVB(m))o.nb++;o.sa+=pv(m,'salesA')||0});return o};
   const cells=o=>o.vb?VT.map(([k])=>`<td class="r num">${fmtN(o[k])}<small class="muted"> ${pct(o[k],o.vb)}%</small></td>`).join(''):'<td colspan="2" class="muted c">内訳なし</td>';
@@ -1462,7 +1626,7 @@ function allReminders(){const L=S.settings.leads,out=[];if(!me)return out;
   S.lost.filter(l=>l.status==='保管中').forEach(l=>out.push({title:`忘れ物「${l.name}」の保管期限`,date:lostDue(l),lead:+L.lost,cat:'忘れ物',go:'lost'}));
   S.handovers.filter(h=>!hoDone(h)).forEach(h=>out.push({title:`引き継ぎ（${staffName(h.from)}→${hoTo(h.to)}）：${h.text.replace(/\s+/g,' ').slice(0,40)}`,date:h.date,lead:0,cat:'引き継ぎ',go:'remind'}));
   dayTasks(todayStr).forEach(t=>out.push({title:`${t.time?fmtT(t.time)+' ':''}${t.text}`,date:todayStr,lead:0,cat:'イベント',go:'event',time:t.time||''}));
-  S.events.filter(e=>e.type==='ハーバルプログラム'&&e.date>todayStr&&e.start).forEach(e=>out.push({title:`ハーバル ${fmtT(e.start)}開始：${fmtT(addMin(e.start,-60))}にサウナ室を${e.temp||86}℃へ`,date:e.date,lead:2,cat:'イベント',go:'event'}));
+  S.events.filter(e=>e.type==='ハーバルプログラム'&&e.date>todayStr&&e.start).forEach(e=>out.push({title:`ハーバル ${fmtT(e.start)}開始：${fmtT(addMin(e.start,-60))}にサウナ室を${e.temp||(S.settings.herbTemp||86)}℃へ`,date:e.date,lead:2,cat:'イベント',go:'event'}));
   out.forEach(r=>r.show=addDays(r.date,-r.lead)<=todayStr);return out.sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(a.time||'')<(b.time||'')?-1:(a.time||'')>(b.time||'')?1:0)}
 const whenTxt=d=>{const n=diffDays(d,todayStr);return n<0?`${-n}日過ぎ`:n===0?'今日':n===1?'明日':`${n}日後`};
 const remCls=d=>{const n=diffDays(d,todayStr);return n<0?'bad':n<=1?'warn':'neo'};
@@ -1557,7 +1721,8 @@ function navStat(k){try{switch(k){
   case 'event':{const w=weeklyOn(todayStr).map(x=>x.name);const e=S.events.filter(x=>x.date===todayStr).length;return [...w,e?`今日のイベント ${e}件`:''].filter(Boolean).join('・')}
   case 'expense':{const n=S.expenses.filter(e=>e.status==='申請中').length;return n&&isAdmin()?`承認待ち ${n}件`:''}
   default:return ''}}catch(e){return ''}}
-function vMenu(){return phead('menu','MENU')+NAV_GROUPS.map(([g,ks])=>{const items=ks.filter(k=>{const n=NAV.find(x=>x[0]===k);return n&&(!n[2]||isAdmin())});if(!items.length)return '';
+function vMenu(){const bt=S.settings.herbTemp||86,hm=S.settings.herbMin||20;const tp=[];for(let t=78;t<=100;t++)tp.push(t);
+  return phead('menu','MENU')+`<section class="card tempcard"><h2>基本温度設定<span class="r muted">ハーバルを登録するとき、最初にこの温度が入ります</span></h2><div class="frow"><label class="fld"><span>ハーバルのサウナ室の温度（基本）</span><select class="inp" data-s="herbTemp" data-num="1">${tp.map(t=>`<option value="${t}" ${t==bt?'selected':''}>${t}℃</option>`).join('')}</select></label><label class="fld"><span>ハーバルの時間（終了を自動で入れる）</span><select class="inp" data-s="herbMin" data-num="1">${[15,20,25,30,40,45,60].map(m=>`<option value="${m}" ${m==hm?'selected':''}>${m}分</option>`).join('')}</select></label></div><p class="note" style="margin:0">その日だけ温度が違うときは、イベントの登録画面で変えてください。</p></section>`+NAV_GROUPS.map(([g,ks])=>{const items=ks.filter(k=>{const n=NAV.find(x=>x[0]===k);return n&&(!n[2]||isAdmin())});if(!items.length)return '';
   return `<section class="mg"><h2 class="mg-h">${g}</h2><div class="mtiles">${items.map(k=>{const st=navStat(k);return `<button class="mtile" data-a="go" data-v="${k}"><span class="mt-ic">${icon(k)}</span><span class="mt-b"><b>${navLabel(k)} ${navBadge(k)}</b><small>${NAV_DESC[k]||''}</small>${st?`<em>${esc(st)}</em>`:''}</span><span class="mt-go" aria-hidden="true">›</span></button>`}).join('')}</div></section>`}).join('')}
 function newsModal(id){const n=(S.news||[]).find(x=>x.id===id)||{title:'',body:''};
   modal(id?'お知らせを編集':'お知らせを書く',`${fld('タイトル',inp('title',n.title,'text','placeholder="例：12月のシフトを確定しました"'))}${fld('本文',ta('body',n.body,5))}${id?`<div id="delzone"><button type="button" class="btn sm danger" data-a="askDel" data-k="news" data-id="${id}">このお知らせを削除</button></div>`:''}`,
@@ -1594,8 +1759,8 @@ function parseShiftText(t){t=String(t||'').replace(/[０-９]/g,c=>String.fromCh
   const m=t.match(/^(\d{1,2})(?::?(\d{2}))?-(\d{1,2})(?::?(\d{2}))?$/);
   if(m){const h1=+m[1],m1=+(m[2]||0),h2=+m[3],m2=+(m[4]||0);if(h1<30&&h2<30&&m1<60&&m2<60&&!(h1===h2&&m1===m2))return{start:pad(h1%24)+':'+pad(m1),end:pad(h2%24)+':'+pad(m2),note}}
   return{err:true}}
-const TOPTS=(()=>{const a=[];for(let m=6*60;m<=23*60+30;m+=30)a.push(pad(Math.floor(m/60))+':'+pad(m%60));return a})();
-const EOPTS=(()=>{const a=[];for(let m=7*60;m<=27*60;m+=30){const h=Math.floor(m/60);a.push([pad(h%24)+':'+pad(m%60),(h>=24?'翌':'')+(h%24)+':'+pad(m%60)])}return a})();
+const TOPTS=(()=>{const a=[];for(let m=6*60;m<=23*60+45;m+=15)a.push(pad(Math.floor(m/60))+':'+pad(m%60));return a})();
+const EOPTS=(()=>{const a=[];for(let m=7*60;m<=27*60;m+=15){const h=Math.floor(m/60);a.push([pad(h%24)+':'+pad(m%60),(h>=24?'翌':'')+(h%24)+':'+pad(m%60)])}return a})();
 const bkKey=(st,en,nt)=>st==='off'?'off|'+nt:st?`${st}-${en}|${nt}`:'';
 function bkCell(sid,d,x){const st=x?(x.off?'off':x.start):'';const en=x&&!x.off?x.end:'';const nt=x?x.note||'':'';
   const so=[['','―'],['off','休み'],...TOPTS.map(t=>[t,fmtT(t)])];if(st&&st!=='off'&&!TOPTS.includes(st))so.push([st,fmtT(st)]);
@@ -1665,7 +1830,8 @@ function payDetailModal(id){const r=payroll(UI.pay).find(x=>x.st.id===id);if(!r)
 /* ====== 経費 ====== */
 const PAYS=()=>S.settings.payMethods||['現金','Amazon','アミカ','楽天','その他'];
 const isOut=e=>e.io!=='in';
-function vExpense(){const t=isAdmin()?UI.expTab:'list';
+function vExpense(){if(!adminOK)return phead('EXPENSES','経費')+adminGate('経費');return vExpenseMain()}
+function vExpenseMain(){const t=isAdmin()?UI.expTab:'list';
   let h=phead('EXPENSES','経費',`${isAdmin()&&t==='list'?'<button class="btn" data-a="expCopy">表をコピー（Excel用）</button>':''}${t==='cash'?'<button class="btn" data-a="cashNew">入金を記録</button>':''}<button class="btn primary" data-a="expNew">${isAdmin()?'経費を登録':'立替経費を申請'}</button>`);
   if(isAdmin())h+=`<div class="tabs">${[['list','経費一覧'],['cash','現金出納帳']].map(([k,l])=>`<button class="${t===k?'on':''}" data-a="set" data-k="expTab" data-v="${k}">${l}</button>`).join('')}</div>`;
   return h+(t==='cash'?cashView():expListView())}
@@ -1795,26 +1961,49 @@ function vEvent(){const m=UI.evMonth;const evs=S.events.filter(e=>e.date.startsW
   `<div class="card"><h2>毎週のイベント<span class="r muted">定休日・店休日はお休み</span></h2><div class="wev">${W.map(w=>`<div class="wev-i"><b><span class="pill evw">${WD[+w.dow]}曜</span> ${esc(w.name)}</b><span class="muted">${esc(w.desc||'')}</span>${(w.tasks||[]).length?`<ul>${w.tasks.map(t=>`<li><b class="num">${t.time?fmtT(t.time):'終日'}</b> ${esc(t.text)}</li>`).join('')}</ul>`:''}</div>`).join('')||'<p class="empty">設定 → 毎週のイベント で登録できます</p>'}</div></div>
   <div class="row">${monthNav('evMonth',m)}</div>`+
   calendar(m,d=>{const es=S.events.filter(e=>e.date===d);const cl=closureOf(d);return{cls:cl&&!cl.weekly?'closed':'',html:(cl?`<span class="ev cl">${esc(cl.kind)}</span>`:'')+weeklyOn(d).map(w=>`<span class="ev evw">${esc(w.name.replace(/Day$/,''))}</span>`).join('')+es.map(e=>`<span class="ev ${evCls(e.type)}">${e.start?fmtT(e.start)+' ':''}${esc(e.title)}</span>`).join('')}},'evDay')+
-  `<div class="list">${evs.map(e=>{const done=(e.checklist||[]).filter(c=>c.done).length,all=(e.checklist||[]).length;const past=e.date<todayStr;return `<div class="item"><div class="t1"><span class="pill neo">${esc(e.type)}</span>${esc(e.title)}<span class="sp"></span>${all?`<span class="pill ${done===all?'ok':'warn'}">準備 ${done}/${all}</span>`:''}</div>
-   <div class="meta"><span>${dLabel(e.date)} ${fmtT(e.start||'')}〜${fmtT(e.end||'')}</span>${e.type==='ハーバルプログラム'?`<span>サウナ室 <b>${e.temp||86}℃</b>（${fmtT(addMin(e.start||'00:00',-60))}に変更）</span>`:''}<span>担当：${(e.staffIds||[]).map(staffName).join('、')||'—'}</span>${isAdmin()&&(+e.cost||+e.revenue)?`<span>費用 ${yen(e.cost)}／売上 ${yen(e.revenue)}／収支 <b>${yen((+e.revenue||0)-(+e.cost||0))}</b></span>`:''}${e.people?`<span>参加 ${e.people}人</span>`:''}</div>
-   ${e.memo?`<div class="meta"><span>${esc(e.memo)}</span></div>`:''}
+  `<div class="list">${evGroups(evs)||'<p class="empty">この月の単発のイベントはありません。カレンダーの日付をタップすると、その日にイベント（ハーバル・お客様・インフルエンサー・撮影など）を追加できます。</p>'}</div>`}
+function evGroups(evs){const G=[];evs.forEach(e=>{const k=e.date+'|'+e.type+'|'+e.title;let g=G.find(x=>x.k===k);if(!g)G.push(g={k,list:[]});g.list.push(e)});
+  return G.map(({list})=>{const e=list[0];const h=e.type===HERB;const past=e.date<todayStr;const done=(e.checklist||[]).filter(c=>c.done).length,all=(e.checklist||[]).length;
+   return `<div class="item evg-i"><div class="t1"><span class="pill ${evCls(e.type)}">${esc(e.type)}</span>${esc(e.title)}<span class="muted" style="font-size:13px">${dLabel(e.date)}・${list.length}回</span><span class="sp"></span>${all?`<span class="pill ${done===all?'ok':'warn'}">準備 ${done}/${all}</span>`:''}</div>
+   <div class="evg-times">${list.map(x=>`<button class="evg-t" data-a="evEdit" data-id="${x.id}"><b class="num">${x.start?fmtT(x.start):'時間なし'}${x.end?'〜'+fmtT(x.end):''}</b>${h?`<small>${x.temp||(S.settings.herbTemp||86)}℃・${x.start?fmtT(addMin(x.start,-60))+'に温度変更':''}</small>`:''}${x.people?`<small>参加 ${x.people}人</small>`:''}<span class="evg-e">編集</span></button>`).join('')}${list.length<3||!h?`<button class="evg-add" data-a="evDup" data-id="${e.id}">＋ 別の時間を追加</button>`:''}</div>
+   <div class="meta"><span>担当：${(e.staffIds||[]).map(staffName).join('、')||'—'}</span>${isAdmin()&&list.some(x=>+x.cost||+x.revenue)?`<span>費用 ${yen(list.reduce((a,x)=>a+(+x.cost||0),0))}／売上 ${yen(list.reduce((a,x)=>a+(+x.revenue||0),0))}</span>`:''}${e.memo?`<span>${esc(e.memo)}</span>`:''}${e.materials?`<span>使う在庫：${esc(e.materials)}</span>`:''}</div>
    ${all?`<div class="list" style="gap:4px">${e.checklist.map((c,i)=>`<label class="check"><input type="checkbox" data-c="evChk" data-id="${e.id}" data-i="${i}" ${c.done?'checked':''}>${esc(c.t)}</label>`).join('')}</div>`:''}
-   ${e.materials?`<div class="meta"><span>使う在庫：${esc(e.materials)}</span></div>`:''}${e.reflection?`<div class="note">ふりかえり：${esc(e.reflection)}</div>`:past&&e.type==='ハーバルプログラム'?'<div class="note">終わったイベントです。「編集」から参加人数・ふりかえりを記録してください。</div>':''}
-   <div class="acts"><button class="btn sm" data-a="evEdit" data-id="${e.id}">編集</button></div></div>`}).join('')||'<p class="empty">この月の単発のイベントはありません。カレンダーの日付をタップすると、その日にイベント（ハーバル・お客様・インフルエンサー・撮影など）を追加できます。</p>'}</div>`}
-function evModal(id,date){const e=S.events.find(x=>x.id===id)||{type:S.settings.eventTypes[0],title:'',date:date||todayStr,start:'15:00',end:'16:00',temp:86,staffIds:[],checklist:[],cost:'',revenue:'',people:'',reflection:'',materials:'',memo:''};
-  const temps=[];for(let t=80;t<=95;t++)temps.push([t,t+'℃']);
-  modal(id?'イベントを編集':'イベントを追加',`${fld('種類',seg('type',S.settings.eventTypes,e.type))}<div class="frow">${fld('新しい種類を追加するとき（任意）',inp('newType','','text','placeholder="例：DJサウナナイト"'))}</div>${fld('イベント名',inp('title',e.title,'text','placeholder="例：ハーバル（カモミール）／〇〇様 撮影"'))}
-  <div class="frow">${fld('日付',inp('date',e.date,'date'))}${fld('開始',inp('start',e.start,'time'))}${fld('終了',inp('end',e.end,'time'))}</div>
-  <div class="note herb-only"><b>ハーバルプログラムのとき</b>：開始の1時間前に「サウナ室の温度を変える」リマインドが出ます。${fld('その日のサウナ室の温度',sel('temp',temps,e.temp||86))}</div>
+   ${e.reflection?`<div class="note">ふりかえり：${esc(e.reflection)}</div>`:past&&h?'<div class="note">終わったイベントです。時間をタップして「くわしく」から参加人数・ふりかえりを記録できます。</div>':''}</div>`}).join('')}
+const HERB='ハーバルプログラム';
+const herbMin=()=>+(S.settings.herbMin||20);
+function evModal(id,date,dupOf){const src=S.events.find(x=>x.id===(id||dupOf));const e=src?Object.assign({},src):{type:S.settings.eventTypes[0],title:'',date:date||todayStr,start:'',end:'',temp:'',staffIds:[],checklist:[],cost:'',revenue:'',people:'',reflection:'',materials:'',memo:''};
+  if(dupOf){e.start='';e.end='';e.people='';e.reflection=''}
+  const bt=S.settings.herbTemp||86;const temps=[];for(let t=78;t<=100;t++)temps.push([t,t+'℃'+(t===+bt?'（基本）':'')]);
+  const isH=e.type===HERB;const others=id?S.events.filter(x=>x.id!==id&&x.date===e.date&&x.title===e.title&&x.type===e.type).sort((a,b)=>(a.start||'')<(b.start||'')?-1:1):[];
+  const row=(i,st,en)=>`<div class="evt-row"><b class="evt-n">${i}回目${i>1?'<small>（任意）</small>':''}</b><label class="fld"><span>開始</span><input type="time" step="900" name="start${i}" data-evs="${i}" value="${esc(st||'')}"></label><span class="evt-to">〜</span><label class="fld"><span>終了</span><input type="time" step="900" name="end${i}" value="${esc(en||'')}"></label>${i>1?`<button type="button" class="btn sm ghost" data-a="evClr" data-i="${i}">消す</button>`:''}</div>`;
+  const quick=['10:30','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'];
+  modal(id?'イベントを編集':dupOf?'同じイベントを別の時間で追加':'イベントを追加',`${fld('種類',seg('type',S.settings.eventTypes,e.type))}
+  <div class="frow">${fld('日付',inp('date',e.date,'date'))}${fld('イベント名（空欄なら種類の名前）',inp('title',e.title,'text','placeholder="例：ハーバル（カモミール）／〇〇様 撮影"'))}</div>
+  <div class="evtimes"><div class="evt-h"><b>時間</b><span class="muted">${id?'この回の時間です。下の2回目・3回目に入れると、同じ内容で別の回を追加します。':'1日に2〜3回やるときは、2回目・3回目にも時間を入れると1回でまとめて登録できます。'}</span></div>
+   <div class="evt-herb herb-only"><span class="muted">ハーバルは開始時刻を入れると、終了が自動で${herbMin()}分後に入ります。よく使う開始時刻：</span><div class="chips">${quick.map(q=>`<button type="button" data-a="evQuick" data-v="${q}">${fmtT(q)}</button>`).join('')}</div></div>
+   ${row(1,e.start,e.end)}${row(2)}${row(3)}
+   ${others.length?`<p class="muted" style="margin:0">同じ日の同じイベント：${others.map(o=>`<b>${fmtT(o.start)}〜${fmtT(o.end)}</b>`).join('、')}</p>`:''}</div>
+  <div class="note herb-only"><b>ハーバルのサウナ室の温度</b>：MENUの「基本温度設定」の <b>${bt}℃</b> が入っています。違うときだけ変えてください。開始の1時間前に「サウナ室の温度を変える」リマインドが出ます。${fld('この日のサウナ室の温度',sel('temp',temps,e.temp||bt))}</div>
   ${fld('内容・メモ（お客様名・インフルエンサー名・撮影内容など）',ta('memo',e.memo||'',2))}
   <div class="fld"><span>担当スタッフ</span><div class="chips">${activeStaff().map(s=>`<label class="check"><input type="checkbox" name="staffIds" value="${s.id}" ${(e.staffIds||[]).includes(s.id)?'checked':''}>${esc(s.name)}</label>`).join('')}</div></div>
+  <details class="evmore"${id&&(e.checklist&&e.checklist.length||e.cost||e.revenue||e.people||e.reflection||e.materials)?' open':''}><summary>くわしく（準備チェック・在庫・費用・参加人数・ふりかえり・新しい種類）</summary>
   ${fld('準備チェックリスト（1行に1項目）',ta('checklist',(e.checklist||[]).map(c=>c.t).join('\n'),3))}
   ${fld('使う在庫のメモ（ハーブなど）',inp('materials',e.materials,'text','placeholder="例：白樺ヴィヒタ 2束、アロマ水"'))}
   <div class="frow">${fld('費用（円）',inp('cost',e.cost,'number','inputmode="numeric"'))}${fld('売上（円）',inp('revenue',e.revenue,'number','inputmode="numeric"'))}${fld('参加人数',inp('people',e.people,'number','inputmode="numeric"'))}</div>
-  ${fld('ふりかえり',ta('reflection',e.reflection,2))}${id?`<div id="delzone"><button type="button" class="btn sm danger" data-a="askDel" data-k="events" data-id="${id}">このイベントを削除</button></div>`:''}`,
-  {wide:true,nofocus:true,save:f=>{let type=(f.newType||'').trim()||f.type;if(!type){toast('種類を選んでください');return false}if(!S.settings.eventTypes.includes(type))S.settings.eventTypes.push(type);
-   if(!f.title){toast('イベント名を入力してください');return false}const old=e.checklist||[];const cl=String(f.checklist||'').split('\n').map(s=>s.trim()).filter(Boolean).map(t=>({t,done:!!(old.find(c=>c.t===t)||{}).done}));
-   const o={type,title:f.title,date:f.date,start:f.start,end:f.end,temp:+f.temp||86,memo:f.memo,staffIds:[].concat(f.staffIds||[]),checklist:cl,cost:f.cost,revenue:f.revenue,people:f.people,reflection:f.reflection,materials:f.materials};if(id)Object.assign(e,o);else S.events.push({id:uid(),...o})}})}
+  ${fld('ふりかえり',ta('reflection',e.reflection,2))}
+  ${fld('新しい種類を追加するとき（任意）',inp('newType','','text','placeholder="例：DJサウナナイト"'))}</details>
+  ${id?`<div id="delzone"><button type="button" class="btn sm danger" data-a="askDel" data-k="events" data-id="${id}">この回を削除</button></div>`:''}`,
+  {wide:true,nofocus:true,saveLabel:id?'保存':'登録する',save:f=>{let type=(f.newType||'').trim()||f.type;if(!type){toast('種類を選んでください');return false}if(!S.settings.eventTypes.includes(type))S.settings.eventTypes.push(type);
+   const h=type===HERB;const rows=[1,2,3].map(i=>({s:f['start'+i]||'',e:f['end'+i]||''})).filter((r,i)=>i===0||r.s);
+   if(h&&!rows[0].s){toast('ハーバルは開始時刻を入れてください');return false}
+   rows.forEach(r=>{if(h&&r.s&&!r.e)r.e=addMin(r.s,herbMin())});
+   const old=e.checklist||[];const cl=String(f.checklist||'').split('\n').map(s=>s.trim()).filter(Boolean).map(t=>({t,done:!!(old.find(c=>c.t===t)||{}).done}));
+   const base={type,title:(f.title||'').trim()||(h?'ハーバル':type),date:f.date,temp:h?(+f.temp||+bt):'',memo:f.memo,staffIds:[].concat(f.staffIds||[]),checklist:cl,cost:f.cost,revenue:f.revenue,people:f.people,reflection:f.reflection,materials:f.materials};
+   rows.forEach((r,i)=>{const o=Object.assign({},base,{start:r.s,end:r.e});if(i>0){o.people='';o.reflection='';o.checklist=cl.map(c=>({t:c.t,done:false}))}if(id&&i===0)Object.assign(S.events.find(x=>x.id===id),o);else S.events.push({id:uid(),...o})});
+   toast(rows.length>1?`${rows.length}回分を登録しました`:'保存しました')}});
+  evTypeSync()}
+function evTypeSync(){const t=document.querySelector('#mform input[name="type"]:checked');const h=t&&t.value===HERB;document.querySelectorAll('#mform .herb-only').forEach(x=>x.hidden=!h)}
+function evStartSync(i){const t=document.querySelector('#mform input[name="type"]:checked');if(!t||t.value!==HERB)return;const s=document.querySelector(`#mform [name="start${i}"]`),e=document.querySelector(`#mform [name="end${i}"]`);if(s&&e&&s.value)e.value=addMin(s.value,herbMin())}
 
 /* ====== 人材育成 ====== */
 function vPeople(){const t=UI.peopleTab;const own=x=>isAdmin()||x.staffId===me.id;
@@ -2028,11 +2217,11 @@ function staffModal(id){const st=S.staff.find(x=>x.id===id)||{name:'',role:'バ�
 /* ====== 操作 ====== */
 const COL={expenses:()=>S.expenses,stock:()=>S.stock,equip:()=>S.equip,events:()=>S.events,interviews:()=>S.interviews,trainings:()=>S.trainings,manuals:()=>S.manuals,initiatives:()=>S.plans.initiatives,closures:()=>S.plans.closures,handovers:()=>S.handovers,orders:()=>S.orders,cancels:()=>S.cancels,tickets:()=>S.tickets,lost:()=>S.lost,shifts:()=>S.shifts,news:()=>S.news,reminders:()=>S.reminders,staff:()=>S.staff};
 const ACT={
- go:d=>{closeModal();UI.ordView=null;view=d.v;render();window.scrollTo(0,0)},
+ go:d=>{closeModal();UI.ordView=null;if(d.v!==view){adminOK=false;UI.payPrint=false}view=d.v;render();window.scrollTo(0,0)},
  logout:()=>{me=null;UI.loginStaff=null;try{localStorage.removeItem(KEY+'-me')}catch(e){}render()},
  lpick:d=>{UI.loginStaff=d.id||null;UI.loginMethod='pattern';renderLogin()},
  lmethod:d=>{UI.loginMethod=d.k;renderLogin()},
- storeOut:()=>{try{localStorage.removeItem(TOKKEY);localStorage.removeItem(KEY+'-me')}catch(e){}location.reload()},
+ storeOut:()=>{try{sessionStorage.removeItem(TOKKEY);localStorage.removeItem(TOKKEY);localStorage.removeItem(KEY+'-me')}catch(e){}location.reload()},
  suCopy:()=>{const t=document.querySelector('#su-out textarea');if(t)copyText(t.value,'コピーしました。Claudeとのチャットに貼り付けてください')},
  lname:d=>{const st=S.staff.find(s=>s.id===d.id);if(st)doLogin(st)},
  lskip:()=>{const st=S.staff.find(s=>s.id===UI.loginStaff)||S.staff[0];doLogin(st)},
@@ -2044,11 +2233,11 @@ const ACT={
  fy:d=>{UI.planFY+=+d.n;render()},
  cellEdit:d=>{const x=S.shifts.find(s=>s.staffId===d.s&&s.date===d.d);if(x)shiftModal(x.id);else shiftModal(null,{staffId:d.s,date:d.d})},
  shEdit:d=>shiftModal(d.id),
- gateGo:async()=>{const i=$('#gate-pw');const v=i?i.value:'';if(!v){toast('パスワードを入れてください');return}let h='';try{h=await sha256hex(v)}catch(e){toast('このブラウザではパスワードを確認できません');return}if(h===adminHash()){adminOK=true;try{sessionStorage.setItem('kanzaki-admin','1')}catch(e){}render();toast('開きました')}else{toast('パスワードが違います');if(i){i.value='';i.focus()}}},
- gateLock:()=>{adminOK=false;try{sessionStorage.removeItem('kanzaki-admin')}catch(e){}UI.payPrint=false;render();toast('管理用の画面を閉じました')},
+ gateGo:async()=>{const i=$('#gate-pw');const v=i?i.value:'';if(!v){toast('パスワードを入れてください');return}let h='';try{h=await sha256hex(v)}catch(e){toast('このブラウザではパスワードを確認できません');return}if(h===adminHash()){adminOK=true;render();toast('開きました')}else{toast('パスワードが違います');if(i){i.value='';i.focus()}}},
+ gateLock:()=>{adminOK=false;UI.payPrint=false;render();toast('管理用の画面を閉じました')},
  payXlsx:()=>payXlsx(),payPrint:()=>{UI.payPrint=true;render();window.scrollTo(0,0)},payBack:()=>{UI.payPrint=false;render()},
  salesSave:()=>{const cs=[...document.querySelectorAll('.si.chg')];if(!cs.length){toast('変更はありません');return}if(document.querySelector('.si.err')){toast('赤い枠のマスは数字だけにしてください');return}cs.forEach(el=>{const m=el.dataset.m,f=el.dataset.f;const v=el.value.replace(/[¥,円\s]/g,'');S.plans.months[m]=Object.assign({},S.plans.months[m]||{},{[f]:v===''?'':String(+v)})});new Set(cs.filter(el=>VK.some(([k])=>k===el.dataset.f)).map(el=>el.dataset.m)).forEach(m=>{const p=S.plans.months[m];p.visA=hasVB(m)?String(VT.reduce((a,[k])=>a+(pv(m,k)||0),0)):''});save();render();toast(`${cs.length}マスを保存しました`)},
- salesXlsx:()=>salesXlsx(),
+ salesXlsx:()=>salesXlsx(),anaXlsx:()=>anaXlsx(),anaPre:d=>{UI.anaPre=d.v;UI.anaFrom=UI.anaTo=null;render()},
  siSec:d=>{if(document.querySelector('.si.chg')){toast('先に「保存」を押してください（変更が消えないように）');return}UI.siSec=+d.v;render()},
  sxCancel:()=>{UI.sx=null;SXWB=null;render()},
  sxSave:()=>{const r=sxRows();if(!r||!r.agg.length){toast('取り込める内訳がありません');return}const rep=$('#sx-rep')&&$('#sx-rep').checked,act=$('#sx-act')&&$('#sx-act').checked;if(rep)S.sales=coll('sales').filter(x=>!r.months.includes(x.month));const at=todayStr;r.agg.forEach(x=>coll('sales').push({id:uid(),month:x.month,cat:x.cat,item:x.item,amount:Math.round(x.amount),qty:x.qty,src:UI.sx.name,at}));if(act)r.months.forEach(m=>{const t=r.agg.filter(x=>x.month===m).reduce((a,x)=>a+x.amount,0);S.plans.months[m]=Object.assign({},S.plans.months[m]||{},{salesA:String(Math.round(t))})});UI.sx=null;SXWB=null;save();render();toast(`${r.months.length}か月分の内訳を保存しました`)},
@@ -2075,7 +2264,9 @@ const ACT={
  invCommit:()=>{document.querySelectorAll('[data-inv]').forEach(i=>{const s=S.stock.find(x=>x.id===i.dataset.inv);if(s&&i.value!=='')s.qty=+i.value});UI.stockMode='normal';save();render();toast('棚卸しの数を確定しました')},
  equipNew:()=>equipModal(),equipEdit:d=>equipModal(d.id),equipDone:d=>equipModal(d.id,true),
  setDate:d=>{const el=document.getElementById(d.t);if(el)el.value=d.v},
- evNew:()=>evModal(),evEdit:d=>evModal(d.id),evDay:d=>{const es=S.events.filter(e=>e.date===d.d);if(es.length===1)evModal(es[0].id);else evModal(null,d.d)},
+ evNew:()=>evModal(),evEdit:d=>evModal(d.id),evDup:d=>evModal(null,null,d.id),
+ evQuick:d=>{for(const i of [1,2,3]){const el=document.querySelector(`#mform [name="start${i}"]`);if(el&&!el.value){el.value=d.v;evStartSync(i);return}}toast('3回分まで入っています。消してから選んでください')},
+ evClr:d=>{const a=document.querySelector(`#mform [name="start${d.i}"]`),b=document.querySelector(`#mform [name="end${d.i}"]`);if(a)a.value='';if(b)b.value=''},evDay:d=>{const es=S.events.filter(e=>e.date===d.d);if(es.length===1)evModal(es[0].id);else evModal(null,d.d)},
  ivNew:()=>ivModal(),ivEdit:d=>ivModal(d.id),trNew:()=>trModal(),trEdit:d=>trModal(d.id),
  manNew:()=>manModal(),manEdit:d=>{closeModal();manModal(d.id)},manOpen:d=>manOpen(d.id),
  manRead:d=>{const m=S.manuals.find(x=>x.id===d.id);if(!m.readBy.includes(me.id))m.readBy.push(me.id);save();closeModal();render();toast('既読にしました')},
@@ -2149,6 +2340,8 @@ document.addEventListener('change',async e=>{const t=e.target,c=t.dataset.c;
   if(t.dataset.co){S.settings.cashOpening=Object.assign({date:'',amount:0},S.settings.cashOpening,{[t.dataset.co]:t.dataset.co==='amount'?+t.value:t.value});save();toast('保存しました');return}
   if(t.dataset.wc!==undefined){const d=+t.dataset.wc;const a=new Set(S.settings.weeklyClosed||[]);t.checked?a.add(d):a.delete(d);S.settings.weeklyClosed=[...a];save();toast('定休日を保存しました');return}
   if(t.dataset.we!==undefined){const w=S.settings.weeklyEvents[+t.dataset.we];if(!w)return;const k=t.dataset.p;if(k==='tasks')w.tasks=t.value.split('\n').map(x=>x.trim()).filter(Boolean).map(x=>{const m=x.match(/^(\d{1,2})[:：](\d{2})\s*(.*)$/);return m?{time:pad(+m[1])+':'+m[2],text:m[3]||''}:{time:'',text:x}});else w[k]=k==='dow'?+t.value:t.value;save();toast('保存しました');return}
+  if(c==='anaFrom'||c==='anaTo'){const def=anaPreset(UI.anaPre||'m12');UI.anaFrom=UI.anaFrom||def[0];UI.anaTo=UI.anaTo||def[1];UI[c]=t.value;if(UI.anaFrom>UI.anaTo){if(c==='anaFrom')UI.anaTo=UI.anaFrom;else UI.anaFrom=UI.anaTo}render();return}
+  if(c==='anaCmp'){UI.anaCmp=t.value;render();return}
   if(c==='attPay'){UI.attPay=t.value;render();return}
   if(c==='attBy'){UI.attBy=t.value;S.settings.attChecker=t.value;save();toast(`確認する人を「${t.value}」にしました`);return}
   if(t.dataset.salesfile&&t.files&&t.files[0]){if(typeof XLSX==='undefined'){toast('ファイル読込の部品を読み込めませんでした');return}const f=t.files[0];try{const wb=XLSX.read(await f.arrayBuffer(),{type:'array',cellDates:true});SXWB={};wb.SheetNames.forEach(n=>{SXWB[n]=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:true,defval:''})});const first=wb.SheetNames.find(n=>SXWB[n].length>1)||wb.SheetNames[0];UI.sx={name:f.name,sheet:first,map:null};render()}catch(e){toast('このファイルは読み込めませんでした')}return}
@@ -2161,6 +2354,8 @@ document.addEventListener('change',async e=>{const t=e.target,c=t.dataset.c;
   if(c==='evChk'){const ev=S.events.find(x=>x.id===t.dataset.id);ev.checklist[+t.dataset.i].done=t.checked;save();render();return}
   if(c==='iniDone'){const i=S.plans.initiatives.find(x=>x.id===t.dataset.id);i.done=t.checked;save();render();return}
   if(c==='skillOn'){S.settings.skillOn=t.checked;save();toast(t.checked?'スキルチェックをONにしました':'スキルチェックをOFFにしました');return}
+  if(t.closest&&t.closest('#mform')&&t.name==='type'){evTypeSync();[1,2,3].forEach(evStartSync);}
+  if(t.dataset&&t.dataset.evs){evStartSync(+t.dataset.evs)}
   if(c==='evType'){const n=document.getElementById('f-newType');if(n&&t.value==='__new')n.focus();return}
   if(t.dataset.s){S.settings[t.dataset.s]=t.dataset.num?+t.value:t.value;save();toast('保存しました');if(t.dataset.s==='closeDay')UI.pay=curPay();return}
   if(t.dataset.pre!==undefined){const pr=S.settings.presets[+t.dataset.pre];if(pr){pr[t.dataset.p]=t.value;save();toast('保存しました')}return}
