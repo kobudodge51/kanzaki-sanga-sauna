@@ -462,6 +462,74 @@ tr.mine .gc{color:var(--n2);font-weight:700}
 .tl-i b{font-family:var(--display)}
 .tl-i.past{opacity:.55;border-left-color:var(--line)}
 .herb-only{display:grid;gap:8px}
+/* 週の表 */
+.wnav{gap:8px}.wnav .btn{min-height:42px}.wnav-l{font-family:var(--mincho);font-size:17px;margin-left:6px}
+.wtable,.bktable{border-collapse:separate;border-spacing:0;width:100%;font-size:14px}
+.wtable th,.wtable td,.bktable th,.bktable td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:0;vertical-align:top;background:var(--surface)}
+.wtable thead th,.bktable thead th{position:sticky;top:0;z-index:3;background:var(--surface2)}
+.wh{min-width:118px;padding:8px 6px!important;text-align:left;font-weight:500}
+.wh-d{font-family:var(--mincho);font-size:17px;font-weight:700;display:flex;align-items:baseline;gap:4px}
+.wh-d small{font-size:13px;color:var(--muted)}
+.wh.sun .wh-d{color:var(--bad)}.wh.sat .wh-d{color:var(--te)}
+.wh.today{box-shadow:inset 0 -3px 0 var(--flame)}
+.wh-p{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px;min-height:20px}
+.wh-p .pill{font-size:10.5px;padding:0 6px}
+.ws{position:sticky;left:0;z-index:2;background:var(--surface2)!important;text-align:left;padding:10px 12px!important;min-width:96px;font-family:var(--mincho);font-size:15px;white-space:nowrap}
+.ws small{display:block;font-family:var(--body);font-size:11px;color:var(--muted);font-weight:500}
+thead .ws{z-index:4}
+.wtable tr.mine .ws{box-shadow:inset 4px 0 0 var(--flame)}
+.wtable td.tue,.bktable td.tue,.wh.tue{background:color-mix(in srgb,var(--n1) 13%,var(--surface))!important}
+.wtable td.closed,.bktable td.closed,.wh.closed{background:repeating-linear-gradient(135deg,var(--surface) 0 7px,var(--surface2) 7px 14px)!important}
+.wtable td.tcol{background:color-mix(in srgb,var(--flame) 6%,var(--surface))}
+.wcell{display:block;width:100%;min-height:62px;border:0;background:none;padding:0;text-align:left;cursor:pointer}
+.wcell:hover{background:color-mix(in srgb,var(--n2) 8%,transparent)}
+.wc{display:grid;gap:5px;padding:9px 10px}
+.wc b{font-family:var(--display);font-size:15.5px;font-weight:400;white-space:nowrap;letter-spacing:-.02em}
+.wc b i{font-style:normal;color:var(--muted);margin:0 1px}
+.wc .pill{justify-self:start;font-size:11px}
+.wc-bar{height:4px;background:var(--surface2);border-radius:2px;position:relative;display:block}
+.wc-bar i{position:absolute;top:0;bottom:0;background:var(--n1);border-radius:2px}
+tr.mine .wc-bar i{background:var(--flame)}
+.wc.off{color:var(--bad);font-family:var(--mincho);font-weight:700;font-size:18px;padding:16px 10px}
+.wc-add{display:none;padding:18px 10px;color:var(--muted);font-size:18px}
+.wcell:hover .wc-add{display:block}
+.wt{padding:10px 8px!important;text-align:right;color:var(--muted);white-space:nowrap;font-size:13px}
+.wtable tfoot th,.wtable tfoot td{background:var(--surface2);padding:8px 10px;text-align:center}
+/* 月の表 */
+.mgrid{font-size:12px}
+.mgrid tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surface2) 55%,var(--surface))}
+.mgrid tbody tr:hover td{background:color-mix(in srgb,var(--flame) 8%,var(--surface))}
+.mgrid th{min-width:50px}
+.mgrid .cell{height:40px}
+.mgrid .gc{display:grid;line-height:1.15;font-size:11.5px;color:var(--muted)}
+.mgrid .gc b{color:var(--fg);font-weight:700;font-size:12.5px}
+.mgrid .stk{font-family:var(--mincho);font-size:14px;min-width:84px}
+.mgrid .mt{padding:0 8px;color:var(--muted)}
+.mtbl{max-height:75vh;overflow:auto}
+.mgrid thead th{position:sticky;top:0;z-index:3}
+.mgrid thead th.stk{z-index:4}
+/* まとめて入力 */
+.bk-help{font-size:14px;background:var(--surface2);border-radius:8px;padding:12px 14px;line-height:1.7}
+.bk-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bk-tl{font-size:14px;color:var(--muted);font-weight:700}
+.bk-pal{border:1.5px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 14px;font-size:15px;min-height:44px}
+.bk-pal.on{background:var(--coal);color:#f6efe2;border-color:var(--coal)}
+.bktable td{min-width:112px}
+input.bk{width:100%;box-sizing:border-box;border:0;background:transparent;padding:14px 10px;font-size:16px;font-family:var(--display);min-height:52px;color:var(--fg)}
+input.bk:focus{outline:none;box-shadow:inset 0 0 0 2px var(--n2);background:var(--surface)}
+input.bk.chg{background:color-mix(in srgb,var(--flame) 14%,var(--surface))}
+input.bk.err{box-shadow:inset 0 0 0 2px var(--bad);background:var(--badbg)}
+input.bk[readonly]{cursor:pointer}
+.bk-bar{position:sticky;bottom:0;z-index:5;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;box-shadow:var(--shadow)}
+.bk-save{min-height:52px;font-size:17px;padding:12px 24px}
+@media (max-width:860px){.bk-bar{bottom:calc(64px + env(safe-area-inset-bottom,0px))}.bk-save{width:100%;justify-content:center}}
+.item.ho{border-left:4px solid var(--flame)}
+.item.ho.done{border-left-color:var(--line);opacity:.75}
+.ho-from,.ho-to{font-family:var(--mincho);font-size:16px}
+.ho-text{font-size:16px;line-height:1.8;white-space:normal}
+.ho-none{color:var(--warn)}
+.wh{min-width:100px}.wc{padding:8px 8px}.wc b{font-size:14px}.ws{min-width:84px}.wt{min-width:54px}
+.bktable td{min-width:104px}
 </style>
 </head>
 <body>
@@ -534,7 +602,7 @@ function seed(){
       manualCats:['受付','清掃','ロウリュ・ハーバル','小屋サウナ','緊急時'],
       lostCats:['サウナハット','衣類','貴重品類','アクセサリー類','その他'],
       places:['男湯','女湯','小屋サウナ','ロッカー','休憩スペース','外気浴スペース','受付','その他']},
-    staff:st,orders:[],cancels:[],tickets:[],shifts:[],hopes:[],expenses:[],stock:[],equip:[],events:[],interviews:[],trainings:[],manuals:[],news:[],
+    staff:st,handovers:[],orders:[],cancels:[],tickets:[],shifts:[],hopes:[],expenses:[],stock:[],equip:[],events:[],interviews:[],trainings:[],manuals:[],news:[],
     plans:{months:{},initiatives:[],closures:[]},lost:[],reminders:[],sample:true};
   // シフト：今月と来月（サンプル）
   const r=rnd(42);const pick=a=>a[Math.floor(r()*a.length)];
@@ -602,7 +670,7 @@ const CLOUD=!!(GH&&CFG.enc);
 const SETUP=!!(GH&&!CFG.enc);
 const TOKKEY='kanzaki-sanga-token';
 let TOKEN=null;
-const COLLS=['staff','shifts','hopes','expenses','stock','equip','events','interviews','trainings','manuals','news','lost','reminders','initiatives','closures','orders','cancels','tickets'];
+const COLLS=['staff','shifts','hopes','expenses','stock','equip','events','interviews','trainings','manuals','news','lost','reminders','initiatives','closures','orders','cancels','tickets','handovers'];
 const KINDS=[...COLLS,'single'];
 const coll=k=>k==='initiatives'?S.plans.initiatives:k==='closures'?S.plans.closures:(S[k]||(S[k]=[]));
 const setColl=(k,v)=>{if(k==='initiatives')S.plans.initiatives=v;else if(k==='closures')S.plans.closures=v;else S[k]=v};
@@ -674,7 +742,7 @@ function load(){try{const t=localStorage.getItem(KEY);return t?JSON.parse(t):nul
 function save(){
   if(CLOUD){if(cloudReady)cloudPush();return}
   try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('保存できませんでした（写真が多すぎる可能性があります）')}}
-function blankS(){const B=seed();const keep=['s1','s2','s3','s4','s5','s6'];B.staff=B.staff.filter(s=>keep.includes(s.id));['shifts','hopes','expenses','stock','equip','events','interviews','trainings','manuals','news','lost','reminders','orders','cancels','tickets'].forEach(k=>B[k]=[]);B.plans={months:{},initiatives:[],closures:[]};B.sample=false;return B}
+function blankS(){const B=seed();const keep=['s1','s2','s3','s4','s5','s6'];B.staff=B.staff.filter(s=>keep.includes(s.id));['shifts','hopes','expenses','stock','equip','events','interviews','trainings','manuals','news','lost','reminders','orders','cancels','tickets','handovers'].forEach(k=>B[k]=[]);B.plans={months:{},initiatives:[],closures:[]};B.sample=false;return B}
 function softRender(){if(!$('#modal').hidden||typing()){pendingRender=true;return}render()}
 document.addEventListener('focusout',()=>setTimeout(()=>{if(pendingRender&&$('#modal').hidden&&!typing()){pendingRender=false;render()}},120));
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)pollOnce()});
@@ -733,7 +801,7 @@ const hopeWho=()=>isShared()?(UI.hopeStaff&&S.staff.some(s=>s.id===UI.hopeStaff)
 /* ====== UI状態 ====== */
 const curPay=()=>{const d=TODAY.getDate();const cd=S.settings.closeDay;return cd>=31||d<=cd?ym(TODAY):monthAdd(ym(TODAY),1)};
 let view='home';
-const UI={expTab:'list',expPay:'すべて',ordView:null,cxFilter:'未入金',shiftMonth:ym(TODAY),hopeMonth:monthAdd(ym(TODAY),2),shiftTab:'day',showPast:false,lostCat:'すべて',pay:curPay(),expMonth:ym(TODAY),stockCat:'すべて',stockMode:'normal',stockLow:false,equipCat:'すべて',evMonth:ym(TODAY),peopleTab:'interview',manCat:'すべて',manQ:'',planFY:fyOf(todayStr),planMode:'year',planQ:Math.floor(fyMonths(fyOf(todayStr)).indexOf(ym(TODAY))/3),planMonth:ym(TODAY),lostFilter:'保管中',loginStaff:null,loginMethod:'pattern',imp:{}};
+const UI={weekStart:addDays(todayStr,-((TODAY.getDay()+6)%7)),paint:null,bulkDays:7,weekAll:false,hoFilter:'未確認',expTab:'list',expPay:'すべて',ordView:null,cxFilter:'未入金',shiftMonth:ym(TODAY),hopeMonth:monthAdd(ym(TODAY),2),shiftTab:(window.innerWidth>860?'week':'day'),showPast:false,lostCat:'すべて',pay:curPay(),expMonth:ym(TODAY),stockCat:'すべて',stockMode:'normal',stockLow:false,equipCat:'すべて',evMonth:ym(TODAY),peopleTab:'interview',manCat:'すべて',manQ:'',planFY:fyOf(todayStr),planMode:'year',planQ:Math.floor(fyMonths(fyOf(todayStr)).indexOf(ym(TODAY))/3),planMonth:ym(TODAY),lostFilter:'保管中',loginStaff:null,loginMethod:'pattern',imp:{}};
 
 /* ====== アイコン ====== */
 const IC={
@@ -760,7 +828,7 @@ key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>',
 face:'<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M9 10v1M15 10v1M12 10v3h-1M9.5 16c1.5 1 3.5 1 5 0"/>',
 line:'<path d="M12 4c5 0 9 3 9 7s-4 7-9 7c-1 0-2 0-3-.3L5 20l1-3.5C4 15 3 13 3 11c0-4 4-7 9-7z"/>'};
 const icon=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${IC[k]}</svg>`;
-const NAV=[['home','ホーム'],['shift','シフト'],['pay','勤務時間・給与'],['lost','忘れ物'],['event','イベント'],['expense','経費'],['equip','備品管理'],['stock','在庫'],['order','発注書'],['cancel','キャンセル'],['manual','マニュアル'],['plan','計画表'],['remind','リマインド'],['people','人材育成'],['import','スプレッドシート取込',1],['settings','設定',1]];
+const NAV=[['home','ホーム'],['shift','シフト'],['pay','勤務時間・給与'],['lost','忘れ物'],['event','イベント'],['expense','経費'],['equip','備品管理'],['stock','在庫'],['order','発注書'],['cancel','キャンセル'],['manual','マニュアル'],['plan','計画表'],['remind','リマインド・引き継ぎ'],['people','人材育成'],['import','スプレッドシート取込',1],['settings','設定',1]];
 const MAIN=[['shift','シフト','シフト'],['pay','勤務時間・給与','勤務・給与'],['lost','忘れ物','忘れ物'],['event','イベント','イベント'],['expense','経費','経費'],['equip','備品管理','備品'],['menu','MENU','MENU']];
 
 /* ====== 共通UI ====== */
@@ -813,6 +881,7 @@ function allReminders(){const L=S.settings.leads,out=[];if(!me)return out;
   const low=S.stock.filter(s=>+s.qty<=+s.min);if(low.length)out.push({title:`在庫不足 ${low.length}品目：${low.slice(0,3).map(s=>s.name).join('、')}${low.length>3?' ほか':''}`,date:todayStr,lead:0,cat:'在庫',go:'stock'});
   S.cancels.filter(c=>c.status==='未入金'&&c.deadline).forEach(c=>out.push({title:`キャンセル料の入金確認：${c.name}様 ${yen(c.fee)}`,date:c.deadline,lead:1,cat:'キャンセル',go:'cancel'}));
   S.lost.filter(l=>l.status==='保管中').forEach(l=>out.push({title:`忘れ物「${l.name}」の保管期限`,date:lostDue(l),lead:+L.lost,cat:'忘れ物',go:'lost'}));
+  S.handovers.filter(h=>!hoDone(h)).forEach(h=>out.push({title:`引き継ぎ（${staffName(h.from)}→${hoTo(h.to)}）：${h.text.replace(/\s+/g,' ').slice(0,40)}`,date:h.date,lead:0,cat:'引き継ぎ',go:'remind'}));
   dayTasks(todayStr).forEach(t=>out.push({title:`${t.time?fmtT(t.time)+' ':''}${t.text}`,date:todayStr,lead:0,cat:'イベント',go:'event',time:t.time||''}));
   S.events.filter(e=>e.type==='ハーバルプログラム'&&e.date>todayStr&&e.start).forEach(e=>out.push({title:`ハーバル ${fmtT(e.start)}開始：${fmtT(addMin(e.start,-60))}にサウナ室を${e.temp||86}℃へ`,date:e.date,lead:2,cat:'イベント',go:'event'}));
   out.forEach(r=>r.show=addDays(r.date,-r.lead)<=todayStr);return out.sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(a.time||'')<(b.time||'')?-1:(a.time||'')>(b.time||'')?1:0)}
@@ -895,9 +964,50 @@ function newsOpen(id){const n=(S.news||[]).find(x=>x.id===id);if(!n)return;
 /* ====== シフト ====== */
 const hopeTxt=h=>h.kind==='休み希望'?'休み希望':h.kind==='終日OK'?'終日OK':`${fmtT(h.start)}-${fmtT(h.end)}`;
 const presetChips=()=>`<div class="fld"><span>よく使う時間（タップで入力）</span><div class="chips">${S.settings.presets.map(p=>`<button type="button" data-a="preset" data-s="${p.s}" data-e="${p.e}">${esc(p.name)} ${fmtT(p.s)}-${fmtT(p.e)}</button>`).join('')}</div></div>`;
-function vShift(){const tabs=[['day','日ごと'],['grid','月の一覧表'],['hope','希望を提出']];if(isAdmin())tabs.push(['hopes','希望一覧']);
+const mondayOf=d=>addDays(d,-((parseD(d).getDay()+6)%7));
+const ROLE_ORDER={'主宰':0,'社員':1,'バイト':2};
+const sortStaff=a=>[...a].sort((x,y)=>(ROLE_ORDER[x.role]??3)-(ROLE_ORDER[y.role]??3)||S.staff.indexOf(x)-S.staff.indexOf(y));
+function vShift(){const tabs=[['day','日ごと'],['week','週の表'],['grid','月の表']];if(isAdmin())tabs.push(['bulk','まとめて入力']);tabs.push(['hope','希望を提出']);if(isAdmin())tabs.push(['hopes','希望一覧']);
+  if(!tabs.some(t=>t[0]===UI.shiftTab))UI.shiftTab='day';
   let h=phead('SHIFT','シフト')+`<div class="tabs">${tabs.map(([k,l])=>`<button class="${UI.shiftTab===k?'on':''}" data-a="set" data-k="shiftTab" data-v="${k}">${l}</button>`).join('')}</div>`;
-  if(UI.shiftTab==='day')h+=dayView();else if(UI.shiftTab==='grid')h+=gridView();else if(UI.shiftTab==='hope')h+=hopeView();else h+=hopesAdminView();return h}
+  const V={day:dayView,week:weekView,grid:gridView,bulk:bulkView,hope:hopeView,hopes:hopesAdminView};return h+V[UI.shiftTab]()}
+function weekNav(){const st=UI.weekStart,en=addDays(st,(UI.shiftTab==='bulk'?(UI.bulkDays||7):7)-1);return `<div class="row wnav"><button class="btn" data-a="wnav" data-n="-1">‹ 前へ</button><button class="btn" data-a="wnav" data-n="0">今週</button><button class="btn" data-a="wnav" data-n="1">次へ ›</button><b class="wnav-l">${+st.slice(5,7)}/${+st.slice(8)}(${WD[parseD(st).getDay()]}) 〜 ${+en.slice(5,7)}/${+en.slice(8)}(${WD[parseD(en).getDay()]})</b></div>`}
+function weekHeadCells(days){return days.map(d=>{const w=parseD(d).getDay();const cl=closureOf(d);const ws=weeklyOn(d);return `<th class="wh ${w===0?'sun':w===6?'sat':''} ${d===todayStr?'today':''} ${cl?(cl.weekly?'tue':'closed'):''}"><div class="wh-d">${+d.slice(5,7)}/${+d.slice(8)}<small>${WD[w]}</small></div><div class="wh-p">${cl?`<span class="pill cl">${esc(cl.kind)}</span>`:''}${ws.map(x=>`<span class="pill evw">${esc(x.name.replace(/Day$/,''))}</span>`).join('')}</div></th>`}).join('')}
+function weekView(){const days=[...Array(7)].map((_,i)=>addDays(UI.weekStart,i));const ed=isAdmin();
+  const idx={};S.shifts.forEach(x=>{if(x.date>=days[0]&&x.date<=days[6])idx[x.staffId+'|'+x.date]=x});
+  const vis=x=>x&&(x.off||!isOffOnly(x.staffId)||closureOf(x.date));
+  const staff=sortStaff(S.staff.filter(s=>days.some(d=>vis(idx[s.id+'|'+d]))||(UI.weekAll&&s.active!==false)));
+  const rows=staff.map(s=>{let tot=0;const cells=days.map(d=>{const x=vis(idx[s.id+'|'+d])?idx[s.id+'|'+d]:null;if(x&&!x.off)tot+=shMin(x);const cl=closureOf(d);const inner=x?(x.off?'<div class="wc off">休</div>':`<div class="wc"><b class="num">${fmtT(x.start)}<i>–</i>${fmtT(x.end)}</b><span class="wc-bar"><i style="${barStyle(x.start,x.end)}"></i></span>${x.note?`<span class="pill">${esc(x.note)}</span>`:''}</div>`):'';const cls=`${cl?(cl.weekly?'tue':'closed'):''} ${d===todayStr?'tcol':''}`;return ed?`<td class="${cls}"><button class="wcell" data-a="cellEdit" data-s="${s.id}" data-d="${d}" aria-label="${esc(s.name)} ${d}">${inner||'<span class="wc-add">＋</span>'}</button></td>`:`<td class="${cls}">${inner}</td>`}).join('');
+    return `<tr class="${me&&s.id===me.id?'mine':''}"><th class="ws">${esc(s.name)}<small>${s.role}</small></th>${cells}<td class="wt num">${tot?hdec(tot).replace(/\.00$/,'')+'h':''}</td></tr>`}).join('');
+  const cnt=days.map(d=>`<td class="num"><b>${dayShifts(d).length||''}</b></td>`).join('');
+  return weekNav()+`<div class="row"><label class="check"><input type="checkbox" data-c="weekAll" ${UI.weekAll?'checked':''}>シフトのない在籍スタッフも表示</label><span class="sp"></span><small class="muted">細い線は 8:00〜22:00 のどこに入っているか</small></div>
+  <div class="tbl-wrap"><table class="wtable"><thead><tr><th class="ws">スタッフ</th>${weekHeadCells(days)}<th class="wt">週の時間</th></tr></thead><tbody>${rows||`<tr><td colspan="9" class="muted" style="padding:16px">この週のシフトはまだありません${ed?'。「まとめて入力」から入れられます':''}</td></tr>`}</tbody><tfoot><tr><th class="ws">出勤人数</th>${cnt}<td></td></tr></tfoot></table></div>${ed?'<p class="note">マスをタップすると、その日のシフトを変更・追加できます。たくさん入れるときは「まとめて入力」が便利です。</p>':''}`}
+function gridView(){const m=UI.shiftMonth,days=daysIn(m),ed=isAdmin();const idx={};S.shifts.forEach(x=>{if(x.date.startsWith(m))idx[x.staffId+'|'+x.date]=x});
+  const staff=sortStaff(S.staff.filter(st=>st.active!==false||S.shifts.some(x=>x.staffId===st.id&&x.date.startsWith(m))));
+  const thCls=d=>{const w=parseD(d).getDay();const cl=closureOf(d);return [w===0?'sun':w===6?'sat':'',w===1?'mon':'',d===todayStr?'today':'',cl?(cl.weekly?'tue':'closed'):''].join(' ')};
+  let t=`<div class="tbl-wrap mtbl"><table class="grid mgrid"><thead><tr><th class="stk">スタッフ</th>${days.map(d=>`<th class="${thCls(d)}">${+d.slice(8)}<small>${WD[parseD(d).getDay()]}</small></th>`).join('')}<th>計</th></tr></thead><tbody>`;
+  staff.forEach(st=>{let tot=0;t+=`<tr class="${st.id===me.id?'mine':''}"><td class="stk">${esc(st.name)}</td>`+days.map(d=>{let x=idx[st.id+'|'+d];if(x&&!x.off&&st.offOnly&&!closureOf(d))x=null;if(x&&!x.off)tot+=shMin(x);const c=x?(x.off?'<span class="gc off">休</span>':`<span class="gc" title="${shLabel(x)} 休憩${x.brk||0}分${x.note?' '+esc(x.note):''}"><b>${fmtT(x.start)}</b>${fmtT(x.end)}</span>`):'';const cls=thCls(d).replace(/sun|sat|today/g,'');return ed?`<td class="${cls}"><button class="cell" data-a="cellEdit" data-s="${st.id}" data-d="${d}" aria-label="${esc(st.name)} ${d}">${c}</button></td>`:`<td class="${cls}"><div class="cell">${c}</div></td>`}).join('')+`<td class="num mt">${tot?Math.round(tot/60)+'h':''}</td></tr>`});
+  t+=`</tbody><tfoot><tr><td class="stk">出勤人数</td>${days.map(d=>`<td class="num">${dayShifts(d).length||''}</td>`).join('')}<td></td></tr></tfoot></table></div>`;
+  return `<div class="row">${monthNav('shiftMonth',m)}</div><p class="note">上の太字が出勤、下が退勤の時刻です。「休」は休み、青い列は定休日（火曜）、斜線は店休日です。見づらいときは「週の表」が大きく見られます。</p>${t}${myMonth(m)}`}
+/* ---- まとめて入力 ---- */
+function parseShiftText(t){t=String(t||'').replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248)).replace(/：/g,':').replace(/[〜～ー−―–—~]/g,'-').replace(/　/g,' ').trim();
+  if(!t)return{empty:true};
+  let note='';const sp=t.match(/^(\S+)\s+(.+)$/);if(sp){t=sp[1];note=sp[2].trim()}
+  if(/^(休|やすみ|休み|x|×|off)$/i.test(t))return{off:true,note};
+  const p=S.settings.presets.find(p=>p.name===t||p.name.startsWith(t));if(p)return{start:p.s,end:p.e,note};
+  const m=t.match(/^(\d{1,2})(?::?(\d{2}))?-(\d{1,2})(?::?(\d{2}))?$/);
+  if(m){const h1=+m[1],m1=+(m[2]||0),h2=+m[3],m2=+(m[4]||0);if(h1<30&&h2<30&&m1<60&&m2<60&&!(h1===h2&&m1===m2))return{start:pad(h1%24)+':'+pad(m1),end:pad(h2%24)+':'+pad(m2),note}}
+  return{err:true}}
+const bkVal=x=>x?(x.off?'休':`${fmtT(x.start)}-${fmtT(x.end)}`)+(x.note?' '+x.note:''):'';
+function bulkView(){if(!isAdmin())return '<p class="empty">主宰・社員だけが使えます</p>';const n=UI.bulkDays||7;const days=[...Array(n)].map((_,i)=>addDays(UI.weekStart,i));const staff=sortStaff(activeStaff());
+  const pal=[...S.settings.presets.map(p=>[`${fmtT(p.s)}-${fmtT(p.e)}`,`${p.name} ${fmtT(p.s)}-${fmtT(p.e)}`]),['休','休み'],['','消す']];
+  return weekNav()+`<div class="bk-help"><b>入力のしかた</b>：マスに「8-17」「13:30-22」「休」のように打ちます。「早」「中」「遅」「朝」だけでもOK。後ろにスペースを空けて「9-12 煙突掃除」のように業務内容も書けます。Enterで下のマス、Tabで右のマスへ進みます。</div>
+  <div class="bk-tools"><span class="bk-tl">ボタンで入れる：</span>${pal.map(([v,l])=>`<button type="button" class="bk-pal ${UI.paint===v?'on':''}" data-a="paint" data-v="${esc(v)}">${esc(l)}</button>`).join('')}<button type="button" class="bk-pal ${UI.paint==null?'on':''}" data-a="paint" data-v="__off">キーボードで入力</button></div>
+  ${UI.paint!=null?`<p class="note">「${esc(UI.paint===''?'消す':UI.paint)}」を選び中です。マスをタップすると、その内容が入ります。</p>`:''}
+  <div class="tbl-wrap"><table class="bktable"><thead><tr><th class="ws">スタッフ</th>${weekHeadCells(days)}</tr></thead><tbody>${staff.map(s=>`<tr><th class="ws">${esc(s.name)}<small>${s.role}</small></th>${days.map(d=>{const x=S.shifts.find(y=>y.staffId===s.id&&y.date===d);const v=bkVal(x);const cl=closureOf(d);return `<td class="${cl?(cl.weekly?'tue':'closed'):''}"><input class="bk" data-s="${s.id}" data-d="${d}" data-o="${esc(v)}" value="${esc(v)}" autocomplete="off" spellcheck="false" aria-label="${esc(s.name)} ${dLabel(d)}" ${UI.paint!=null?'readonly':''}></td>`}).join('')}</tr>`).join('')}</tbody></table></div>
+  <div class="bk-bar"><div class="row"><label class="check"><input type="checkbox" data-c="bulk14" ${n===14?'checked':''}>2週間分を表示</label><button class="btn" data-a="bkCopyPrev">前の${n===14?'2週間':'週'}と同じ内容を入れる</button><button class="btn" data-a="bkReset">変更を取り消す</button></div><button class="btn primary bk-save" data-a="bkSave">この表を保存<span id="bk-count"></span></button></div>`}
+function bkMark(el){const r=parseShiftText(el.value);const ch=el.value.trim()!==el.dataset.o;el.classList.toggle('chg',ch);el.classList.toggle('err',!!r.err);el.title=r.err?'読み取れません（例：8-17、休）':r.off?'休み':r.empty?'':`${fmtT(r.start)}〜${fmtT(r.end)}${r.note?' '+r.note:''}`;const c=document.querySelectorAll('input.bk.chg').length;const b=$('#bk-count');if(b)b.textContent=c?`（変更 ${c}件）`:''}
+const bkDirty=()=>document.querySelectorAll('input.bk.chg').length;
 function myMonth(m){if(isShared())return '';const mine=S.shifts.filter(x=>x.staffId===me.id&&!x.off&&x.date.startsWith(m)).sort((a,b)=>a.date<b.date?-1:1);
   return `<div class="card"><h2>${esc(me.name)}さんの${mLabel(m)}のシフト<span class="r muted">${mine.length}日・${hm(mine.reduce((a,x)=>a+shMin(x),0))}</span></h2>${mine.length?`<div class="chips">${mine.map(x=>`<span class="pill">${dLabel(x.date)} ${shLabel(x)}</span>`).join('')}</div>`:'<p class="empty">この月のシフトはまだありません</p>'}</div>`}
 function dayView(){const m=UI.shiftMonth;let days=daysIn(m);const hidden=m===ym(TODAY)&&!UI.showPast?days.filter(d=>d<todayStr).length:0;if(hidden)days=days.filter(d=>d>=todayStr);const ed=isAdmin();
@@ -908,13 +1018,6 @@ function dayView(){const m=UI.shiftMonth;let days=daysIn(m);const hidden=m===ym(
   ${hidden?`<div><button class="btn sm" data-a="toggle" data-k="showPast">1日〜昨日のシフトも表示（${hidden}日分）</button></div>`:''}
   ${ed?'<p class="note">名前の行をタップすると、時間・休憩・業務内容を変更できます。日付の右の「＋」で、その日にシフトや「休み」を追加できます。青い日は定休日（火曜日）、斜線の日は店休日です。</p>':''}
   <div class="days">${html}</div>${myMonth(m)}`}
-function gridView(){const m=UI.shiftMonth,days=daysIn(m),ed=isAdmin();const idx={};S.shifts.forEach(x=>{if(x.date.startsWith(m))idx[x.staffId+'|'+x.date]=x});
-  const staff=S.staff.filter(st=>st.active!==false||S.shifts.some(x=>x.staffId===st.id&&x.date.startsWith(m))).sort((a,b)=>(a.id===me.id?-1:b.id===me.id?1:0));
-  const thCls=d=>{const w=parseD(d).getDay();const cl=closureOf(d);return [w===0?'sun':w===6?'sat':'',w===1?'mon':'',d===todayStr?'today':'',cl?(cl.weekly?'tue':'closed'):''].join(' ')};
-  let t=`<div class="tbl-wrap"><table class="grid"><thead><tr><th class="stk">スタッフ</th>${days.map(d=>{const cl=closureOf(d);return `<th class="${thCls(d)}" title="${cl?esc(cl.kind):''}">${+d.slice(8)}<small>${WD[parseD(d).getDay()]}</small></th>`}).join('')}</tr></thead><tbody>`;
-  staff.forEach(st=>{t+=`<tr class="${st.id===me.id?'mine':''}"><td class="stk">${esc(st.name)} <small class="muted">${st.role}</small></td>`+days.map(d=>{let x=idx[st.id+'|'+d];if(x&&!x.off&&st.offOnly&&!closureOf(d))x=null;const c=x?(x.off?'<span class="gc off">休</span>':`<span class="gc" title="${shLabel(x)} 休憩${x.brk||0}分${x.note?' '+esc(x.note):''}">${fmtT(x.start)}<br>${fmtT(x.end)}</span>`):'';const cls=thCls(d).replace(/sun|sat|today/g,'');return ed?`<td class="${cls}"><button class="cell" data-a="cellEdit" data-s="${st.id}" data-d="${d}" aria-label="${esc(st.name)} ${d}">${c}</button></td>`:`<td class="${cls}"><div class="cell">${c}</div></td>`}).join('')+'</tr>'});
-  t+=`</tbody><tfoot><tr><td class="stk">出勤人数</td>${days.map(d=>`<td class="num">${dayShifts(d).length||''}</td>`).join('')}</tr></tfoot></table></div>`;
-  return `<div class="row">${monthNav('shiftMonth',m)}</div>${ed?'<p class="note">マスの上が出勤、下が退勤の時刻です（例：8:00／17:00）。「休」は休みの日です。青い列は定休日（火曜日）、斜線の列は店休日です。マスをタップすると変更できます。</p>':''}${t}${myMonth(m)}`}
 function shiftModal(id,pre={}){const x=S.shifts.find(s=>s.id===id);const o=x||{staffId:pre.staffId||'',date:pre.date||todayStr,start:'',end:'',note:''};
   const hp=S.hopes.find(h=>h.staffId===o.staffId&&h.date===o.date);
   const def=!x&&hp&&hp.kind==='時間指定'?{s:hp.start,e:hp.end}:{s:o.start||'',e:o.end||''};
@@ -1196,12 +1299,36 @@ function lostModal(id){const l=S.lost.find(x=>x.id===id)||{date:todayStr,cat:'',
   <div class="frow">${fld('保管場所',inp('storage',l.storage))}${fld('お客様からの問い合わせ（連絡先など）',inp('contact',l.contact))}</div>${fld('メモ',inp('note',l.note))}${id?`<div id="delzone"><button type="button" class="btn sm danger" data-a="askDel" data-k="lost" data-id="${id}">この記録を削除</button></div>`:''}`,
   {nofocus:true,save:f=>{if(!f.cat){toast('種類を選んでください');return false}if(f.cat==='その他'&&!String(f.name||'').trim()){toast('「その他」のときは品名を書いてください');return false}const o={date:f.date,cat:f.cat,name:String(f.name||'').trim(),found:f.found,finder:f.finder,storage:f.storage,contact:f.contact,note:f.note};if(id)Object.assign(l,o);else S.lost.push({id:uid(),...o,status:'保管中'});toast('保存しました')}})}
 
+/* ====== 引き継ぎ ====== */
+const hoTo=t=>t==='all'?'全員':t==='admin'?'社員・主宰':staffName(t);
+const hoDone=h=>h.done||(h.to!=='all'&&h.to!=='admin'&&(h.checks||[]).some(c=>c.staffId===h.to));
+const nowStr=()=>{const d=new Date();return `${todayStr} ${pad(d.getHours())}:${pad(d.getMinutes())}`};
+function handoverCard(){const f=UI.hoFilter||'未確認';const list=S.handovers.filter(h=>f==='すべて'||!hoDone(h)).sort((a,b)=>(b.at||b.date)<(a.at||a.date)?-1:1);
+  return `<div class="card"><h2>引き継ぎ ${S.handovers.filter(h=>!hoDone(h)).length?`<span class="badge">${S.handovers.filter(h=>!hoDone(h)).length}</span>`:''}<span class="r"><button class="btn primary sm" data-a="hoNew">引き継ぎを書く</button></span></h2>
+  <div class="chips">${['未確認','すべて'].map(c=>`<button class="${f===c?'on':''}" data-a="set" data-k="hoFilter" data-v="${c}">${c==='未確認'?'まだ終わっていないもの':'すべて'}</button>`).join('')}</div>
+  <div class="list">${list.map(h=>`<div class="item ho ${hoDone(h)?'done':''}"><div class="t1"><span class="ho-from">${esc(staffName(h.from))}</span><span class="muted">→</span><span class="ho-to">${esc(hoTo(h.to))}</span><span class="sp"></span><small class="muted">${dLabel(h.date)}${h.at?' '+h.at.slice(11):''}</small>${hoDone(h)?'<span class="pill ok">完了</span>':''}</div>
+   <div class="ho-text">${esc(h.text).replace(/\n/g,'<br>')}</div>
+   <div class="meta">${(h.checks||[]).length?`<span>確認済み：${h.checks.map(c=>`<b>${esc(staffName(c.staffId))}</b>（${dLabel(c.at.slice(0,10))} ${c.at.slice(11)}）`).join('、')}</span>`:'<span class="ho-none">まだ誰も確認していません</span>'}</div>
+   <div class="acts">${hoDone(h)?'':`<button class="btn sm ok" data-a="hoCheck" data-id="${h.id}">確認しました</button>`}${!h.done&&(h.to==='all'||h.to==='admin')&&isAdmin()?`<button class="btn sm" data-a="hoClose" data-id="${h.id}">完了にする</button>`:''}<button class="btn sm" data-a="hoEdit" data-id="${h.id}">編集</button></div></div>`).join('')||'<p class="empty">引き継ぎはありません</p>'}</div>
+  <p class="note">相手を1人に決めた引き継ぎは、その人が「確認しました」を押すと完了になります。「全員」「社員・主宰」あての引き継ぎは、主宰・社員が「完了にする」を押すまで表示されます。</p></div>`}
+function hoModal(id){const h=S.handovers.find(x=>x.id===id)||{date:todayStr,from:isShared()?'':me.id,to:'all',text:''};
+  const tos=[['all','全員'],['admin','社員・主宰'],...activeStaff(h.to).map(s=>[s.id,s.name])];
+  modal(id?'引き継ぎを編集':'引き継ぎを書く',`<div class="frow">${fld('書いた人',sel('from',[['','（選んでください）'],...activeStaff(h.from).map(s=>[s.id,s.name])],h.from))}${fld('日付',inp('date',h.date,'date'))}</div>
+  ${fld('誰に向けて',seg('to',tos,h.to))}
+  ${fld('引き継ぐこと',ta('text',h.text,5))}${id?`<div id="delzone"><button type="button" class="btn sm danger" data-a="askDel" data-k="handovers" data-id="${id}">この引き継ぎを削除</button></div>`:''}`,
+  {nofocus:true,save:f=>{if(!f.from){toast('書いた人を選んでください');return false}if(!String(f.text||'').trim()){toast('引き継ぐことを書いてください');return false}const o={date:f.date,from:f.from,to:f.to||'all',text:f.text.trim()};if(id)Object.assign(h,o);else S.handovers.push({id:uid(),...o,at:nowStr(),checks:[],done:false});toast('引き継ぎを保存しました')},saveLabel:id?'保存':'引き継ぎを残す'})}
+function hoCheckModal(id){const h=S.handovers.find(x=>x.id===id);if(!h)return;
+  if(!isShared()){(h.checks=h.checks||[]).push({staffId:me.id,at:nowStr()});save();render();toast('確認済みにしました');return}
+  const def=h.to!=='all'&&h.to!=='admin'?h.to:'';
+  modal('誰が確認しましたか',`<div class="ho-text" style="background:var(--surface2);border-radius:8px;padding:12px 14px">${esc(h.text).replace(/\n/g,'<br>')}</div>${fld('確認した人',seg('who',activeStaff().filter(s=>!(h.checks||[]).some(c=>c.staffId===s.id)).map(s=>[s.id,s.name]),def))}`,
+  {nofocus:true,saveLabel:'確認しました',save:f=>{if(!f.who){toast('確認した人を選んでください');return false}(h.checks=h.checks||[]).push({staffId:f.who,at:nowStr()});toast(`${staffName(f.who)}さんの確認を記録しました`)}})}
+
 /* ====== リマインド ====== */
 function vRemind(){const all=allReminders();const now=all.filter(r=>r.show);const soon=all.filter(r=>!r.show&&diffDays(r.date,todayStr)<=45);
   const mine=S.reminders.filter(r=>!r.to||r.to==='all'||r.to===me.id).sort((a,b)=>a.date<b.date?-1:1);
   const leadTxt=n=>({0:'当日',1:'前日から',3:'3日前から',7:'1週間前から',14:'2週間前から'}[n]||n+'日前から');
   const row=r=>`<div class="alert ${remCls(r.date)}"><span class="dot"></span><span>${esc(r.title)} <small class="muted">${esc(r.cat)}・${dLabel(r.date)}</small></span><span class="when">${whenTxt(r.date)}</span>${r.custom?`<button class="btn sm ok" data-a="remDone" data-id="${r.id}">完了</button>`:`<button class="btn sm" data-a="go" data-v="${r.go}">開く</button>`}</div>`;
-  return phead('REMINDERS','リマインド','<button class="btn primary" data-a="remNew">リマインドを追加</button>')+
+  return phead('REMINDERS','リマインド・引き継ぎ','<button class="btn" data-a="remNew">リマインドを追加</button>')+handoverCard()+
   `<div class="card"><h2>今お知らせしているもの <span class="badge">${now.length}</span></h2>${now.length?`<div class="alerts">${now.map(row).join('')}</div>`:'<p class="empty">今お知らせするものはありません</p>'}</div>
   <div class="card"><h2>これから（45日以内）</h2>${soon.length?`<div class="alerts">${soon.map(row).join('')}</div>`:'<p class="empty">ありません</p>'}</div>
   <div class="card"><h2>自分で作ったリマインド</h2>${mine.length?`<div class="tbl-wrap"><table><thead><tr><th>内容</th><th>日付</th><th>表示</th><th>対象</th><th>状態</th><th></th></tr></thead><tbody>${mine.map(r=>`<tr><td>${esc(r.title)}</td><td>${dLabel(r.date)}</td><td>${leadTxt(+r.lead)}</td><td>${r.to==='all'||!r.to?'全員':esc(staffName(r.to))}</td><td>${r.done?'<span class="pill ok">完了</span>':'<span class="pill">未完了</span>'}</td><td><button class="btn sm" data-a="remEdit" data-id="${r.id}">編集</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">ありません</p>'}</div>
@@ -1275,7 +1402,7 @@ function staffModal(id){const st=S.staff.find(x=>x.id===id)||{name:'',role:'バ�
   {save:f=>{if(!f.name){toast('名前を入力してください');return false}if(!/^[1-9]{2,9}$/.test(f.pat)||new Set(f.pat).size!==f.pat.length){toast('パターンは1〜9の数字を重ならないように2つ以上並べてください');return false}const o={name:f.name,role:f.role,wage:f.wage===''?'':+f.wage,transit:f.transit===''?undefined:+f.transit,payroll:!!f.payroll,active:!!f.active,offOnly:!!f.offOnly,pw:f.pw,pat:f.pat};if(id){Object.assign(st,o);if(o.transit===undefined)delete st.transit}else{const n={id:'s'+uid(),...o};if(o.transit===undefined)delete n.transit;S.staff.push(n)}}})}
 
 /* ====== 操作 ====== */
-const COL={expenses:()=>S.expenses,stock:()=>S.stock,equip:()=>S.equip,events:()=>S.events,interviews:()=>S.interviews,trainings:()=>S.trainings,manuals:()=>S.manuals,initiatives:()=>S.plans.initiatives,closures:()=>S.plans.closures,orders:()=>S.orders,cancels:()=>S.cancels,tickets:()=>S.tickets,lost:()=>S.lost,shifts:()=>S.shifts,news:()=>S.news,reminders:()=>S.reminders,staff:()=>S.staff};
+const COL={expenses:()=>S.expenses,stock:()=>S.stock,equip:()=>S.equip,events:()=>S.events,interviews:()=>S.interviews,trainings:()=>S.trainings,manuals:()=>S.manuals,initiatives:()=>S.plans.initiatives,closures:()=>S.plans.closures,handovers:()=>S.handovers,orders:()=>S.orders,cancels:()=>S.cancels,tickets:()=>S.tickets,lost:()=>S.lost,shifts:()=>S.shifts,news:()=>S.news,reminders:()=>S.reminders,staff:()=>S.staff};
 const ACT={
  go:d=>{closeModal();UI.ordView=null;view=d.v;render();window.scrollTo(0,0)},
  logout:()=>{me=null;UI.loginStaff=null;try{localStorage.removeItem(KEY+'-me')}catch(e){}render()},
@@ -1329,6 +1456,17 @@ const ACT={
  impTpl:d=>{const o=IMP[d.k];copyText(tsv([o.head,...o.ex]),'見出しと例をコピーしました。スプレッドシートのA1セルに貼り付けて使ってください')},
  impPaste:d=>{const t=($('#imp-'+d.k).value||'').trim();if(!t){toast('貼り付ける枠が空です');return}const sep=t.includes('\t')?'\t':',';const rows=t.split(/\r?\n/).map(l=>l.split(sep).map(c=>c.replace(/^"|"$/g,'').trim()));UI.imp[d.k]=parseImport(d.k,rows);render()},
  impCommit:d=>impCommit(d.k),
+ wnav:d=>{if(UI.shiftTab==='bulk'&&bkDirty()){toast('保存していない変更があります。「この表を保存」か「変更を取り消す」を押してください');return}const n=+d.n;UI.weekStart=n===0?mondayOf(todayStr):addDays(UI.weekStart,n*(UI.shiftTab==='bulk'?(UI.bulkDays||7):7));render()},
+ paint:d=>{UI.paint=d.v==='__off'?null:d.v;const keep=[...document.querySelectorAll('input.bk.chg')].map(i=>[i.dataset.s,i.dataset.d,i.value]);render();keep.forEach(([s,dd,v])=>{const el=document.querySelector(`input.bk[data-s="${s}"][data-d="${dd}"]`);if(el){el.value=v;bkMark(el)}})},
+ bkReset:()=>{document.querySelectorAll('input.bk').forEach(i=>{i.value=i.dataset.o;bkMark(i)});toast('変更を取り消しました')},
+ bkCopyPrev:()=>{const n=UI.bulkDays||7;let k=0;document.querySelectorAll('input.bk').forEach(i=>{const x=S.shifts.find(y=>y.staffId===i.dataset.s&&y.date===addDays(i.dataset.d,-n));const v=bkVal(x);if(v!==i.value){i.value=v;bkMark(i);k++}});toast(k?`${k}マスに前の${n===14?'2週間':'週'}の内容を入れました。確認して「この表を保存」を押してください`:'前の期間にシフトがありません')},
+ bkSave:()=>{const els=[...document.querySelectorAll('input.bk.chg')];if(!els.length){toast('変更はありません');return}const bad=els.filter(i=>parseShiftText(i.value).err);if(bad.length){bad.forEach(bkMark);bad[0].focus();toast(`読み取れないマスが${bad.length}件あります（赤いマス）。例：8-17、13:30-22、休`);return}
+   els.forEach(i=>{const r=parseShiftText(i.value);const s=i.dataset.s,d=i.dataset.d;const old=S.shifts.find(x=>x.staffId===s&&x.date===d);S.shifts=S.shifts.filter(x=>!(x.staffId===s&&x.date===d));if(r.empty)return;
+     if(r.off)S.shifts.push({id:uid(),staffId:s,date:d,off:true,start:'',end:'',brk:0,note:r.note||''});else{const brk=old&&!old.off&&old.start===r.start&&old.end===r.end?old.brk:brkDefault(r.start,r.end);S.shifts.push({id:uid(),staffId:s,date:d,start:r.start,end:r.end,brk,note:r.note||''})}});
+   save();render();toast(`${els.length}件のシフトを保存しました`)},
+ hoNew:()=>hoModal(),hoEdit:d=>hoModal(d.id),hoCheck:d=>hoCheckModal(d.id),
+ hoClose:d=>{const h=S.handovers.find(x=>x.id===d.id);if(h){h.done=true;save();render();toast('完了にしました')}},
+
  setVal:d=>{const el=document.getElementById(d.t);if(el){el.value=d.v;el.focus()}},
  weAdd:()=>{(S.settings.weeklyEvents=S.settings.weeklyEvents||[]).push({id:uid(),dow:4,name:'新しいイベント',desc:'',tasks:[]});save();render()},
  weDel:d=>{S.settings.weeklyEvents.splice(+d.i,1);save();render();toast('削除しました')},
@@ -1350,7 +1488,10 @@ cashNew:()=>cashModal(),cashEdit:d=>cashModal(d.id),
 };
 document.addEventListener('click',e=>{const a=e.target.closest('[data-a]');if(!a)return;const fn=ACT[a.dataset.a];if(!fn)return;if(a.tagName==='BUTTON'||a.tagName==='A')e.preventDefault();fn(a.dataset,a,e)});
 document.addEventListener('submit',e=>{if(e.target.id==='mform'){e.preventDefault();ACT.msave()}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').hidden)closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').hidden)closeModal();
+  const t=e.target;if(t.classList&&t.classList.contains('bk')&&(e.key==='Enter'||e.key==='ArrowDown'||e.key==='ArrowUp')){e.preventDefault();const all=[...document.querySelectorAll(`input.bk[data-d="${t.dataset.d}"]`)];const i=all.indexOf(t)+(e.key==='ArrowUp'?-1:1);if(all[i]){all[i].focus();all[i].select()}}});
+document.addEventListener('input',e=>{if(e.target.classList&&e.target.classList.contains('bk'))bkMark(e.target)});
+document.addEventListener('click',e=>{const t=e.target;if(t.classList&&t.classList.contains('bk')&&UI.paint!=null){t.value=UI.paint;bkMark(t)}});
 document.addEventListener('input',e=>{const t=e.target;if(t.dataset.c==='manQ'){UI.manQ=t.value;const pos=t.selectionStart;render();const n=$('#manq');if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(_){}}}});
 document.addEventListener('change',async e=>{const t=e.target,c=t.dataset.c;
   if(t.dataset.img&&t.files&&t.files[0]){const url=await compress(t.files[0]);const h=document.getElementById(t.dataset.img);h.value=url;const p=document.getElementById(t.dataset.img.replace('f-','p-'));if(p){p.src=url;p.hidden=!url}return}
@@ -1361,6 +1502,8 @@ document.addEventListener('change',async e=>{const t=e.target,c=t.dataset.c;
   if(t.dataset.co){S.settings.cashOpening=Object.assign({date:'',amount:0},S.settings.cashOpening,{[t.dataset.co]:t.dataset.co==='amount'?+t.value:t.value});save();toast('保存しました');return}
   if(t.dataset.wc!==undefined){const d=+t.dataset.wc;const a=new Set(S.settings.weeklyClosed||[]);t.checked?a.add(d):a.delete(d);S.settings.weeklyClosed=[...a];save();toast('定休日を保存しました');return}
   if(t.dataset.we!==undefined){const w=S.settings.weeklyEvents[+t.dataset.we];if(!w)return;const k=t.dataset.p;if(k==='tasks')w.tasks=t.value.split('\n').map(x=>x.trim()).filter(Boolean).map(x=>{const m=x.match(/^(\d{1,2})[:：](\d{2})\s*(.*)$/);return m?{time:pad(+m[1])+':'+m[2],text:m[3]||''}:{time:'',text:x}});else w[k]=k==='dow'?+t.value:t.value;save();toast('保存しました');return}
+  if(c==='weekAll'){UI.weekAll=t.checked;render();return}
+  if(c==='bulk14'){if(bkDirty()){t.checked=!t.checked;toast('先に「この表を保存」を押してください');return}UI.bulkDays=t.checked?14:7;render();return}
   if(c==='hopeStaff'){UI.hopeStaff=t.value;render();return}
   if(c==='fiscalEnd'){S.settings.fiscalEnd=+t.value;UI.planFY=fyOf(todayStr);save();render();toast(`決算月を${t.value}月にしました`);return}
   if(c==='evChk'){const ev=S.events.find(x=>x.id===t.dataset.id);ev.checklist[+t.dataset.i].done=t.checked;save();render();return}
