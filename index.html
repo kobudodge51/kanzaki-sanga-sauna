@@ -596,6 +596,38 @@ input.bk[readonly]{cursor:pointer}
 .bkc .bkn{text-align:left;text-align-last:left;padding:4px 8px}
 .bktable td{min-width:176px}
 .bk2{grid-template-columns:minmax(64px,1fr) auto minmax(64px,1fr)}
+
+/* 左メニュー：すべての機能 */
+.nav{gap:1px;padding:8px 10px 14px}
+.nav-g{font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--muted);padding:12px 12px 4px;border-top:1px dashed var(--line);margin-top:6px}
+.nav-g:first-child{border-top:0;margin-top:0}
+.nav button{font-size:14.5px;padding:8px 12px}
+.side .brand{padding:18px 30px 12px}
+.side .brand .logo-img{width:132px}
+/* MENU画面 */
+.mg{display:grid;gap:10px}
+.mg-h{font-size:15px;color:var(--muted);letter-spacing:.12em;display:flex;align-items:center;gap:10px}
+.mg-h::after{content:"";flex:1;height:1px;background:var(--line)}
+.mtiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.mtile{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;background:color-mix(in srgb,var(--surface) 92%,transparent);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:var(--shadow);cursor:pointer;transition:transform .15s,border-color .15s}
+.mtile:hover{transform:translateY(-2px);border-color:var(--n2)}
+.mt-ic{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;background:var(--coal);color:var(--flame)}
+.mt-ic svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.mt-b{display:grid;gap:2px;min-width:0}
+.mt-b b{font-family:var(--mincho);font-size:16.5px;display:flex;align-items:center;gap:6px}
+.mt-b small{font-size:12.5px;color:var(--muted);line-height:1.5}
+.mt-b em{font-style:normal;font-size:12px;font-weight:700;color:var(--n2)}
+.mt-go{font-size:24px;color:var(--muted)}
+/* ロゴの透かし背景 */
+.maincol{position:relative;isolation:isolate}
+.maincol::before{content:"";position:fixed;z-index:-1;right:max(-80px,-6vw);bottom:-60px;width:min(620px,78vw);aspect-ratio:1/1;background:var(--logo) center/contain no-repeat;opacity:.07;transform:rotate(-8deg);pointer-events:none;filter:saturate(.7)}
+.login{position:relative;isolation:isolate;overflow:hidden}
+.login::before{content:"";position:absolute;z-index:-1;left:50%;top:50%;width:min(900px,140vw);aspect-ratio:1/1;transform:translate(-50%,-50%) rotate(-8deg);background:var(--logo) center/contain no-repeat;opacity:.05;pointer-events:none}
+.main .phead,.main .row,.main .chips,.main .tabs{position:relative}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .maincol::before{opacity:.10}}
+:root[data-theme="dark"] .maincol::before{opacity:.10}
+@media (max-width:860px){.maincol::before{right:-90px;bottom:70px;width:min(420px,92vw)}}
+@media print{.maincol::before{display:none}}
 </style>
 </head>
 <body>
@@ -985,11 +1017,12 @@ function navBadge(k){if(!me)return '';
   if(k==='expense'&&isAdmin()){const n=S.expenses.filter(e=>e.status==='申請中').length;return n?`<span class="badge">${n}</span>`:''}
   if(k==='lost'){const n=S.lost.filter(l=>l.status==='保管中'&&lostDue(l)<todayStr).length;return n?`<span class="badge">${n}</span>`:''}
   return ''}
+document.documentElement.style.setProperty('--logo',`url(${LOGO_SRC})`);
 function render(){if(CLOUD&&!me)me=SHARED;if(!me){renderLogin();return}
   const V={order:vOrder,cancel:vCancel,home:vHome,menu:vMenu,shift:vShift,pay:vPay,expense:vExpense,stock:vStock,equip:vEquip,event:vEvent,people:vPeople,manual:vManual,plan:vPlan,lost:vLost,remind:vRemind,import:vImport,settings:vSettings};
   if(!V[view]||((NAV.find(n=>n[0]===view)||[])[2]&&!isAdmin()))view='home';
   const onMain=k=>k==='menu'?(view!=='home'&&!MAIN.some(m=>m[0]===view)):view===k;
-  $('#app').innerHTML=`<div class="shell"><aside class="side"><div class="strip"></div><button class="brand" data-a="go" data-v="home" title="ホームへ">${logoImg()}<span>ホームへ戻る</span></button><nav class="nav">${MAIN.map(([k,l])=>`<button class="${onMain(k)?'on':''}" data-a="go" data-v="${k}">${icon(k)}<span>${l}</span>${k==='menu'?'':navBadge(k)}</button>`).join('')}</nav><div class="me">${isShared()?'':`<div><b>${esc(me.name)}</b> <span class="pill">${me.role}</span></div>`}${CLOUD?`<span class="sync ${SYNC}">${syncTxt()}</span>`:''}<button class="btn sm" data-a="${CLOUD?'storeOut':'logout'}">ログアウト</button></div></aside>
+  $('#app').innerHTML=`<div class="shell"><aside class="side"><div class="strip"></div><button class="brand" data-a="go" data-v="home" title="ホームへ">${logoImg()}<span>ホームへ戻る</span></button><nav class="nav">${NAV_GROUPS.map(([g,ks])=>{const items=ks.filter(k=>{const n=NAV.find(x=>x[0]===k);return n&&(!n[2]||isAdmin())});return items.length?`<div class="nav-g">${g}</div>`+items.map(k=>`<button class="${view===k?'on':''}" data-a="go" data-v="${k}">${icon(k)}<span>${navLabel(k)}</span>${navBadge(k)}</button>`).join(''):''}).join('')}</nav><div class="me">${isShared()?'':`<div><b>${esc(me.name)}</b> <span class="pill">${me.role}</span></div>`}${CLOUD?`<span class="sync ${SYNC}">${syncTxt()}</span>`:''}<button class="btn sm" data-a="${CLOUD?'storeOut':'logout'}">ログアウト</button></div></aside>
   <div class="maincol"><header class="topbar"><button class="home" data-a="go" data-v="home" aria-label="ホームへ">${logoImg()}<span class="tb-name">Kanzaki Sanga Sauna</span></button><span class="sp"></span>${CLOUD?`<span class="sync ${SYNC}">${syncTxt()}</span>`:''}${isShared()?'':`<span class="pill">${esc(me.name)}・${me.role}</span>`}<button class="btn sm" data-a="${CLOUD?'storeOut':'logout'}">ログアウト</button></header>
   <main class="main"><div class="wrap">${V[view]()}</div></main></div></div>
   <nav class="bnav">${MAIN.map(([k,l,s])=>`<button class="${onMain(k)?'on':''}" data-a="go" data-v="${k}">${icon(k)}<span>${s}</span>${k==='menu'?'':navBadge(k)}</button>`).join('')}</nav>`}
@@ -1028,7 +1061,23 @@ function vHome(){const d=TODAY;const today=dayShifts(todayStr);const mine=today.
   </div>
   <div class="card"><h2>今日のシフト<span class="r"><button class="btn sm" data-a="go" data-v="shift">シフト表へ</button></span></h2>${today.length||dayOffs(todayStr).length?todayTimeline(today,dayOffs(todayStr)):'<p class="empty">今日のシフトはありません</p>'}</div>
   ${S.sample?`<p class="note">今はサンプルデータが入っています。バイトの名前は「バイト01（仮）」のように仮の名前です。設定 → スタッフ、またはスプレッドシート取込から実際の名前に入れ替えられます。この試作版のデータは、今使っているブラウザの中だけに保存されます。</p>`:''}`}
-function vMenu(){return phead('menu','MENU')+`<div class="tiles">${NAV.filter(n=>!n[2]||isAdmin()).map(([k,l])=>`<button class="tile" data-a="go" data-v="${k}">${icon(k)}<span>${l} ${navBadge(k)}</span></button>`).join('')}</div>`}
+const NAV_GROUPS=[['毎日使う',['home','shift','pay','lost','event','expense','equip']],['お店の運営',['stock','order','cancel','remind','manual','plan','people']],['管理',['import','settings']]];
+const navLabel=k=>(NAV.find(n=>n[0]===k)||[,''])[1];
+const NAV_DESC={home:'今日のシフト・イベント・お知らせ',shift:'週の表・まとめて入力・シフト希望',pay:'勤務時間と給与・交通費の計算',lost:'忘れ物の登録・返却・保管期限',event:'毎週のイベント・ハーバル・撮影など',expense:'経費の登録・現金出納帳',equip:'備品の点検・交換日',stock:'在庫の数・発注点・棚卸し',order:'発注書の作成・印刷・Excel保存',cancel:'キャンセル料の計算・メール文',remind:'リマインドと引き継ぎ',manual:'業務マニュアル・チェックリスト',plan:'月間・四半期・年間の計画',people:'面談・資格・研修券',import:'Excel・スプレッドシートの取り込み',settings:'スタッフ・定休日・各種の設定'};
+function navStat(k){try{switch(k){
+  case 'shift':return `今日の出勤 ${dayShifts(todayStr).length}人`;
+  case 'lost':{const n=S.lost.filter(l=>l.status==='保管中').length;return n?`保管中 ${n}件`:''}
+  case 'cancel':{const n=S.cancels.filter(c=>c.status==='未入金').length;return n?`未入金 ${n}件`:''}
+  case 'remind':{const n=allReminders().filter(r=>r.show).length;return n?`お知らせ ${n}件`:''}
+  case 'manual':return `${S.manuals.length}件`;
+  case 'order':{const n=S.orders.filter(o=>o.status==='発注済').length;return n?`発注済み ${n}件`:''}
+  case 'equip':{const n=S.equip.filter(e=>e.nextCheck&&e.nextCheck<todayStr).length;return n?`点検の期限切れ ${n}件`:''}
+  case 'stock':{const n=S.stock.filter(s=>+s.qty<=+s.min).length;return n?`在庫不足 ${n}品目`:''}
+  case 'event':{const w=weeklyOn(todayStr).map(x=>x.name);const e=S.events.filter(x=>x.date===todayStr).length;return [...w,e?`今日のイベント ${e}件`:''].filter(Boolean).join('・')}
+  case 'expense':{const n=S.expenses.filter(e=>e.status==='申請中').length;return n&&isAdmin()?`承認待ち ${n}件`:''}
+  default:return ''}}catch(e){return ''}}
+function vMenu(){return phead('menu','MENU')+NAV_GROUPS.map(([g,ks])=>{const items=ks.filter(k=>{const n=NAV.find(x=>x[0]===k);return n&&(!n[2]||isAdmin())});if(!items.length)return '';
+  return `<section class="mg"><h2 class="mg-h">${g}</h2><div class="mtiles">${items.map(k=>{const st=navStat(k);return `<button class="mtile" data-a="go" data-v="${k}"><span class="mt-ic">${icon(k)}</span><span class="mt-b"><b>${navLabel(k)} ${navBadge(k)}</b><small>${NAV_DESC[k]||''}</small>${st?`<em>${esc(st)}</em>`:''}</span><span class="mt-go" aria-hidden="true">›</span></button>`}).join('')}</div></section>`}).join('')}
 function newsModal(id){const n=(S.news||[]).find(x=>x.id===id)||{title:'',body:''};
   modal(id?'お知らせを編集':'お知らせを書く',`${fld('タイトル',inp('title',n.title,'text','placeholder="例：12月のシフトを確定しました"'))}${fld('本文',ta('body',n.body,5))}${id?`<div id="delzone"><button type="button" class="btn sm danger" data-a="askDel" data-k="news" data-id="${id}">このお知らせを削除</button></div>`:''}`,
   {save:f=>{if(!f.title){toast('タイトルを入力してください');return false}if(id)Object.assign(n,{title:f.title,body:f.body});else S.news.push({id:uid(),date:todayStr,title:f.title,body:f.body,by:me.id});toast('新着情報に載せました')},saveLabel:id?'保存':'新着情報に載せる'})}
