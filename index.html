@@ -403,7 +403,7 @@ const ADMIN_ROLES=['主宰','社員'];
 /* ====== 初期データ（試作用サンプル） ====== */
 function rnd(seed){let s=seed;return()=>{s=(s*9301+49297)%233280;return s/233280}}
 function seed(){
-  const st=[{id:'s1',name:'林',role:'主宰'},{id:'s2',name:'矢田',role:'社員'},{id:'s3',name:'熊谷',role:'社員'},{id:'s4',name:'浦崎',role:'バイト'},{id:'s5',name:'中村',role:'バイト'},{id:'s6',name:'久世',role:'バイト'}];
+  const st=[{id:'s1',name:'主宰',role:'主宰'},{id:'s2',name:'社員A',role:'社員'},{id:'s3',name:'社員B',role:'社員'},{id:'s4',name:'バイトA',role:'バイト'},{id:'s5',name:'バイトB',role:'バイト'},{id:'s6',name:'バイトC',role:'バイト'}];
   for(let i=1;i<=8;i++)st.push({id:'s'+(i+6),name:`バイト${pad(i)}（仮）`,role:'バイト'});
   st.forEach(s=>{s.pw='1234';s.pat='14789';s.payroll=s.role==='バイト'});
   const S={
@@ -601,13 +601,16 @@ async function boot(){
     if(!remote.single&&!Object.values(remote).some(o=>o&&Object.keys(o).length)){S=blankS();last=new Map();save()}
   }catch(e){console.error(e);$('#app').innerHTML=shellMsg('データを読み込めませんでした',`<p class="note" style="margin:0">通信を確認して、ページを再読み込みしてください。<br><small>${esc(e.message||'')}</small></p><button class="btn" data-a="storeOut">ログイン画面に戻る</button>`);return}
   UI.pay=curPay();UI.planFY=fyOf(todayStr);
-  try{const id=localStorage.getItem(KEY+'-me');me=S.staff.find(s=>s.id===id)||null}catch(e){me=null}
+  me=SHARED
   setInterval(pollOnce,20000);render()}
 if(CLOUD){S=blankS()}else{S=load();if(!S){S=seed();save()}}
 let me=null; try{const id=localStorage.getItem(KEY+'-me');me=S.staff.find(s=>s.id===id)||null}catch(e){}
 const isAdmin=()=>!!me&&ADMIN_ROLES.includes(me.role);
 const isLeader=isAdmin;
-const staffName=id=>(S.staff.find(s=>s.id===id)||{}).name||'—';
+const SHARED={id:'shared',name:'スタッフ（共有）',role:'社員'};
+const isShared=()=>!!me&&me.id==='shared';
+const staffName=id=>id==='shared'?'スタッフ（共有）':(S.staff.find(s=>s.id===id)||{}).name||'—';
+const hopeWho=()=>isShared()?(UI.hopeStaff&&S.staff.some(s=>s.id===UI.hopeStaff)?UI.hopeStaff:(S.staff.find(s=>s.role==='バイト')||S.staff[0]||{}).id):me.id;
 
 /* ====== UI状態 ====== */
 const curPay=()=>{const d=TODAY.getDate();const cd=S.settings.closeDay;return cd>=31||d<=cd?ym(TODAY):monthAdd(ym(TODAY),1)};
@@ -677,7 +680,7 @@ function shiftLines(list,ed){return `<div class="sl">${list.map(x=>{const mine=m
 
 /* ====== リマインド計算 ====== */
 function allReminders(){const L=S.settings.leads,out=[];if(!me)return out;
-  S.reminders.forEach(r=>{if(r.done)return;if(r.to&&r.to!=='all'&&r.to!==me.id)return;out.push({id:r.id,title:r.title,date:r.date,lead:+r.lead,cat:r.cat||'その他',custom:true,go:'remind'})});
+  S.reminders.forEach(r=>{if(r.done)return;if(!isShared()&&r.to&&r.to!=='all'&&r.to!==me.id)return;out.push({id:r.id,title:r.title,date:r.date,lead:+r.lead,cat:r.cat||'その他',custom:true,go:'remind'})});
   const dl=+S.settings.hopeDeadline;let d=new Date(TODAY.getFullYear(),TODAY.getMonth(),dl);if(ymd(d)<todayStr)d=new Date(TODAY.getFullYear(),TODAY.getMonth()+1,dl);
   const target=ym(new Date(d.getFullYear(),d.getMonth()+2,1));
   if(isAdmin()){const n=S.staff.filter(s=>s.role!=='主宰'&&!S.hopes.some(h=>h.staffId===s.id&&h.date.startsWith(target))).length;out.push({title:`${mLabel(target)}のシフト希望 締切（未提出 ${n}人）`,date:ymd(d),lead:+L.shift,cat:'シフト',go:'shift'})}
@@ -722,12 +725,12 @@ function navBadge(k){if(!me)return '';
   if(k==='expense'&&isAdmin()){const n=S.expenses.filter(e=>e.status==='申請中').length;return n?`<span class="badge">${n}</span>`:''}
   if(k==='lost'){const n=S.lost.filter(l=>l.status==='保管中'&&lostDue(l)<todayStr).length;return n?`<span class="badge">${n}</span>`:''}
   return ''}
-function render(){if(!me){renderLogin();return}
+function render(){if(CLOUD&&!me)me=SHARED;if(!me){renderLogin();return}
   const V={home:vHome,menu:vMenu,shift:vShift,pay:vPay,expense:vExpense,stock:vStock,equip:vEquip,event:vEvent,people:vPeople,manual:vManual,plan:vPlan,lost:vLost,remind:vRemind,import:vImport,settings:vSettings};
   if(!V[view]||((NAV.find(n=>n[0]===view)||[])[2]&&!isAdmin()))view='home';
   const onMain=k=>k==='menu'?(view!=='home'&&!MAIN.some(m=>m[0]===view)):view===k;
-  $('#app').innerHTML=`<div class="shell"><aside class="side"><div class="strip"></div><button class="brand" data-a="go" data-v="home" title="ホームへ">${logoImg()}<span>ホームへ戻る</span></button><nav class="nav">${MAIN.map(([k,l])=>`<button class="${onMain(k)?'on':''}" data-a="go" data-v="${k}">${icon(k)}<span>${l}</span>${k==='menu'?'':navBadge(k)}</button>`).join('')}</nav><div class="me"><div><b>${esc(me.name)}</b> <span class="pill">${me.role}</span></div>${CLOUD?`<span class="sync ${SYNC}">${syncTxt()}</span>`:''}<button class="btn sm" data-a="logout">${CLOUD?'名前を変える':'ログアウト'}</button></div></aside>
-  <div class="maincol"><header class="topbar"><button class="home" data-a="go" data-v="home" aria-label="ホームへ">${logoImg()}<span class="tb-name">Kanzaki Sanga Sauna</span></button><span class="sp"></span>${CLOUD?`<span class="sync ${SYNC}">${syncTxt()}</span>`:''}<span class="pill">${esc(me.name)}・${me.role}</span><button class="btn sm" data-a="logout">${CLOUD?'名前を変える':'ログアウト'}</button></header>
+  $('#app').innerHTML=`<div class="shell"><aside class="side"><div class="strip"></div><button class="brand" data-a="go" data-v="home" title="ホームへ">${logoImg()}<span>ホームへ戻る</span></button><nav class="nav">${MAIN.map(([k,l])=>`<button class="${onMain(k)?'on':''}" data-a="go" data-v="${k}">${icon(k)}<span>${l}</span>${k==='menu'?'':navBadge(k)}</button>`).join('')}</nav><div class="me">${isShared()?'':`<div><b>${esc(me.name)}</b> <span class="pill">${me.role}</span></div>`}${CLOUD?`<span class="sync ${SYNC}">${syncTxt()}</span>`:''}<button class="btn sm" data-a="${CLOUD?'storeOut':'logout'}">ログアウト</button></div></aside>
+  <div class="maincol"><header class="topbar"><button class="home" data-a="go" data-v="home" aria-label="ホームへ">${logoImg()}<span class="tb-name">Kanzaki Sanga Sauna</span></button><span class="sp"></span>${CLOUD?`<span class="sync ${SYNC}">${syncTxt()}</span>`:''}${isShared()?'':`<span class="pill">${esc(me.name)}・${me.role}</span>`}<button class="btn sm" data-a="${CLOUD?'storeOut':'logout'}">ログアウト</button></header>
   <main class="main"><div class="wrap">${V[view]()}</div></main></div></div>
   <nav class="bnav">${MAIN.map(([k,l,s])=>`<button class="${onMain(k)?'on':''}" data-a="go" data-v="${k}">${icon(k)}<span>${s}</span>${k==='menu'?'':navBadge(k)}</button>`).join('')}</nav>`}
 
@@ -742,7 +745,7 @@ const newsRow=n=>`<button class="alert ${n.cls}" data-a="${n.a}" ${n.id?`data-id
 function vHome(){const d=TODAY;const today=dayShifts(todayStr);const mine=today.find(x=>x.staffId===me.id);
   const closed=S.plans.closures.find(c=>c.date===todayStr);
   const news=newsFeed();const rem=allReminders().filter(r=>r.show);
-  return `<section class="hero">${logoImg('hero-logo')}<div class="hero-txt"><span class="date">${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}.</span><h1>${esc(me.name)}さん、${closed?`今日は${esc(closed.kind)}の日です`:mine?`今日は ${shLabel(mine)} の勤務です`:'今日はお休みです'}</h1><p class="muted">パブリック 10:00〜22:00（最終入場21:00）<br>小屋サウナ 1部10:30〜13:30／2部14:00〜17:00／3部17:30〜20:30</p></div></section>
+  return `<section class="hero">${logoImg('hero-logo')}<div class="hero-txt"><span class="date">${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}.</span><h1>${isShared()?`おつかれさまです。${closed?`今日は${esc(closed.kind)}の日です`:`今日の出勤は${today.length}人です`}`:`${esc(me.name)}さん、${closed?`今日は${esc(closed.kind)}の日です`:mine?`今日は ${shLabel(mine)} の勤務です`:'今日はお休みです'}`}</h1><p class="muted">パブリック 10:00〜22:00（最終入場21:00）<br>小屋サウナ 1部10:30〜13:30／2部14:00〜17:00／3部17:30〜20:30</p></div></section>
   <div class="grid2">
    <div class="card"><h2>新着情報<span class="r">${isAdmin()?'<button class="btn sm" data-a="newsNew">お知らせを書く</button>':''}<button class="btn sm" data-a="newsAll">すべて見る</button></span></h2>${news.length?`<div class="alerts">${news.slice(0,5).map(newsRow).join('')}</div>`:'<p class="empty">新着情報はありません</p>'}</div>
    <div class="card"><h2>リマインド${rem.length?` <span class="badge">${rem.length}</span>`:''}<span class="r"><button class="btn sm" data-a="go" data-v="remind">すべて見る</button></span></h2>${rem.length?`<div class="alerts">${rem.slice(0,5).map(r=>`<button class="alert ${remCls(r.date)}" data-a="go" data-v="${r.go}"><span class="dot"></span><span class="al-txt">${esc(r.title)}</span><span class="when">${whenTxt(r.date)}</span></button>`).join('')}</div>`:'<p class="empty">今日のリマインドはありません</p>'}</div>
@@ -762,7 +765,7 @@ const presetChips=()=>`<div class="fld"><span>よく使う時間（タップで�
 function vShift(){const tabs=[['day','日ごと'],['grid','月の一覧表'],['hope','希望を提出']];if(isAdmin())tabs.push(['hopes','希望一覧']);
   let h=phead('SHIFT','シフト')+`<div class="tabs">${tabs.map(([k,l])=>`<button class="${UI.shiftTab===k?'on':''}" data-a="set" data-k="shiftTab" data-v="${k}">${l}</button>`).join('')}</div>`;
   if(UI.shiftTab==='day')h+=dayView();else if(UI.shiftTab==='grid')h+=gridView();else if(UI.shiftTab==='hope')h+=hopeView();else h+=hopesAdminView();return h}
-function myMonth(m){const mine=S.shifts.filter(x=>x.staffId===me.id&&x.date.startsWith(m)).sort((a,b)=>a.date<b.date?-1:1);
+function myMonth(m){if(isShared())return '';const mine=S.shifts.filter(x=>x.staffId===me.id&&x.date.startsWith(m)).sort((a,b)=>a.date<b.date?-1:1);
   return `<div class="card"><h2>${esc(me.name)}さんの${mLabel(m)}のシフト<span class="r muted">${mine.length}日・${hm(mine.reduce((a,x)=>a+shMin(x),0))}</span></h2>${mine.length?`<div class="chips">${mine.map(x=>`<span class="pill">${dLabel(x.date)} ${shLabel(x)}</span>`).join('')}</div>`:'<p class="empty">この月のシフトはまだありません</p>'}</div>`}
 function dayView(){const m=UI.shiftMonth;let days=daysIn(m);const hidden=m===ym(TODAY)&&!UI.showPast?days.filter(d=>d<todayStr).length:0;if(hidden)days=days.filter(d=>d>=todayStr);const ed=isAdmin();
   return `<div class="row">${monthNav('shiftMonth',m)}<span class="sp"></span>${ed?'<button class="btn primary" data-a="shNew">シフトを追加</button>':''}</div>
@@ -785,15 +788,15 @@ function shiftModal(id,pre={}){const x=S.shifts.find(s=>s.id===id);const o=x||{s
   <div class="frow">${fld('出勤',inp('start',def.s,'time'))}${fld('退勤',inp('end',def.e,'time'))}${fld('休憩',sel('brk',[['auto','自動（6時間超45分・8時間超60分）'],[0,'なし'],[15,'15分'],[30,'30分'],[45,'45分'],[60,'60分'],[90,'90分']],x?x.brk:'auto'))}</div>
   ${x?`<div id="delzone"><button type="button" class="btn sm danger" data-a="askDel" data-k="shifts" data-id="${x.id}">このシフトを削除</button></div>`:''}`,
   {nofocus:true,save:f=>{if(!f.staffId){toast('スタッフを選んでください');return false}if(!f.start||!f.end){toast('出勤と退勤の時間を入れてください');return false}const brk=f.brk==='auto'?autoBreak(f.start,f.end):+f.brk;S.shifts=S.shifts.filter(s=>s.id!==id&&!(s.staffId===f.staffId&&s.date===f.date));S.shifts.push({id:uid(),staffId:f.staffId,date:f.date,start:f.start,end:f.end,brk});toast('シフトを保存しました')}})}
-function hopeView(){const m=UI.hopeMonth;const my={};S.hopes.forEach(h=>{if(h.staffId===me.id&&h.date.startsWith(m))my[h.date]=h});
+function hopeView(){const m=UI.hopeMonth;const who=hopeWho();const my={};S.hopes.forEach(h=>{if(h.staffId===who&&h.date.startsWith(m))my[h.date]=h});
   const dl=new Date(+m.slice(0,4),+m.slice(5,7)-2,+S.settings.hopeDeadline);
   return `<div class="row">${monthNav('hopeMonth',m)}<span class="sp"></span><span class="pill warn">提出締切 ${dl.getMonth()+1}月${dl.getDate()}日</span></div>
-  <p class="note">日付をタップして、出られる時間（例：8:00-17:00）・終日OK・休み希望のどれかを選んでください。入力した内容はそのまま主宰・社員に届きます。</p>
+  ${isShared()?`<label class="fld"><span>誰の希望を入力しますか</span><select class="inp" data-c="hopeStaff">${S.staff.map(s=>`<option value="${s.id}" ${s.id===who?'selected':''}>${esc(s.name)}（${s.role}）</option>`).join('')}</select></label>`:''}<p class="note">日付をタップして、出られる時間（例：8:00-17:00）・終日OK・休み希望のどれかを選んでください。入力した内容はそのまま主宰・社員に届きます。</p>
   ${calendar(m,d=>{const h=my[d];return h?{html:`<span class="big">${h.kind==='休み希望'?'<span class="pill bad">休み</span>':h.kind==='終日OK'?'<span class="pill ok">終日OK</span>':`<span class="pill">${shortT(h.start)}-${shortT(h.end)}</span>`}</span>`}:{}},'hopeDay')}
   <div class="row"><span class="muted">${Object.keys(my).length}日分 入力済み</span><span class="sp"></span><button class="btn sm danger" data-a="hopeClear">この月の希望をすべて消す</button></div>`}
-function hopeModal(d){const cur=S.hopes.find(x=>x.staffId===me.id&&x.date===d);const h=cur||{kind:'時間指定',start:'',end:''};
-  modal(`${dLabel(d)}の希望`,`${fld('希望',seg('kind',[['時間指定','時間を指定'],['終日OK','終日OK'],['休み希望','休み希望']],h.kind))}${presetChips()}<div class="frow">${fld('出勤',inp('start',h.start||'','time'))}${fld('退勤',inp('end',h.end||'','time'))}</div>`,
-  {nofocus:true,extra:cur?`<button class="btn danger" type="button" data-a="hopeDel" data-d="${d}">希望を消す</button>`:'',save:f=>{if(f.kind==='時間指定'&&(!f.start||!f.end)){toast('出勤と退勤の時間を入れてください');return false}S.hopes=S.hopes.filter(x=>!(x.staffId===me.id&&x.date===d));S.hopes.push({id:uid(),staffId:me.id,date:d,kind:f.kind,start:f.kind==='時間指定'?f.start:'',end:f.kind==='時間指定'?f.end:''})}})}
+function hopeModal(d){const who=hopeWho();const cur=S.hopes.find(x=>x.staffId===who&&x.date===d);const h=cur||{kind:'時間指定',start:'',end:''};
+  modal(`${isShared()?esc(staffName(who))+'さん　':''}${dLabel(d)}の希望`,`${fld('希望',seg('kind',[['時間指定','時間を指定'],['終日OK','終日OK'],['休み希望','休み希望']],h.kind))}${presetChips()}<div class="frow">${fld('出勤',inp('start',h.start||'','time'))}${fld('退勤',inp('end',h.end||'','time'))}</div>`,
+  {nofocus:true,extra:cur?`<button class="btn danger" type="button" data-a="hopeDel" data-d="${d}">希望を消す</button>`:'',save:f=>{if(f.kind==='時間指定'&&(!f.start||!f.end)){toast('出勤と退勤の時間を入れてください');return false}S.hopes=S.hopes.filter(x=>!(x.staffId===who&&x.date===d));S.hopes.push({id:uid(),staffId:who,date:d,kind:f.kind,start:f.kind==='時間指定'?f.start:'',end:f.kind==='時間指定'?f.end:''})}})}
 function hopesAdminView(){const m=UI.hopeMonth;const hs=S.hopes.filter(h=>h.date.startsWith(m));
   const rows=S.staff.filter(s=>s.role!=='主宰').map(st=>{const mine=hs.filter(h=>h.staffId===st.id).sort((a,b)=>a.date<b.date?-1:1);return `<tr><td>${esc(st.name)}</td><td>${mine.length?'<span class="pill ok">提出済み</span>':'<span class="pill bad">未提出</span>'}</td><td>${mine.map(h=>`${dLabel(h.date)} ${hopeTxt(h)}`).join('、')||'—'}</td></tr>`}).join('');
   return `<div class="row">${monthNav('hopeMonth',m)}<span class="sp"></span><button class="btn primary" data-a="hopeApply">時間指定の希望をシフトに入れる</button></div>
@@ -825,8 +828,8 @@ function vExpense(){const m=UI.expMonth;let list=S.expenses.filter(e=>e.date.sta
   <div class="card"><h2>${fyLabel(fy)} 月別合計</h2><div class="bars">${byM.map(([mm,v])=>`<div class="bar"><span>${+mm.slice(5)}月</span><div class="track"><div class="fill" style="width:${v/maxM*100}%;background:${mm===m?'var(--n2)':'var(--ink)'}"></div></div><span class="v">${yen(v)}</span></div>`).join('')}</div></div></div>`:''}
   <div class="tbl-wrap"><table><thead><tr><th>日付</th><th>科目</th><th>内容</th><th class="r">金額</th><th>申請者</th><th>状態</th><th></th></tr></thead><tbody>${list.map(e=>`<tr><td>${dLabel(e.date)}</td><td>${esc(e.cat)}</td><td>${esc(e.desc)}</td><td class="r num">${yen(e.amount)}</td><td>${esc(staffName(e.staffId))}</td><td><span class="pill ${e.status==='承認'?'ok':e.status==='却下'?'bad':'warn'}">${e.status}</span></td><td class="row" style="gap:4px;flex-wrap:nowrap">${e.receipt?`<button class="btn sm" data-a="expReceipt" data-id="${e.id}">レシート</button>`:''}${isAdmin()||e.status==='申請中'?`<button class="btn sm" data-a="expEdit" data-id="${e.id}">編集</button>`:''}</td></tr>`).join('')||'<tr><td colspan="7" class="muted">この月の経費はありません</td></tr>'}</tbody></table></div>`}
 function expModal(id){const e=S.expenses.find(x=>x.id===id)||{date:todayStr,cat:S.settings.expCats[0],amount:'',desc:'',receipt:''};
-  modal(id?'経費を編集':isAdmin()?'経費を登録':'立替経費を申請',`<div class="frow">${fld('日付',inp('date',e.date,'date'))}${fld('科目',sel('cat',S.settings.expCats,e.cat))}</div>${fld('内容',inp('desc',e.desc,'text','placeholder="例：白樺ヴィヒタ 20束"'))}${fld('金額（円）',inp('amount',e.amount,'number','inputmode="numeric" min="0"'))}${photoField('receipt',e.receipt,'レシート・領収書の写真（任意）')}${id?`<div id="delzone"><button type="button" class="btn sm danger" data-a="askDel" data-k="expenses" data-id="${id}">この経費を削除</button></div>`:''}`,
-  {save:f=>{if(!f.desc||!f.amount){toast('内容と金額を入力してください');return false}if(id)Object.assign(e,{date:f.date,cat:f.cat,desc:f.desc,amount:+f.amount,receipt:f.receipt});else S.expenses.push({id:uid(),date:f.date,cat:f.cat,desc:f.desc,amount:+f.amount,receipt:f.receipt,staffId:me.id,status:isAdmin()?'承認':'申請中'});toast(id?'更新しました':isAdmin()?'登録しました':'申請しました。管理者の承認待ちです')},saveLabel:id?'保存':isAdmin()?'登録する':'申請する'})}
+  modal(id?'経費を編集':isAdmin()?'経費を登録':'立替経費を申請',`<div class="frow">${fld('日付',inp('date',e.date,'date'))}${fld('科目',sel('cat',S.settings.expCats,e.cat))}</div>${fld('内容',inp('desc',e.desc,'text','placeholder="例：白樺ヴィヒタ 20束"'))}${fld('金額（円）',inp('amount',e.amount,'number','inputmode="numeric" min="0"'))}${isShared()?fld('申請者（立て替えた人）',sel('staffId',S.staff.map(s=>[s.id,s.name]),e.staffId||S.staff[0].id)):''}${photoField('receipt',e.receipt,'レシート・領収書の写真（任意）')}${id?`<div id="delzone"><button type="button" class="btn sm danger" data-a="askDel" data-k="expenses" data-id="${id}">この経費を削除</button></div>`:''}`,
+  {save:f=>{if(!f.desc||!f.amount){toast('内容と金額を入力してください');return false}if(id)Object.assign(e,{date:f.date,cat:f.cat,desc:f.desc,amount:+f.amount,receipt:f.receipt},f.staffId?{staffId:f.staffId}:{});else S.expenses.push({id:uid(),date:f.date,cat:f.cat,desc:f.desc,amount:+f.amount,receipt:f.receipt,staffId:f.staffId||me.id,status:isAdmin()?'承認':'申請中'});toast(id?'更新しました':isAdmin()?'登録しました':'申請しました。管理者の承認待ちです')},saveLabel:id?'保存':isAdmin()?'登録する':'申請する'})}
 
 /* ====== 在庫 ====== */
 function vStock(){const cats=['すべて',...S.settings.stockCats];let list=S.stock.filter(s=>UI.stockCat==='すべて'||s.cat===UI.stockCat);if(UI.stockLow)list=list.filter(s=>+s.qty<=+s.min);
@@ -953,7 +956,7 @@ function vLost(){const f=UI.lostFilter,cf=UI.lostCat;const list=S.lost.filter(l=
   <div class="list">${list.map(l=>{const due=lostDue(l);const n=diffDays(due,todayStr);const ex=l.status==='保管中'&&n<0;return `<div class="item"><div class="t1"><span class="pill">${esc(l.cat||'その他')}</span>${esc(l.name||'')}<span class="sp"></span>${l.status==='保管中'?`<span class="pill ${ex?'bad':n<=3?'warn':''}">${ex?`期限切れ（${-n}日過ぎ）`:`期限まであと${n}日`}</span>`:`<span class="pill ${l.status==='返却済'?'ok':''}">${l.status}</span>`}</div>
    <div class="meta"><span>発見日 ${dLabel(l.date)}</span><span>発見場所：${esc(l.found)}</span><span>発見者：${esc(finderTxt(l.finder))}</span>${l.storage?`<span>保管：${esc(l.storage)}</span>`:''}${l.keepUntil?`<span>保管延長 ${dLabel(l.keepUntil)}まで</span>`:''}${l.contact?`<span>問い合わせ：${esc(l.contact)}</span>`:''}${l.status==='返却済'?`<span>返却 ${dLabel(l.returnDate)}（${esc(l.method||'')}）</span>`:''}${l.status==='処分'?`<span>処分 ${dLabel(l.disposedDate)}</span>`:''}</div>${l.note?`<div class="meta"><span>${esc(l.note)}</span></div>`:''}
    <div class="acts">${l.status==='保管中'?`<button class="btn sm ok" data-a="lostReturn" data-id="${l.id}">返却を記録</button>${ex?`<button class="btn sm danger" data-a="lostDispose" data-id="${l.id}">処分する</button><button class="btn sm" data-a="lostKeep" data-id="${l.id}">保管を続ける（+${S.settings.lostDays}日）</button>`:''}`:''}<button class="btn sm" data-a="lostEdit" data-id="${l.id}">編集</button></div></div>`}).join('')||'<p class="empty">該当する忘れ物はありません</p>'}</div>`}
-function lostModal(id){const l=S.lost.find(x=>x.id===id)||{date:todayStr,cat:'',name:'',found:S.settings.places[0],finder:me.id,storage:'受付裏の棚',contact:'',note:''};
+function lostModal(id){const l=S.lost.find(x=>x.id===id)||{date:todayStr,cat:'',name:'',found:S.settings.places[0],finder:isShared()?(S.staff[0]||{}).id:me.id,storage:'受付裏の棚',contact:'',note:''};
   modal(id?'忘れ物を編集':'忘れ物を登録',`${fld('種類',seg('cat',S.settings.lostCats,l.cat))}${fld('品名・特徴（「その他」を選んだときは必ず書いてください）',inp('name',l.name,'text','placeholder="例：黒い長財布、緑のフェルトのサウナハット"'))}
   <div class="frow">${fld('発見日',inp('date',l.date,'date'))}${fld('発見場所',sel('found',S.settings.places,l.found))}${fld('発見者',sel('finder',[...S.staff.map(s=>[s.id,s.name]),['guest','お客様']],l.finder))}</div>
   <div class="frow">${fld('保管場所',inp('storage',l.storage))}${fld('お客様からの問い合わせ（連絡先など）',inp('contact',l.contact))}</div>${fld('メモ',inp('note',l.note))}${id?`<div id="delzone"><button type="button" class="btn sm danger" data-a="askDel" data-k="lost" data-id="${id}">この記録を削除</button></div>`:''}`,
@@ -976,11 +979,11 @@ function remModal(id){const r=S.reminders.find(x=>x.id===id)||{title:'',date:add
 /* ====== スプレッドシート取込 ====== */
 const IMP={
  shift:{title:'シフト',desc:'日付・名前・出勤・退勤を1行に1件。休憩（分）が空欄なら、勤務時間から自動で入れます（6時間超45分・8時間超60分）。出勤・退勤の代わりに「区分」の列に「早番」など、設定の「よく使う時間」の名前を書くこともできます。',
-   head:['日付','名前','出勤','退勤','休憩'],ex:[['2026/11/1','浦崎','8:00','10:00',''],['2026/11/1','矢田','8:00','22:00','60'],['2026/11/1','中村','10:00','22:00','60'],['2026/11/1','久世','13:00','22:00','']]},
+   head:['日付','名前','出勤','退勤','休憩'],ex:[['2026/11/1','バイトA','8:00','10:00',''],['2026/11/1','社員A','8:00','22:00','60'],['2026/11/1','バイトB','10:00','22:00','60'],['2026/11/1','バイトC','13:00','22:00','']]},
  expense:{title:'経費',desc:'日付・科目・内容・金額を1行に1件。申請者は空欄でもかまいません。科目が新しい名前なら、自動で科目に追加します。',
    head:['日付','科目','内容','金額','申請者'],ex:[['2026/10/5','仕入れ・消耗品','白樺ヴィヒタ 20束','18000',''],['2026/10/12','修繕・設備費','小屋サウナ 扉修理','12500','']]},
  pay:{title:'給料（時給・交通費）',desc:'スタッフごとの時給と1出勤あたりの交通費。名前が見つからないスタッフは新しく追加します。区分は「主宰」「社員」「バイト」のどれか（空欄ならバイト）。',
-   head:['名前','区分','時給','交通費'],ex:[['浦崎','バイト','1100','500'],['中村','バイト','1100','500']]}};
+   head:['名前','区分','時給','交通費'],ex:[['バイトA','バイト','1100','500'],['バイトB','バイト','1100','500']]}};
 function vImport(){return phead('IMPORT','スプレッドシート取込')+
   `<p class="note">ExcelファイルやGoogleスプレッドシートから、シフト・経費・給料のデータを取り込めます。方法は2つです。<br>① ファイルを選ぶ（.xlsx／.xls／.csv）。Googleスプレッドシートは「ファイル」→「ダウンロード」→「Microsoft Excel（.xlsx）」で保存したファイルを選んでください。<br>② スプレッドシートのセルを見出しごと範囲選択してコピーし、下の枠に貼り付ける。</p>`+
   Object.entries(IMP).map(([k,o])=>{const st=UI.imp[k];return `<div class="card"><h2>${o.title}の取込<span class="r"><button class="btn sm" data-a="impTpl" data-k="${k}">見出しと例をコピー</button></span></h2><p class="muted" style="font-size:14px">${o.desc}</p>
@@ -1048,8 +1051,8 @@ const ACT={
  shEdit:d=>shiftModal(d.id),shNew:d=>shiftModal(null,{date:d.d||todayStr}),
  preset:d=>{const a=document.getElementById('f-start'),b=document.getElementById('f-end');if(a)a.value=d.s;if(b)b.value=d.e;const k=document.querySelector('input[name="kind"][value="時間指定"]');if(k)k.checked=true},
  hopeDay:d=>hopeModal(d.d),
- hopeDel:d=>{S.hopes=S.hopes.filter(x=>!(x.staffId===me.id&&x.date===d.d));save();closeModal();render();toast('希望を消しました')},
- hopeClear:()=>{S.hopes=S.hopes.filter(h=>!(h.staffId===me.id&&h.date.startsWith(UI.hopeMonth)));save();render();toast('この月の希望を消しました')},
+ hopeDel:d=>{const who=hopeWho();S.hopes=S.hopes.filter(x=>!(x.staffId===who&&x.date===d.d));save();closeModal();render();toast('希望を消しました')},
+ hopeClear:()=>{const who=hopeWho();S.hopes=S.hopes.filter(h=>!(h.staffId===who&&h.date.startsWith(UI.hopeMonth)));save();render();toast('この月の希望を消しました')},
  hopeApply:()=>{let n=0;S.hopes.filter(h=>h.date.startsWith(UI.hopeMonth)&&h.kind==='時間指定'&&h.start&&h.end).forEach(h=>{if(!S.shifts.some(x=>x.staffId===h.staffId&&x.date===h.date)){S.shifts.push({id:uid(),staffId:h.staffId,date:h.date,start:h.start,end:h.end,brk:brkDefault(h.start,h.end)});n++}});save();UI.shiftMonth=UI.hopeMonth;UI.shiftTab='day';render();toast(`${n}件をシフトに入れました`)},
  payDetail:d=>payDetailModal(d.id),
  payCopy:()=>{const rows=payroll(UI.pay);const {from,to}=payRange(UI.pay);copyText(tsv([[`${mLabel(UI.pay)}分（${from}〜${to}）`],['スタッフ','区分','出勤日数','勤務時間(h)','時給','給与','交通費','支給合計'],...rows.map(r=>[r.st.name,r.st.role,r.days,hdec(r.min),r.on?r.wage:'対象外',r.on?r.pay:'',r.on?r.tr:'',r.on?r.total:''])]))},
@@ -1095,6 +1098,7 @@ document.addEventListener('change',async e=>{const t=e.target,c=t.dataset.c;
   if(t.dataset.img&&t.files&&t.files[0]){const url=await compress(t.files[0]);const h=document.getElementById(t.dataset.img);h.value=url;const p=document.getElementById(t.dataset.img.replace('f-','p-'));if(p){p.src=url;p.hidden=!url}return}
   if(t.dataset.impfile&&t.files&&t.files[0]){const k=t.dataset.impfile;if(typeof XLSX==='undefined'){toast('ファイル読込の部品を読み込めませんでした。貼り付けで取り込んでください');return}const buf=await t.files[0].arrayBuffer();try{const wb=XLSX.read(buf,{type:'array',cellDates:true});const ws=wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''});UI.imp[k]=parseImport(k,rows);render()}catch(err){toast('ファイルを読み込めませんでした。形式を確認してください')}return}
   if(c==='pay'){UI.pay=t.value;render();return}
+  if(c==='hopeStaff'){UI.hopeStaff=t.value;render();return}
   if(c==='fiscalEnd'){S.settings.fiscalEnd=+t.value;UI.planFY=fyOf(todayStr);save();render();toast(`決算月を${t.value}月にしました`);return}
   if(c==='evChk'){const ev=S.events.find(x=>x.id===t.dataset.id);ev.checklist[+t.dataset.i].done=t.checked;save();render();return}
   if(c==='iniDone'){const i=S.plans.initiatives.find(x=>x.id===t.dataset.id);i.done=t.checked;save();render();return}
