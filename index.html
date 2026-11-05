@@ -929,6 +929,69 @@ button.tt-row.dt:hover .tt-track{box-shadow:inset 0 0 0 2px color-mix(in srgb,va
 .si-calc small{white-space:normal;line-height:1.2}
 
 .si-cnt{display:block;text-align:right;font-size:11px;color:var(--muted);padding:1px 4px 0;min-height:13px}
+
+/* 月の表（入力できる一覧） */
+.g2wrap{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.g2t{table-layout:fixed;width:100%;border-collapse:collapse;font-size:11px}
+.g2t col.g2n{width:74px}.g2t col.g2h{width:34px}
+.g2t th,.g2t td{border-right:1px solid color-mix(in srgb,var(--line) 70%,transparent);border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent);padding:0;text-align:center;position:relative}
+.g2t thead th{background:var(--surface2);padding:3px 0;line-height:1.1}
+.g2t thead th b{display:block;font-size:12px}.g2t thead th small{display:block;font-size:9.5px;color:var(--muted);font-weight:500}
+.g2t thead th.sun{color:var(--bad)}.g2t thead th.sat{color:var(--te)}.g2t thead th.today{background:var(--n3);color:#2c2410}
+.g2t th.g2n{text-align:left;padding:0 6px;font-family:var(--mincho);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--surface2)}
+.g2t td.tue,.g2t th.tue{background:color-mix(in srgb,var(--n1) 13%,var(--surface))}
+.g2t td.closed,.g2t th.closed{background:repeating-linear-gradient(135deg,var(--surface) 0 5px,var(--surface2) 5px 10px)}
+.g2t .mon{border-left:2px solid var(--muted)}
+.g2t tbody tr:nth-child(even) td:not(.tue):not(.closed){background:color-mix(in srgb,var(--surface2) 35%,var(--surface))}
+.g2t tr.mine th.g2n{box-shadow:inset 3px 0 0 var(--flame)}
+.gcell{width:100%;height:38px;border:0;background:none;padding:0;display:grid;place-items:center;cursor:pointer;color:var(--fg)}
+div.gcell{cursor:default}
+button.gcell:hover{background:color-mix(in srgb,var(--n2) 12%,transparent)}
+.gcell.chg{background:color-mix(in srgb,var(--n3) 30%,transparent)!important;box-shadow:inset 0 0 0 1px var(--n3)}
+.g2{display:grid;line-height:1.05;font-family:var(--display)}
+.g2 b{font-size:11.5px;font-weight:700}.g2 b::after{content:"-";color:var(--muted);font-weight:400}
+.g2 i{font-style:normal;font-size:10.5px;color:var(--muted)}
+.g2.off{color:var(--bad);font-family:var(--mincho);font-weight:700;font-size:12px}
+.g2t .g2h{font-size:10.5px;color:var(--muted)}
+.g2t tfoot td,.g2t tfoot th{background:var(--surface2);font-size:10.5px;padding:3px 0}
+.g2in{position:absolute;left:50%;top:2px;transform:translateX(-50%);width:84px;z-index:6;font-size:15px;padding:5px 6px;border:2px solid var(--n2);border-radius:5px;background:#fffdf8;color:#222;box-shadow:0 4px 12px rgba(0,0,0,.18);text-align:center}
+@media (max-width:900px){.g2wrap{overflow-x:auto}.g2t{min-width:960px}}
+
+/* トップの新着・リマインドの簡単入力 */
+.nlist{display:grid;gap:8px;max-height:520px;overflow:auto;padding-right:2px}
+.nitem{background:var(--surface2);border-radius:8px;padding:10px 12px;display:grid;gap:4px;border-left:4px solid var(--n2)}
+.n-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.n-h b{font-size:14.5px}.n-h .when{margin-left:auto;font-size:12px;color:var(--muted)}
+.n-b{margin:0;font-size:13.5px;line-height:1.7;color:var(--fg)}
+.nmore{margin-top:8px}.nmore summary{cursor:pointer;font-size:13px;color:var(--muted);padding:4px 0}
+.qrem{display:grid;gap:8px;margin-bottom:10px}
+.qrem #qr-t{font-size:16px;min-height:46px}
+.qr-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.qr-date{width:auto;min-height:38px;padding:4px 8px}.qr-to{width:auto;min-height:38px;padding:4px 8px}
+.qr-row .btn.primary{margin-left:auto}
+.linkish{border:0;background:none;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer}
+
+/* 前年・予算の比較／コンサルの視点 */
+.cmptbl tr.cmp-sec th{background:var(--coal);color:var(--onink);font-family:var(--mincho);font-size:12.5px;letter-spacing:.08em;padding:5px 10px;text-align:left}
+.cmptbl tbody th{font-family:var(--body);font-weight:700;font-size:13px}
+.mtx tr.fut td,.mtx tr.fut th{opacity:.6}
+.ktree{display:grid;gap:6px;justify-items:center;background:var(--surface2);border-radius:10px;padding:12px}
+.kt-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}
+.kt-n{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;display:grid;gap:1px;text-align:center;min-width:120px}
+.kt-n span{font-size:11.5px;color:var(--muted)}.kt-n b{font-family:var(--display);font-size:17px;font-weight:400}
+.kt-n em{font-style:normal;font-size:12px;font-weight:700}.kt-n em.up{color:var(--ok)}.kt-n em.dn{color:var(--bad)}
+.kt-op,.kt-x{font-size:13px;color:var(--muted);font-weight:700}
+.vlist{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:10px;margin-top:12px}
+.vitem{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;gap:4px}
+.vitem.good{border-left-color:var(--ok)}.vitem.mid{border-left-color:var(--warn)}.vitem.bad{border-left-color:var(--bad)}
+.v-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.v-h b{font-family:var(--mincho);font-size:15px}.v-val{margin-left:auto;font-size:12.5px;font-weight:700}
+.v-how{margin:0;font-size:12px;color:var(--muted);line-height:1.6}.v-act{margin:0;font-size:13.5px;line-height:1.7}
+
+/* Excelの取り込み */
+.xlcard{padding:0}.xlcard>summary{cursor:pointer;padding:14px 18px;list-style:none;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.xlcard>summary::before{content:"▸";color:var(--n2);margin-right:4px}.xlcard[open]>summary::before{content:"▾"}
+.xl-body{display:grid;gap:10px;padding:0 18px 16px}
+.xl-drop{display:flex;flex-wrap:wrap;gap:10px;align-items:end}.xl-drop .fld{flex:1;min-width:260px;margin:0}
+.xl-help{font-size:12.5px;margin:0;line-height:1.7}
 </style>
 </head>
 <body>
@@ -1354,6 +1417,7 @@ function attView(){if(!isAdmin())return '<p class="empty">主宰・社員だけ�
   if(UI.attStaff!==TIMEE&&!staff.some(s=>s.id===UI.attStaff))UI.attStaff=(staff[0]||{}).id||'';
   const by=attBy();
   return `<div class="row"><select class="inp" style="width:auto" data-c="attPay" aria-label="締めの期間">${opts.map(o=>`<option value="${o}" ${o===lab?'selected':''}>${attTag(o)}出勤簿（${md(payRange(o).from)}〜${md(payRange(o).to)}）</option>`).join('')}</select><span class="sp"></span><button class="btn" data-a="attPrint">印刷・PDF</button><button class="btn primary" data-a="attXlsx">出勤簿をダウンロード（Excel）</button></div>
+  ${xlCard('attend')}
   <div class="stats"><div class="stat"><span>この期間の出勤</span><b>${all.length}<small> 件</small></b></div><div class="stat"><span>確認済み（今日まで）</span><b>${due.length-un.length}<small> / ${due.length}</small></b></div><div class="stat ${un.length?'warn':''}"><span>未確認</span><b>${un.length}<small> 件</small></b></div><div class="stat"><span>時間を修正した日</span><b>${all.filter(isChanged).length}<small> 件</small></b></div></div>
   <div class="card"><h2>出勤の確認${un.length?` <span class="badge">${un.length}</span>`:''}<span class="r"><label class="by">確認する人 <select class="inp" data-c="attBy">${checkerOpts().map(([v,l])=>`<option value="${esc(v)}" ${v===by?'selected':''}>${esc(l)}</option>`).join('')}</select></label></span></h2>
    ${un.length?`<p class="note">今日までの出勤のうち、まだ確認していないものです。予定どおりなら「予定どおり」、時間が違ったら「時間を直す」を押してください。</p><div class="un-list">${un.slice(0,60).map(x=>`<div class="un-row"><span class="un-d">${dLabel(x.date)}</span><b class="un-n">${esc(shName(x))}</b><span class="num un-t">${shLabel(x)}${x.brk?`<small>休憩${x.brk}分</small>`:''}</span><span class="un-b"><button class="btn sm ok" data-a="attOk" data-id="${x.id}">✓ 予定どおり</button><button class="btn sm" data-a="attEdit" data-id="${x.id}">時間を直す</button></span></div>`).join('')}</div>${un.length>60?`<p class="muted">ほか ${un.length-60}件</p>`:''}<div class="row"><span class="sp"></span><button class="btn" data-a="attOkAll">表示中の${Math.min(un.length,60)}件をすべて「予定どおり」で確認</button></div>`:'<p class="empty">今日までの出勤は、すべて確認済みです</p>'}</div>
@@ -1669,8 +1733,83 @@ function vAnalysis(){const {from,to,ms}=anaPeriod();const cmp=UI.anaCmp||'yoy';
   ${anaSec('⑤ コストと生産性','どれだけ効率よく売上を作れたか',cR,cT,A,Ap,Bp,np,`<div class="ana-grid2">${ch4}${ch5}</div>`,PG)}
   <div class="card"><h2>月ごとの指標</h2><div class="tbl-wrap"><table class="mtx anatable"><thead><tr><th>月</th><th class="r">売上</th><th class="r">目標比</th><th class="r">前年比</th><th class="r">来客</th><th class="r">客単価</th><th class="r">1人あたり<br>フード</th><th class="r">小屋<br>利用率</th><th class="r">人件費率</th><th class="r">経費率</th><th class="r">人時<br>売上高</th><th class="r">簡易の<br>利益</th></tr></thead><tbody>${R.map(row).join('')}</tbody></table></div>
    <p class="note">人件費はシフト（出勤確認で直した時間を含む）から計算したバイトの給与＋交通費です。社員の給与・家賃など、経費に入っていない費用は含みません。</p></div>
+  ${consultCard(A,R,PG,cmp)}
   <div class="card"><h2>気づき（まとめ）<span class="r muted">数字から自動で出しています</span></h2>${ins.length?`<ul class="ins">${ins.map(x=>`<li class="${x[0]}">${x[1]}</li>`).join('')}</ul>`:'<p class="empty">データが増えると、ここに気づきが出ます</p>'}</div>
   <div class="row"><span class="sp"></span><button class="btn" data-a="anaXlsx">この期間の分析をダウンロード（Excel）</button></div>`}
+
+/* ====== 前年・予算の比較 ====== */
+const CMP_ROWS=[
+ ['売上・予算',null],
+ ['売上','sa',fY],['売上予算（目標）','st',fY],['予算比（達成率）','ach',fP,1],['予算との差','__bdiff',fY],
+ ['来客',null],
+ ['来場者数（入場者）','gate',fN],['レイト','late',fN],['来客の合計（入場者＋レイト）','vis',fN],['来客目標の達成率','visAch',fP,1],['小屋サウナ','hut',fN],['小屋サウナ利用率','hutRate',fP,1],['ハーバル受付','herb',fN],['ハーバル受付率','herbRate',fP,1],['レイトの割合','lateShare',fP,1],
+ ['1日あたり',null],
+ ['営業日数','days',v=>v==null?'—':v+'日'],['1営業日あたり売上','saDay',fY],['1営業日あたり来客','visDay',fD],['1営業日あたりレイト','lateDay',fD],
+ ['単価',null],
+ ['客単価','unit',fY],['1人あたりフード','foodPer',fY],
+ ['売上の内訳',null],
+ ['入場料','salGate',fY],['フード売上','food',fY],['　フード','fd',fY],['　ソフトドリンク','soft',fY],['　アルコール','alc',fY],['レンタル','rental',fY],['　水着（枚）','swimN',fC('枚')],['　サンダル（足）','sandalN',fC('足')],['　ポンチョ（枚）','ponchoN',fC('枚')],['グッズ','goods',fY],
+ ['コスト・利益',null],
+ ['経費（承認済み）','exp',fY,0,'down'],['バイト人件費','labor',fY,0,'down'],['人件費率','laborRatio',fP,1,'down'],['人時売上高','mhs',fY],['簡易の利益','profit',fY]];
+function cmpVal(o,k){if(k==='__bdiff')return o.sa!=null&&o.st?o.sa-o.st:null;return o[k]}
+function cmpRow([l,k,f,isRate,good],A,B){if(!k)return `<tr class="cmp-sec"><th colspan="5">${l}</th></tr>`;const a=cmpVal(A,k),b=cmpVal(B,k);
+  let d='—',r='<span class="muted">—</span>';
+  if(a!=null&&b!=null){if(isRate){d=sgnp((a-b)*100);r=anaDelta(a,b,good||'up',1)}else{const df=a-b;d=(df>=0?'+':'−')+f(Math.abs(df));r=k==='__bdiff'?'<span class="muted">—</span>':b?anaDelta(a,b,good||'up'):(a?`<span class="dl good">前年なし → +${f(a)}</span>`:'<span class="muted">—</span>')}}
+  else if(a!=null&&b==null){r=`<span class="dl good">比較の数字なし</span>`}
+  return `<tr><th>${l}</th><td class="r num"><b>${f(a)}</b></td><td class="r num muted">${f(b)}</td><td class="r num">${d}</td><td class="r">${r}</td></tr>`}
+function cmpTexts(A,B,la,lb){const o=[];const g=(a,b)=>a!=null&&b?a/b-1:null;
+  if(A.sa!=null&&B.sa)o.push(`売上は ${lb} の ${fY(B.sa)} から ${la} は <b>${fY(A.sa)}</b>（${sgn(g(A.sa,B.sa))}、${A.sa-B.sa>=0?'+':''}${fY(A.sa-B.sa)}）。`);
+  if(A.st)o.push(`${la} の売上予算 ${fY(A.st)} に対して達成率は <b>${fP(A.ach)}</b>（${A.sa-A.st>=0?'予算より':'予算まであと'} ${fY(Math.abs(A.sa-A.st))}${A.sa-A.st>=0?' 上回りました':''}）。${B.st?`${lb} の達成率は ${fP(B.ach)} でした。`:''}`);
+  if(A.vis&&B.vis)o.push(`来客は ${sgn(g(A.vis,B.vis))}（${fN(B.vis)} → ${fN(A.vis)}）、客単価は ${sgn(g(A.unit,B.unit))}（${fY(B.unit)} → ${fY(A.unit)}）。売上の変化は${Math.abs(g(A.vis,B.vis)||0)>Math.abs(g(A.unit,B.unit)||0)?'<b>来客数</b>':'<b>客単価</b>'}の影響が大きいです。`);
+  if(A.late!=null&&B.late!=null)o.push(`レイトは ${fN(B.late)} → ${fN(A.late)}（${B.late?sgn(g(A.late,B.late)):'前年なし'}）。来客に占める割合は ${fP(B.lateShare)} → ${fP(A.lateShare)}。`);
+  if(A.herb){o.push(B.herb?`ハーバルは ${fN(B.herb)} → ${fN(A.herb)}（${sgn(g(A.herb,B.herb))}）。`:`ハーバルは ${lb} にはなく、${la} は <b>${fN(A.herb)}</b> がまるごと上乗せになっています（来客の ${fP(A.herbRate)}）。`)}
+  if(A.hut!=null&&B.hut!=null)o.push(`小屋サウナは ${fN(B.hut)} → ${fN(A.hut)}（${B.hut?sgn(g(A.hut,B.hut)):'前年なし'}）、入場者のうちの利用率は ${fP(B.hutRate)} → ${fP(A.hutRate)}。`);
+  if(A.days&&B.days&&A.days!==B.days)o.push(`営業日数が ${B.days}日 → ${A.days}日 と違うので、1営業日あたりでも見てください（売上 ${sgn(g(A.saDay,B.saDay))}、来客 ${sgn(g(A.visDay,B.visDay))}）。`);
+  return o}
+function fyOpts(v){const a=[];const f0=fyOf(SALES_START+'-01'),f1=fyOf(todayStr);for(let f=f0;f<=f1;f++)a.push(f);return a.map(f=>`<option value="${f}" ${f==v?'selected':''}>${fyLabel(f)}</option>`).join('')}
+function vCompare(){const mode=UI.cmpMode||'month';const last=lastDataMonth();let ma,mb,la,lb;
+  if(mode==='month'){const a=UI.cmpA||last,b=UI.cmpB||monthAdd(a,-12);ma=[a];mb=[b];la=a.replace('-','年')+'月';lb=b.replace('-','年')+'月'}
+  else{const fa=+(UI.cmpFA||fyOf(todayStr)),fb=+(UI.cmpFB||fa-1);const full=UI.cmpFull==='1';const A=fyMonths(fa),B=fyMonths(fb);const done=A.filter(m=>pv(m,'salesA')!=null).length;
+    ma=full?A:A.slice(0,Math.max(1,done));mb=full?B:B.slice(0,ma.length);la=`${fa}年度${full?'':`（${ma.length}か月目まで）`}`;lb=`${fb}年度${full?'':`（同じ${mb.length}か月）`}`}
+  const A=anaAgg(ma),B=anaAgg(mb);const opts=[];for(let m=SALES_START;m<=monthAdd(ym(TODAY),12);m=monthAdd(m,1))opts.push(m);for(let m=monthAdd(SALES_START,-12);m<SALES_START;m=monthAdd(m,1))opts.unshift(m);opts.sort();
+  const mo=v=>opts.map(m=>`<option value="${m}" ${m===v?'selected':''}>${m.replace('-','年')}月</option>`).join('');
+  const ctl=`<div class="card ana-ctl"><h2>くらべ方</h2><div class="chips">${[['month','月どうし'],['fy','年度どうし（'+S.settings.fiscalEnd+'月決算）']].map(([k,l])=>`<button class="${mode===k?'on':''}" data-a="set" data-k="cmpMode" data-v="${k}">${l}</button>`).join('')}</div>
+   ${mode==='month'?`<div class="row ana-range"><label class="fld"><span>見る月</span><select class="inp" data-c="cmpA">${mo(ma[0])}</select></label><span class="muted">と</span><label class="fld"><span>くらべる月</span><select class="inp" data-c="cmpB">${mo(mb[0])}</select></label><button class="btn sm" data-a="cmpLY">1年前にする</button></div>`
+   :`<div class="row ana-range"><label class="fld"><span>見る年度</span><select class="inp" data-c="cmpFA">${fyOpts(UI.cmpFA||fyOf(todayStr))}</select></label><span class="muted">と</span><label class="fld"><span>くらべる年度</span><select class="inp" data-c="cmpFB">${fyOpts(UI.cmpFB||(+(UI.cmpFA||fyOf(todayStr))-1))}</select></label><label class="check"><input type="checkbox" data-c="cmpFull" ${UI.cmpFull==='1'?'checked':''}>年度の12か月全部でくらべる（外すと、今年度の進んでいる月数にそろえます）</label></div>`}</div>`;
+  const tbl=`<div class="card"><h2>${esc(la)} と ${esc(lb)} の比較</h2><div class="tbl-wrap"><table class="mtx cmptbl"><thead><tr><th>項目</th><th class="r">${esc(la)}</th><th class="r">${esc(lb)}</th><th class="r">差</th><th class="r">増減</th></tr></thead><tbody>${CMP_ROWS.map(r=>cmpRow(r,A,B)).join('')}</tbody></table></div>
+   <div class="anatext"><b>分析</b>${cmpTexts(A,B,la,lb).map(t=>`<p>${t}</p>`).join('')||'<p class="muted">数字が入ると、ここに分析が出ます。</p>'}</div></div>`;
+  return ctl+tbl+budgetCard(+(UI.cmpFA||fyOf(todayStr)))}
+function budgetCard(fy){const ms=fyMonths(fy);let cb=0,ca=0,cl=0,lastA=null;const rows=ms.map(m=>{const b=pv(m,'salesT'),a=pv(m,'salesA'),ly=pv(monthAdd(m,-12),'salesA');cb+=b||0;if(a!=null){ca+=a;lastA=m}cl+=(a!=null?ly||0:0);return{m,b,a,ly,cb,ca:a!=null?ca:null,cl:a!=null?cl:null}});
+  const tb=rows.reduce((s,r)=>s+(r.b||0),0);const noB=rows.filter(r=>!r.b).map(r=>+r.m.slice(5)+'月');const done=rows.filter(r=>r.a!=null);const ybDone=done.reduce((s,r)=>s+(r.b||0),0);
+  const remainB=rows.filter(r=>r.a==null).reduce((s,r)=>s+(r.b||0),0);const fc1=ca+remainB;
+  const lyRate=done.length&&done.every(r=>r.ly)?ca/done.reduce((s,r)=>s+r.ly,0):null;const fc2=lyRate?ca+rows.filter(r=>r.a==null).reduce((s,r)=>s+(r.ly||r.b||0)*lyRate,0):null;
+  const ch=svgChart({title:'累計の売上',labels:ms.map(m=>+m.slice(5)+'月'),bars:[{name:'月の実績',values:rows.map(r=>r.a),color:'var(--n1)',op:.55}],lines:[{name:'予算の累計',values:rows.map(r=>r.cb||null),color:'var(--n2)'},{name:'実績の累計',values:rows.map(r=>r.ca),color:'var(--ink)'},{name:'前年の累計（同じ月まで）',values:rows.map(r=>r.cl),color:'var(--muted)',dash:1}],yFmt:shortN,tipFmt:v=>yen(v)});
+  return `<div class="card"><h2>${fyLabel(fy)} の予算と実績<span class="r muted">${S.settings.fiscalEnd}月決算</span></h2>
+  <div class="kpis"><div class="kpi"><span class="k-l">年度の売上予算${noB.length?'（入っている月の合計）':''}</span><b class="k-v">${fY(tb)}</b>${noB.length?`<span class="k-s" style="color:var(--bad)">${noB.length}か月分の予算が未入力</span>`:''}</div><div class="kpi"><span class="k-l">ここまでの実績（${done.length}か月）</span><b class="k-v">${fY(ca)}</b><span class="k-s">同じ月までの予算 ${fY(ybDone)}・予算比 ${fP(ybDone?ca/ybDone:null)}</span></div><div class="kpi"><span class="k-l">年度の予算に対する進み具合</span><b class="k-v">${fP(tb?ca/tb:null)}</b><span class="k-s">残り ${fY(Math.max(0,tb-ca))}</span></div><div class="kpi"><span class="k-l">着地見込み（残りを予算どおり）</span><b class="k-v">${fY(fc1)}</b><span class="k-s">予算比 ${fP(tb?fc1/tb:null)}</span></div>${fc2?`<div class="kpi"><span class="k-l">着地見込み（今の前年比のペース・前年実績から計算）</span><b class="k-v">${fY(fc2)}</b><span class="k-s">前年比 ${fP(lyRate)} で計算${noB.length?'':`・予算比 ${fP(tb?fc2/tb:null)}`}</span></div>`:''}</div>
+  ${ch}
+  <div class="tbl-wrap"><table class="mtx"><thead><tr><th>月</th><th class="r">予算</th><th class="r">実績</th><th class="r">予算比</th><th class="r">予算との差</th><th class="r">前年実績</th><th class="r">前年比</th><th class="r">累計予算</th><th class="r">累計実績</th><th class="r">累計予算比</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.a==null?'fut':''}"><th>${r.m.replace('-','/')}</th><td class="r num">${r.b!=null?fmtN(r.b):'—'}</td><td class="r num"><b>${r.a!=null?fmtN(r.a):'—'}</b></td><td class="r">${r.a!=null&&r.b?pctPill(pct(r.a,r.b)):'<span class="muted">—</span>'}</td><td class="r num">${r.a!=null&&r.b?(r.a-r.b>=0?'+':'')+fmtN(r.a-r.b):'—'}</td><td class="r num muted">${r.ly!=null?fmtN(r.ly):'—'}</td><td class="r">${r.a!=null&&r.ly?pctPill(pct(r.a,r.ly)):'<span class="muted">—</span>'}</td><td class="r num">${fmtN(r.cb)}</td><td class="r num">${r.ca!=null?fmtN(r.ca):'—'}</td><td class="r">${r.ca!=null&&r.cb?pctPill(pct(r.ca,r.cb)):'<span class="muted">—</span>'}</td></tr>`).join('')}</tbody>
+  <tfoot><tr><th>年度計</th><td class="r num"><b>${fmtN(tb)}</b></td><td class="r num"><b>${fmtN(ca)}</b></td><td class="r">${ybDone?pctPill(pct(ca,ybDone)):'—'}</td><td class="r num">${ybDone?(ca-ybDone>=0?'+':'')+fmtN(ca-ybDone):'—'}</td><td class="r num muted">${fmtN(cl)}</td><td class="r">${cl?pctPill(pct(ca,cl)):'—'}</td><td></td><td></td><td></td></tr></tfoot></table></div>
+  <div class="anatext"><b>分析</b>${noB.length?`<p><b style="color:var(--bad)">${noB.join('・')} の売上予算（目標）がまだ入っていません。</b>「まとめて入力」①の「売上目標」に入れると、年度の予算比と着地見込みが正しく出ます。</p>`:''}<p>${fyLabel(fy)} の売上予算は ${fY(tb)}。${done.length}か月が終わって実績は ${fY(ca)}、同じ月までの予算に対して <b>${fP(ybDone?ca/ybDone:null)}</b>${cl?`、前年の同じ月までにくらべて ${sgn(ca/cl-1)}`:''} です。</p><p>残りの月を予算どおりに進めると、年度の着地は <b>${fY(fc1)}</b>（予算比 ${fP(tb?fc1/tb:null)}）。${fc2?`今の前年比（${fP(lyRate)}）のペースが続くと、年度の売上は <b>${fY(fc2)}</b> になる見込みです${noB.length?'':`（予算比 ${fP(fc2/tb)}）`}。`:''}${tb&&fc1<tb?`予算に届くには、残りの月であと ${fY(tb-ca)}（1か月あたり ${fY((tb-ca)/Math.max(1,12-done.length))}）が必要です。`:''}</p></div></div>`}
+/* ====== 経営の視点（コンサルの見かた） ====== */
+function consultCard(A,R,PG,cmp){const g=PG(['sa']);const gv=PG(['vis']);const yo=g.n?chg(g.A.sa,g.B.sa):null;const vy=gv.n?chg(gv.A.vis,gv.B.vis):null;
+  const anc=A.sa&&A.brk?((A.food||0)+(A.rental||0)+(A.goods||0))/A.sa:null;const xs=R.filter(r=>r.sa!=null);const top3=xs.length>=6?xs.slice().sort((a,b)=>b.sa-a.sa).slice(0,3).reduce((s,r)=>s+r.sa,0)/xs.reduce((s,r)=>s+r.sa,0):null;
+  const mm=xs.length>1?Math.max(...xs.map(r=>r.sa))/Math.min(...xs.map(r=>r.sa)):null;
+  const V=[
+   ['成長性','前の年よりお店が大きくなっているか。売上と来客の「前年比」で見ます。',`売上 ${sgn(yo)}／来客 ${sgn(vy)}`,yo==null?null:yo>=0.05?'good':yo>=-0.03?'mid':'bad',yo==null?'前年の数字がそろうと判定できます。':yo>=0.05?'しっかり伸びています。伸びている理由（イベント・SNS・口コミなど）を言葉にして、続けられる形にしておきましょう。':yo>=-0.03?'横ばいです。来客を増やす打ち手（新しいイベント・平日の集客）を1つ足すと伸びに変わります。':'前年より下がっています。来客と客単価のどちらが原因かを下の分解で確認して、原因に合った手を打ちましょう。'],
+   ['予算管理','立てた予算どおりに進んでいるか。月の達成率と、年度の累計の進み具合で見ます。',`達成率 ${fP(A.ach)}（${A.below.length}か月が未達）`,A.ach==null?null:A.ach>=1?'good':A.ach>=0.95?'mid':'bad',A.ach==null?'売上予算（目標）を入れると判定できます。':A.ach>=1?'予算を上回っています。予算が低すぎないかも見直すと、より攻めた計画が立てられます。':`未達の月（${A.below.map(r=>+r.m.slice(5)+'月').join('・')||'—'}）の共通点（天候・季節・イベントの有無）を探して、翌年の予算と打ち手に反映しましょう。`],
+   ['集客力','お客様をどれだけ呼べているか。曜日や日数の違いをならすため「1営業日あたりの来客」で見ます。',`1営業日あたり ${fD(A.visDay)}`,gv.n?(chg(gv.A.visDay,gv.B.visDay)>=0?'good':'bad'):null,gv.n?`前年の同じ月とくらべて1営業日あたり ${sgn(chg(gv.A.visDay,gv.B.visDay))}。${chg(gv.A.visDay,gv.B.visDay)<0?'平日の昼など空いている時間帯向けの企画（平日割・回数券の案内）が効きます。':'集客は順調です。混雑時の待ち時間や満足度が下がっていないかも気にかけてください。'}`:'前年の来客数がそろうと判定できます。'],
+   ['客単価・ついで買い','1人がいくら使っているか。特に入場料以外（フード・レンタル・グッズ）の割合＝ついで買いの強さを見ます。',`客単価 ${fY(A.unit)}／入場料以外 ${fP(anc)}`,anc==null?null:anc>=0.25?'good':anc>=0.15?'mid':'bad',anc==null?'「まとめて入力」②で売上の内訳を入れると判定できます。':anc>=0.25?'ついで買いがしっかりできています。人気商品をセットにして、さらに単価を上げる余地があります。':'入場料以外の割合がまだ低めです。サウナ後のドリンク（オロポ・Sangaソーダ）を受付で一言すすめる、セットメニューを作る、などで上げられます。'],
+   ['フード・ドリンクの力','食べる・飲むがどれだけ売れているか。1人あたりフード売上と、その中のアルコールの割合を見ます。',`1人あたり ${fY(A.foodPer)}／アルコール ${fP(A.alcInFood)}`,A.foodPer==null?null:A.foodPer>=400?'good':A.foodPer>=250?'mid':'bad',A.foodPer==null?'フード売上を入れると判定できます。':`メニューごとの売れ行き（内訳のExcel取り込み）を見て、売れない品を入れ替え、売れる品を目立たせましょう。${(A.lateShare||0)>0.08?'レイトの方にはアルコールとおつまみの提案が効きます。':''}`],
+   ['高単価メニュー（小屋サウナ・ハーバル）','利益の大きい特別なメニューがどれだけ選ばれているか。小屋サウナ利用率とハーバル受付率で見ます。',`小屋 ${fP(A.hutRate)}／ハーバル ${fP(A.herbRate)}`,A.hutRate==null?null:A.hutRate>=0.3?'good':A.hutRate>=0.15?'mid':'bad',A.hutRate==null?'小屋サウナの人数を入れると判定できます。':'小屋サウナやハーバルは、ほかのお店にない強みです。予約の取りやすさ（空き枠の見える化）と、SNSでの「体験の写真」発信で、選ばれる割合を上げられます。'],
+   ['季節の波','月ごとの売上の差が大きすぎないか。一番売れる月と少ない月の差、上位3か月に売上が集中していないかを見ます。',`最大と最小の差 ${mm?Math.round(mm*10)/10+'倍':'—'}／上位3か月で ${fP(top3)}`,mm==null?null:mm<=2?'good':mm<=3.5?'mid':'bad',mm==null?'数か月分のデータがそろうと判定できます。':mm>2?'季節の波が大きいです。売上が少ない月は、早めに企画（冬のハーバル強化・回数券キャンペーン）を計画表に入れ、人件費も波に合わせて調整しましょう。':'季節の波はおだやかです。'],
+   ['生産性','人の働きがどれだけ売上につながっているか。1時間の勤務あたりの売上（人時売上高）と人件費率で見ます。',`人時売上高 ${fY(A.mhs)}／人件費率 ${fP(A.laborRatio)}`,A.mhs==null?null:A.laborRatio<=0.2?'good':A.laborRatio<=0.3?'mid':'bad',A.mhs==null?'シフト（勤務時間）が入ると判定できます。':'来客の少ない時間帯の人数を減らし、多い時間帯に寄せると人時売上高が上がります。「日ごと」のシフトと月の来客の波を見比べてください。'],
+   ['収益性','売上からどれだけ利益が残っているか。経費率と簡易の利益率で見ます（社員の給与・家賃などは入っていません）。',`経費率 ${fP(A.expRatio)}／簡易の利益率 ${fP(A.margin)}`,A.margin==null?null:A.margin>=0.5?'good':A.margin>=0.3?'mid':'bad',A.margin==null?'経費と売上がそろうと判定できます。':'経費の大きい項目（経費画面の科目別）を3つ選び、毎月の上限を決めると利益が安定します。'],
+   ['夜の需要（レイト）','夜の時間帯のお客様が増えているか。レイトの割合と前年比で見ます。',`レイトの割合 ${fP(A.lateShare)}`,(()=>{const gl=PG(['late','vis']);return gl.n?(chg(gl.A.late,gl.B.late)>=0?'good':'bad'):null})(),'仕事帰りの方が来やすい告知（金曜のメディテーションDayなど）や、レイト向けのセット（入館＋1ドリンク）で伸ばせます。']];
+  const tag=s=>s==='good'?'<span class="pill ok">良い</span>':s==='mid'?'<span class="pill warn">ふつう</span>':s==='bad'?'<span class="pill bad">要対策</span>':'<span class="pill">判定なし</span>';
+  const tree=(()=>{const gt=PG(['sa','vis']);if(!gt.n)return '';const f=(l,a,b,fmt)=>`<div class="kt-n"><span>${l}</span><b>${a==null?'未入力':fmt(a)}</b><em class="${(chg(a,b)||0)>=0?'up':'dn'}">${a!=null&&b?sgn(chg(a,b)):'—'}</em></div>`;
+    return `<h3 class="sub">売上の分解（KPIツリー）<small class="muted">　${cmp==='yoy'?'前年':'前の期間'}の同じ月（${gt.n}か月分）とくらべて</small></h3><div class="ktree"><div class="kt-row">${f('売上',gt.A.sa,gt.B.sa,fY)}</div><div class="kt-op">＝</div><div class="kt-row">${f('営業日数',gt.A.days,gt.B.days,v=>v+'日')}<span class="kt-x">×</span>${f('1営業日あたり来客',gt.A.visDay,gt.B.visDay,fD)}<span class="kt-x">×</span>${f('客単価',gt.A.unit,gt.B.unit,fY)}</div>${gt.A.brk&&gt.B.brk?`<div class="kt-op">客単価の中身</div><div class="kt-row">${f('1人あたり入場料',gt.A.salGate!=null?gt.A.salGate/gt.A.vis:null,gt.B.salGate!=null?gt.B.salGate/gt.B.vis:null,fY)}<span class="kt-x">＋</span>${f('1人あたりフード',gt.A.foodPer,gt.B.foodPer,fY)}<span class="kt-x">＋</span>${f('1人あたりレンタル',gt.A.rentalPer,gt.B.rentalPer,fY)}<span class="kt-x">＋</span>${f('1人あたりグッズ',gt.A.goodsPer,gt.B.goodsPer,fY)}</div>`:''}</div><p class="muted" style="font-size:12.5px;margin:4px 0 0">売上は「営業日数 × 1日の来客 × 客単価」のかけ算です。どの箱が下がっているかを見ると、打つべき手（日数＝営業日・イベント、来客＝集客、単価＝ついで買い）がわかります。</p>`})();
+  return `<div class="card"><h2>経営の視点（コンサルの見かた）<span class="r muted">10の視点で、いまのお店をチェック</span></h2>${tree}
+   <div class="vlist">${V.map(([n,how,val,st,act])=>`<div class="vitem ${st||''}"><div class="v-h"><b>${n}</b>${tag(st)}<span class="v-val">${val}</span></div><p class="v-how">見かた：${how}</p><p class="v-act">${act}</p></div>`).join('')}</div></div>`}
 
 function anaMix(A,B){const cats=[['salGate','入場料'],['food','フード売上'],['rental','レンタル'],['goods','グッズ']];const ta=cats.reduce((a,[k])=>a+(A[k]||0),0),tb=cats.reduce((a,[k])=>a+(B[k]||0),0);if(!ta)return '<p class="muted">「まとめて入力」の②で売上の内訳を入れると、構成が比べられます。</p>';
   return `<div class="tbl-wrap"><table class="mtx"><thead><tr><th>項目</th><th class="r">金額</th><th class="r">構成比</th><th class="r">比較の構成比</th><th class="r">伸び</th></tr></thead><tbody>${cats.map(([k,l])=>`<tr><th>${l}</th><td class="r num">${fmtN(A[k]||0)}</td><td class="r num">${pctS((A[k]||0)/ta)}</td><td class="r num muted">${tb?pctS((B[k]||0)/tb):'—'}</td><td class="r">${B[k]?anaDelta(A[k]||0,B[k],'up'):'<span class="muted">—</span>'}</td></tr>`).join('')}</tbody></table></div>`}
@@ -1694,7 +1833,7 @@ function anaXlsx(){if(typeof XLSX==='undefined'){toast('Excelの部品を読み�
   const wb=XLSX.utils.book_new();const ws=XLSX.utils.aoa_to_sheet(a);ws['!cols']=[{wch:9},...Array(19).fill({wch:12})];XLSX.utils.book_append_sheet(wb,ws,'月ごとの指標');
   try{XLSX.writeFile(wb,`経営分析_${from.replace('-','.')}-${to.replace('-','.')}.xlsx`);toast('保存しました')}catch(e){toast('この画面ではファイルを保存できません')}}
 
-function vSales(){const t=UI.salesTab||'input';return `<div class="tabs">${[['input','まとめて入力'],['ana','経営分析'],['sum','年間・決算期の集計'],['detail','内訳（Excel取込・分析）']].map(([k,l])=>`<button class="${t===k?'on':''}" data-a="set" data-k="salesTab" data-v="${k}">${l}</button>`).join('')}</div>`+(t==='sum'?salesSum():t==='detail'?salesDetail():t==='ana'?vAnalysis():salesInput())}
+function vSales(){const t=UI.salesTab||'input';return `<div class="tabs">${[['input','まとめて入力'],['ana','経営分析'],['cmp','前年・予算の比較'],['sum','年間・決算期の集計'],['detail','内訳（Excel取込・分析）']].map(([k,l])=>`<button class="${t===k?'on':''}" data-a="set" data-k="salesTab" data-v="${k}">${l}</button>`).join('')}</div>`+(t==='sum'?salesSum():t==='detail'?salesDetail():t==='ana'?vAnalysis():t==='cmp'?vCompare():salesInput())}
 function visCard(fys){const ms=salesMonths().filter(m=>m<=ym(TODAY)&&(visTot(m)!=null||pv(m,'visHut')!=null||pv(m,'visHerb')!=null));const T='来客の内訳（入場者数・レイト）と小屋サウナ・ハーバル';if(!ms.length)return `<div class="card"><h2>${T}</h2><p class="empty">「まとめて入力」で来客実績を入れると、ここに分析が出ます。</p></div>`;
   const agg=list=>{const o={visGate:0,visHut:0,visLate:0,tot:0,nb:0,sa:0,vb:0,gh:0,hutN:0};list.forEach(m=>{VT.forEach(([k])=>{o[k]+=pv(m,k)||0;o.vb+=pv(m,k)||0});const h=pv(m,'visHut');if(h!=null){o.visHut+=h;o.hutN++;o.gh+=pv(m,'visGate')||0}o.tot+=visTot(m)||0;if(!hasVB(m))o.nb++;o.sa+=pv(m,'salesA')||0});return o};
   const cells=o=>o.vb?VT.map(([k])=>`<td class="r num">${fmtN(o[k])}<small class="muted"> ${pct(o[k],o.vb)}%</small></td>`).join(''):'<td colspan="2" class="muted c">内訳なし</td>';
@@ -1722,6 +1861,51 @@ function siPaste(e){const t=e.target;if(!t.classList||!t.classList.contains('si'
   const all=[...document.querySelectorAll('.si')];const cols=[...new Set(all.map(x=>x.dataset.f))];const rows=[...new Set(all.map(x=>x.dataset.m))];const r0=rows.indexOf(t.dataset.m),c0=cols.indexOf(t.dataset.f);let n=0;
   txt.replace(/\r/g,'').replace(/\n$/,'').split('\n').forEach((line,i)=>line.split('\t').forEach((v,j)=>{const m=rows[r0+i],f=cols[c0+j];if(!m||!f)return;const el=all.find(x=>x.dataset.m===m&&x.dataset.f===f);if(!el)return;const nv=String(v).replace(/[¥,円\s]/g,'');el.value=nv===''||isNaN(+nv)?'':nv;siMark(el);n++}));toast(`${n}マスに貼り付けました。「保存」を押すと保存されます`)}
 function siMark(el){siRowTot(el.dataset.m);const cur=pv(el.dataset.m,el.dataset.f);const v=el.value.replace(/[¥,円\s]/g,'');el.classList.toggle('chg',(v===''?null:+v)!==cur);el.classList.toggle('err',v!==''&&isNaN(+v));const n=document.querySelectorAll('.si.chg').length;const b=$('#si-count');if(b)b.textContent=n?`（変更 ${n}マス）`:''}
+
+/* ====== いつものExcel（出納帳・出勤簿）との取り込み・書き出し ====== */
+const XL_KW=[['燃料（薪・灯油）',['灯油','薪','石油']],['交通費・ガソリン',['ガソリン','通行','乗車','JR','タクシー','TAXI','出張','運賃']],['送料',['送料','運送','通運']],['洗濯',['コインランドリー','洗濯、乾燥','洗濯・乾燥','乾燥機','クリーニング']],['修繕・設備費',['メンテナンス','修理','修繕','砂利','木材','ねじ','生コン','建築','セメント']],['広告・イベント費',['広告','ポスター','チラシ','イベント','ハーバル']],['食品',['食材','食品','飲','BBQ','マッカラ','材料','お米','米']],['消耗品',['消耗品','洗剤','紙','ゴミ袋','電池']],['備品',['備品','ポロシャツ','粘土','文具']]];
+const XL_SHOP=[['食品',['ロピア','アミカ','ゲンキー','GENKY','タチヤ']],['備品',['コメリ','バロー','ホームセンター','DCM','カインズ']],['消耗品',['ダイソー','セリア','キャンドゥ']]];
+function xlCat(t){t=t||'';for(const [c,ws] of XL_KW)if(ws.some(w=>t.includes(w)))return c;for(const [c,ws] of XL_SHOP)if(ws.some(w=>t.includes(w)))return c;return 'その他'}
+const XL_ALIAS=()=>S.settings.nameAlias||{};
+function xlStaff(title){let n=String(title||'').replace(/^[\s　]*[\d０-９.．年月]+[\s　]*/,'').replace(/[\s　]|さん/g,'');n=XL_ALIAS()[n]||n;if(!n)return null;return S.staff.find(s=>s.name===n)||S.staff.find(s=>s.name.startsWith(n)||n.startsWith(s.name))||null}
+const xlMin=v=>{const t=cellTime(v);return t?toMin(t):null};
+function xlAttend(wb){const out=[],skip=[];wb.SheetNames.forEach(sn=>{const aoa=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:''});const hi=aoa.findIndex(r=>r.some(c=>String(c).replace(/\s/g,'')==='月日')&&r.some(c=>String(c).replace(/\s/g,'')==='開始'));if(hi<0)return;
+  const H=aoa[hi].map(c=>String(c).replace(/\s/g,''));const ci=k=>H.indexOf(k);const st=xlStaff(sn);if(!st){skip.push(`シート「${sn}」：スタッフの名前が見つかりません`);return}
+  aoa.slice(hi+1).forEach(r=>{const d=cellDate(r[ci('月日')]);if(!d)return;const s=xlMin(r[ci('開始')]),e=xlMin(r[ci('終了')]);if(s==null&&e==null)return;if(s==null||e==null){skip.push(`${st.name} ${d}：開始か終了が空欄`);return}
+    const span=((e-s)%1440+1440)%1440||1440;let brk=null;if(ci('時間')>=0){const w=xlMin(r[ci('時間')]);if(w!=null&&w>0&&w<=span)brk=span-w}if(brk==null&&ci('休憩')>=0){const b=xlMin(r[ci('休憩')]);brk=b!=null&&b<span?b:0}
+    out.push({sid:st.id,name:st.name,date:d,start:pad(Math.floor(s/60)%24)+':'+pad(s%60),end:pad(Math.floor(e/60)%24)+':'+pad(e%60),brk:brk||0})})});return{rows:out,skip}}
+function xlCash(wb){const out=[],skip=[];wb.SheetNames.forEach(sn=>{const aoa=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:''});
+  if(/現金/.test(sn)){const hi=aoa.findIndex(r=>r.some(c=>String(c).trim()==='収入')&&r.some(c=>String(c).trim()==='支出'));if(hi<0)return;const H=aoa[hi].map(c=>String(c).trim());const ci=k=>H.findIndex(x=>x.startsWith(k));let prev=null;
+    aoa.slice(hi+1).forEach((r,i)=>{let y=+r[ci('年')],m=+r[ci('月')],d=+r[ci('日')];const inc=num(r[ci('収入')]),out_=num(r[ci('支出')]);if((isNaN(inc)||!inc)&&(isNaN(out_)||!out_))return;
+      if(y&&y<100)y+=2000;let date=y&&m&&d?`${y}-${pad(m)}-${pad(d)}`:null;if(!date){if(!prev){skip.push(`${sn} ${i+hi+2}行目：日付なし`);return}date=prev}prev=date;
+      let shop=String(r[ci('購入店舗')]??'').trim(),desc=String(r[ci('摘要')]??'').trim();if(!shop&&desc){const p=desc.split(/[　]{1,}|\s{2,}/);if(p.length>1&&p[1].trim()){shop=p[0].trim();desc=p.slice(1).join(' ').trim()}}
+      if(!isNaN(inc)&&inc)out.push({date,io:'in',pay:'現金',cat:'入金',desc:desc||'入金',shop:'',amount:Math.round(inc)});
+      if(!isNaN(out_)&&out_)out.push({date,pay:'現金',cat:xlCat(shop+' '+desc),desc:desc||'（摘要なし）',shop,amount:Math.round(out_)})})}
+  else if(/カード/.test(sn)){const pay=/amazon/i.test(sn)?'Amazon':/アミカ/.test(sn)?'アミカ':/楽天/.test(sn)?'楽天':'その他';const hi=aoa.findIndex(r=>r.some(c=>String(c).trim()==='品目')&&r.some(c=>String(c).trim()==='購入日'));if(hi<0)return;const H=aoa[hi].map(c=>String(c).trim());const ci=k=>H.findIndex(x=>x.startsWith(k));
+    aoa.slice(hi+1).forEach(r=>{const date=cellDate(r[ci('購入日')]);const a=num(r[ci('支払い')]);if(!date||isNaN(a)||!a)return;let c=String(r[ci('カテゴリー')]??'').trim();if(!(S.settings.expCats||[]).includes(c))c=c.includes('食')?'食品':xlCat(String(r[ci('品目')]??''));out.push({date,pay,cat:c,desc:String(r[ci('品目')]??'').trim()||'（品目なし）',shop:pay,amount:Math.round(a),memo:String(r[ci('備考')]??'').trim()})})}});return{rows:out,skip}}
+const xlKey=e=>`${e.pay||'現金'}|${e.date}|${e.io==='in'?'in':'out'}|${Math.round(+e.amount)}|${String(e.desc||'').replace(/（出納帳に日付なし.*）/,'').replace(/[\s　]/g,'').slice(0,20)}`;
+function xlPlan(kind,wb){if(kind==='cash'){const {rows,skip}=xlCash(wb);const have={};S.expenses.forEach(e=>{const k=xlKey(e);have[k]=(have[k]||0)+1});const seen={};const add=[];let dup=0;rows.forEach(r=>{const k=xlKey(r);seen[k]=(seen[k]||0)+1;if(seen[k]<=(have[k]||0))dup++;else add.push(r)});return{kind,rows,add,dup,skip}}
+  const {rows,skip}=xlAttend(wb);const add=[],upd=[];let same=0;rows.forEach(r=>{const x=S.shifts.find(s=>s.staffId===r.sid&&s.date===r.date&&!s.off&&!isTimee(s));if(!x){add.push(r);return}const E=eff(x);if(E.start===r.start&&E.end===r.end&&E.brk===r.brk&&isChecked(x)){same++;return}upd.push(Object.assign({id:x.id},r))});return{kind,rows,add,upd,dup:same,skip}}
+function xlCommit(){const p=UI.xl;if(!p)return;const at=new Date().toISOString();let n=0;
+  if(p.kind==='cash'){p.add.forEach(r=>{S.expenses.push(Object.assign({id:uid(),staffId:'',status:'承認',receipt:'',src:'excel'},r));n++})}
+  else{p.add.forEach(r=>{S.shifts.push({id:uid(),staffId:r.sid,date:r.date,start:r.start,end:r.end,brk:r.brk,note:'',chk:{by:'出勤簿（Excel）',at}});n++});
+    p.upd.forEach(r=>{const x=S.shifts.find(s=>s.id===r.id);if(!x)return;if(x.start===r.start&&x.end===r.end&&(+x.brk||0)===r.brk)delete x.act;else x.act={start:r.start,end:r.end,brk:r.brk,memo:'出勤簿（Excel）から'};x.chk={by:'出勤簿（Excel）',at};n++})}
+  UI.xl=null;save();render();toast(`${n}件を反映しました`)}
+function xlCard(kind){const p=UI.xl&&UI.xl.kind===kind?UI.xl:null;const t=kind==='cash'?'出納帳':'出勤簿';
+  return `<details class="card xlcard"${p?' open':''}><summary><b>いつものExcel（${t}）から取り込む・書き出す</b><span class="muted">　いつもの形のExcelを入れると、新しい行だけが反映されます</span></summary>
+  <div class="xl-body"><div class="xl-drop"><label class="fld"><span>① Excelファイルを選ぶ（${kind==='cash'?'sanga出納帳.xlsm など':'2026.10出勤簿.xlsx など'}）</span><input type="file" class="inp" accept=".xlsx,.xlsm,.xls" data-xlfile="${kind}"></label>
+   <button class="btn" data-a="${kind==='cash'?'cashXlsx':'attXlsx'}">いまの内容を${t}の形で書き出す</button></div>
+  ${p?`<div class="note"><b>${esc(p.name)}</b> を読み込みました。<br>${kind==='cash'?`読み取った行：${p.rows.length}件 ／ <b>新しく追加：${p.add.length}件</b> ／ すでに入っている：${p.dup}件`:`読み取った勤務：${p.rows.length}件 ／ <b>新しく追加：${p.add.length}件</b> ／ <b>時間を出勤簿に合わせる：${p.upd.length}件</b> ／ 同じ内容：${p.dup}件`}${p.skip.length?`<br><span style="color:var(--bad)">読めなかったもの ${p.skip.length}件：${p.skip.slice(0,4).map(esc).join('、')}${p.skip.length>4?' ほか':''}</span>`:''}</div>
+   ${(p.add.length||(p.upd||[]).length)?`<div class="tbl-wrap" style="max-height:260px;overflow:auto"><table class="mtx"><thead><tr>${kind==='cash'?'<th>日付</th><th>支払い</th><th>科目</th><th>内容</th><th class="r">金額</th>':'<th>日付</th><th>スタッフ</th><th>開始</th><th>終了</th><th class="r">休憩</th><th>反映のしかた</th>'}</tr></thead><tbody>${kind==='cash'?p.add.slice(0,80).map(r=>`<tr><td>${r.date.replace(/-/g,'/')}</td><td>${esc(r.pay)}</td><td>${esc(r.cat)}</td><td>${esc((r.shop?r.shop+' ':'')+r.desc)}</td><td class="r num">${r.io==='in'?'+':''}${fmtN(r.amount)}</td></tr>`).join(''):[...p.add.map(r=>Object.assign({how:'追加'},r)),...p.upd.map(r=>Object.assign({how:'時間を合わせる'},r))].slice(0,80).map(r=>`<tr><td>${r.date.replace(/-/g,'/')}</td><td>${esc(r.name)}</td><td>${fmtT(r.start)}</td><td>${fmtT(r.end)}</td><td class="r num">${r.brk}分</td><td>${r.how}</td></tr>`).join('')}</tbody></table></div>
+   <div class="row"><button class="btn ghost" data-a="xlCancel">やめる</button><span class="sp"></span><button class="btn primary" data-a="xlCommit">この内容で反映する</button></div>`:'<p class="muted" style="margin:0">新しく反映するものはありません（もう全部入っています）。</p><div class="row"><span class="sp"></span><button class="btn" data-a="xlCancel">閉じる</button></div>'}`:''}
+  <p class="muted xl-help">使い方：いつもどおりExcelに入力して保存 →「① Excelファイルを選ぶ」でそのファイルを選ぶ →「この内容で反映する」。同じファイルを何回入れても、すでに入っている行は二重になりません。${kind==='attend'?'出勤簿の時間は「実際の時間（確認済み）」として反映されます。':''}</p></div></details>`}
+function cashXlsx(){if(typeof XLSX==='undefined'){toast('Excelの部品を読み込めませんでした');return}const m=UI.expMonth||ym(TODAY);const op=S.settings.cashOpening||{date:'2000-01-01',amount:0};
+  const rows=cashRows();let bal=+op.amount||0;const before=rows.filter(e=>e.date<m+'-01');before.forEach(e=>{bal+=e.io==='in'?+e.amount:-e.amount});
+  const aoa=[['','','','','','','','現金出納帳','','',`${m.replace('-','年')}月分`],['No','年','月','日','収入','支出','軽減税率','区分記載','残高','購入店舗','摘要（相手先／内容）'],['','','','','繰越','','','',bal,'','']];let no=0;
+  rows.filter(e=>e.date.startsWith(m)).forEach(e=>{const inc=e.io==='in';bal+=inc?+e.amount:-e.amount;no++;aoa.push([no,+e.date.slice(2,4),+e.date.slice(5,7),+e.date.slice(8),inc?+e.amount:'',inc?'':+e.amount,'','',bal,e.shop||'',e.desc||''])});
+  const wb=XLSX.utils.book_new();const ws=XLSX.utils.aoa_to_sheet(aoa);ws['!cols']=[{wch:5},{wch:5},{wch:4},{wch:4},{wch:10},{wch:10},{wch:8},{wch:8},{wch:11},{wch:14},{wch:32}];XLSX.utils.book_append_sheet(wb,ws,`現金${+m.slice(5)}月`);
+  [['Amazon','カード(Amazon)'],['アミカ','カード（アミカ）'],['楽天','カード(楽天)']].forEach(([pay,sn])=>{const l=S.expenses.filter(e=>e.pay===pay&&e.date.startsWith(m)&&e.status!=='却下').sort((a,b)=>a.date<b.date?-1:1);let sum=0;const a=[[],['','カテゴリー','支払い（税・送込み）','品目','購入日','合計','備考欄'],[]];l.forEach(e=>{sum+=+e.amount;a.push(['',e.cat,+e.amount,e.desc,e.date.replace(/-/g,'/'),sum,e.memo||''])});const w=XLSX.utils.aoa_to_sheet(a);w['!cols']=[{wch:2},{wch:12},{wch:14},{wch:28},{wch:11},{wch:10},{wch:16}];XLSX.utils.book_append_sheet(wb,w,sn)});
+  try{XLSX.writeFile(wb,`sanga出納帳_${m.replace('-','.')}.xlsx`);toast('出納帳の形で保存しました')}catch(e){toast('この画面ではファイルを保存できません')}}
 
 /* ====== リマインド計算 ====== */
 function allReminders(){const L=S.settings.leads,out=[];if(!me)return out;
@@ -1815,8 +1999,8 @@ function vHome(){const d=TODAY;const today=dayShifts(todayStr);const mine=today.
   return `<section class="hero">${logoImg('hero-logo')}<div class="hero-txt"><span class="date">${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}.</span><h1>${isShared()?`おつかれさまです。${closed?`今日は${esc(closed.kind)}の日です`:`今日の出勤は${today.length}人です`}`:`${esc(me.name)}さん、${closed?`今日は${esc(closed.kind)}の日です`:mine?`今日は ${shLabel(mine)} の勤務です`:'今日はお休みです'}`}</h1>${cxToday()}</div></section>
   ${todayCard()}
   <div class="grid2">
-   <div class="card"><h2>新着情報<span class="r">${isAdmin()?'<button class="btn sm" data-a="newsNew">お知らせを書く</button>':''}<button class="btn sm" data-a="newsAll">すべて見る</button></span></h2>${news.length?`<div class="alerts">${news.slice(0,5).map(newsRow).join('')}</div>`:'<p class="empty">新着情報はありません</p>'}</div>
-   <div class="card"><h2>リマインド${rem.length?` <span class="badge">${rem.length}</span>`:''}<span class="r"><button class="btn sm" data-a="go" data-v="remind">すべて見る</button></span></h2>${rem.length?`<div class="alerts">${rem.slice(0,5).map(r=>`<button class="alert ${remCls(r.date)}" data-a="go" data-v="${r.go}"><span class="dot"></span><span class="al-txt">${esc(r.title)}</span><span class="when">${whenTxt(r.date)}</span></button>`).join('')}</div>`:'<p class="empty">今日のリマインドはありません</p>'}</div>
+   <div class="card"><h2>新着情報<span class="r">${isAdmin()?'<button class="btn sm" data-a="newsNew">お知らせを書く</button>':''}<button class="btn sm" data-a="newsAll">すべて見る</button></span></h2>${homeNews()}</div>
+   <div class="card"><h2>リマインド${rem.length?` <span class="badge">${rem.length}</span>`:''}<span class="r"><button class="btn sm" data-a="go" data-v="remind">すべて見る</button></span></h2>${quickRem()}${rem.length?`<div class="alerts">${rem.map(r=>`<div class="alert ${remCls(r.date)}"><span class="dot"></span><button class="al-txt linkish" data-a="${r.custom?'remEdit':'go'}" data-id="${r.id||''}" data-v="${r.go}">${esc(r.title)}</button><span class="when">${whenTxt(r.date)}</span>${r.custom?`<button class="btn sm ok" data-a="remDone" data-id="${r.id}" aria-label="完了">✓</button>`:''}</div>`).join('')}</div>`:'<p class="empty">今日のリマインドはありません</p>'}</div>
   </div>
   <div class="card"><h2>今日のシフト<span class="r"><button class="btn sm" data-a="go" data-v="shift">シフト表へ</button></span></h2>${today.length||dayOffs(todayStr).length?todayTimeline(today,dayOffs(todayStr)):'<p class="empty">今日のシフトはありません</p>'}</div>
   ${S.sample?`<p class="note">今はサンプルデータが入っています。バイトの名前は「バイト01（仮）」のように仮の名前です。設定 → スタッフ、またはスプレッドシート取込から実際の名前に入れ替えられます。この試作版のデータは、今使っているブラウザの中だけに保存されます。</p>`:''}`}
@@ -1857,13 +2041,46 @@ function vShift(){const tabs=[['day','日ごと'],['week','週の表'],['grid','
   const V={day:dayView,week:weekView,grid:gridView,bulk:bulkView,hope:hopeView,hopes:hopesAdminView,att:attView};return h+V[UI.shiftTab]()}
 function weekNav(){const st=UI.weekStart,en=addDays(st,(UI.shiftTab==='bulk'?(UI.bulkDays||7):7)-1);return `<div class="row wnav"><button class="btn" data-a="wnav" data-n="-1">‹ 前へ</button><button class="btn" data-a="wnav" data-n="0">今週</button><button class="btn" data-a="wnav" data-n="1">次へ ›</button><b class="wnav-l">${+st.slice(5,7)}/${+st.slice(8)}(${WD[parseD(st).getDay()]}) 〜 ${+en.slice(5,7)}/${+en.slice(8)}(${WD[parseD(en).getDay()]})</b></div>`}
 function weekHeadCells(days){return days.map(d=>{const w=parseD(d).getDay();const cl=closureOf(d);const ws=weeklyOn(d);return `<th class="wh ${w===0?'sun':w===6?'sat':''} ${d===todayStr?'today':''} ${cl?(cl.weekly?'tue':'closed'):''}"><div class="wh-d">${+d.slice(5,7)}/${+d.slice(8)}<small>${WD[w]}</small></div><div class="wh-p">${cl?`<span class="pill cl">${esc(cl.kind)}</span>`:''}${ws.map(x=>`<span class="pill evw">${esc(x.name.replace(/Day$/,''))}</span>`).join('')}</div></th>`}).join('')}
-function gridView(){const m=UI.shiftMonth,days=daysIn(m),ed=isAdmin();const idx={};S.shifts.forEach(x=>{if(x.date.startsWith(m))idx[x.staffId+'|'+x.date]=x});
-  const staff=sortStaff(S.staff.filter(st=>st.active!==false||S.shifts.some(x=>x.staffId===st.id&&x.date.startsWith(m))));
-  const thCls=d=>{const w=parseD(d).getDay();const cl=closureOf(d);return [w===0?'sun':w===6?'sat':'',w===1?'mon':'',d===todayStr?'today':'',cl?(cl.weekly?'tue':'closed'):''].join(' ')};
-  let t=`<div class="tbl-wrap mtbl"><table class="grid mgrid"><thead><tr><th class="stk">スタッフ</th>${days.map(d=>`<th class="${thCls(d)}">${+d.slice(8)}<small>${WD[parseD(d).getDay()]}</small></th>`).join('')}<th>計</th></tr></thead><tbody>`;
-  staff.forEach(st=>{let tot=0;t+=`<tr class="${st.id===me.id?'mine':''}"><td class="stk">${esc(st.name)}</td>`+days.map(d=>{let x=idx[st.id+'|'+d];if(x&&!x.off&&st.offOnly&&!closureOf(d))x=null;if(x&&!x.off)tot+=shMin(x);const c=x?(x.off?'<span class="gc off">休</span>':`<span class="gc" title="${shLabel(x)} 休憩${x.brk||0}分${x.note?' '+esc(x.note):''}"><b>${fmtT(x.start)}</b>${fmtT(x.end)}</span>`):'';const cls=thCls(d).replace(/sun|sat|today/g,'');return ed?`<td class="${cls}"><button class="cell" data-a="cellEdit" data-s="${st.id}" data-d="${d}" aria-label="${esc(st.name)} ${d}">${c}</button></td>`:`<td class="${cls}"><div class="cell">${c}</div></td>`}).join('')+`<td class="num mt">${tot?Math.round(tot/60)+'h':''}</td></tr>`});
-  t+=`</tbody><tfoot><tr><td class="stk">出勤人数</td>${days.map(d=>`<td class="num">${dayShifts(d).length||''}</td>`).join('')}<td></td></tr></tfoot></table></div>`;
-  return `<div class="row">${monthNav('shiftMonth',m)}</div><p class="note">上の太字が出勤、下が退勤の時刻です。「休」は休み、青い列は定休日（火曜）、斜線は店休日です。見づらいときは「週の表」が大きく見られます。</p>${t}${myMonth(m)}`}
+/* ====== 月の表（横＝日付・縦＝名前・8-17で入力） ====== */
+const decT=t=>{if(!t)return '';const [h,m]=t.split(':').map(Number);const v=h+(m||0)/60;return String(Math.round(v*100)/100)};
+const gLabel=x=>x?(x.off?'休':`${decT(x.start)}-${decT(x.end)}`):'';
+function parseGT(t){t=String(t||'').replace(/[０-９．：]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248)).replace(/[〜～ー−―–—~]/g,'-').replace(/\s/g,'');
+  if(!t)return{empty:true};if(/^(休|やすみ|休み|x|×|off)$/i.test(t))return{off:true};
+  const one=s=>{let m=s.match(/^(\d{1,2}):(\d{1,2})$/);if(m)return [+m[1],+m[2]];m=s.match(/^(\d{1,2})(?:\.(\d{1,2}))?$/);if(m){const h=+m[1],f=m[2]?+('0.'+m[2]):0;return [h,Math.round(f*60)]}m=s.match(/^(\d{1,2})(\d{2})$/);if(m)return [+m[1],+m[2]];return null};
+  const p=t.split('-');if(p.length!==2)return{err:true};const a=one(p[0]),b=one(p[1]);if(!a||!b||a[0]>29||b[0]>30||a[1]>59||b[1]>59)return{err:true};
+  const q=v=>pad(v[0]%24)+':'+pad(Math.round(v[1]/15)*15===60?45:Math.round(v[1]/15)*15);const s=q(a),e=q(b);if(s===e)return{err:true};return{start:s,end:e}}
+function gridDays(){const m=UI.shiftMonth;if(UI.gridPer==='pay'){const {from,to}=payRange(monthAdd(m,1));const a=[];for(let d=from;d<=to;d=addDays(d,1))a.push(d);return a}return daysIn(m)}
+function gridView(){const m=UI.shiftMonth,days=gridDays(),ed=isAdmin();const idx={};S.shifts.forEach(x=>{if(x.date>=days[0]&&x.date<=days[days.length-1]&&!isTimee(x))idx[x.staffId+'|'+x.date]=x});
+  const staff=sortStaff(S.staff.filter(st=>st.active!==false||S.shifts.some(x=>x.staffId===st.id&&x.date>=days[0]&&x.date<=days[days.length-1])));
+  const cls=d=>{const w=parseD(d).getDay();const cl=closureOf(d);return [w===0?'sun':w===6?'sat':'',w===1?'mon':'',d===todayStr?'today':'',cl?(cl.weekly?'tue':'closed'):''].join(' ')};
+  const cell=(st,d)=>{let x=idx[st.id+'|'+d];if(x&&!x.off&&st.offOnly&&!closureOf(d))x=null;const v=gLabel(x);const [a,b]=v&&v!=='休'?v.split('-'):[v,''];
+    const inner=v?(v==='休'?'<span class="g2 off">休</span>':`<span class="g2"><b>${a}</b><i>${b}</i></span>`):'';
+    return `<td class="${cls(d).replace(/sun|sat|today/g,'')}">${ed?`<button type="button" class="gcell" data-a="gEdit" data-s="${st.id}" data-d="${d}" data-v="${esc(v)}" aria-label="${esc(st.name)} ${d} ${esc(v)||'なし'}">${inner}</button>`:`<div class="gcell">${inner}</div>`}</td>`};
+  let t=`<div class="g2wrap"><table class="g2t"><colgroup><col class="g2n">${days.map(()=>'<col>').join('')}<col class="g2h"></colgroup><thead><tr><th class="g2n">名前</th>${days.map(d=>`<th class="${cls(d)}"><b>${+d.slice(8)}</b><small>${WD[parseD(d).getDay()]}</small></th>`).join('')}<th class="g2h">時間</th></tr></thead><tbody>`;
+  staff.forEach(st=>{let tot=0;days.forEach(d=>{const x=idx[st.id+'|'+d];if(x&&!x.off&&!(st.offOnly&&!closureOf(d)))tot+=shMin(x)});t+=`<tr class="${me&&st.id===me.id?'mine':''}"><th class="g2n">${esc(st.name)}</th>${days.map(d=>cell(st,d)).join('')}<td class="g2h num">${tot?Math.round(tot/60):''}</td></tr>`});
+  t+=`</tbody><tfoot><tr><th class="g2n">人数</th>${days.map(d=>`<td class="num">${dayShifts(d).filter(x=>!isAbsent(x)).length||''}</td>`).join('')}<td></td></tr></tfoot></table></div>`;
+  const per=UI.gridPer==='pay';
+  return `<div class="row">${monthNav('shiftMonth',m)}<div class="chips"><button class="${per?'':'on'}" data-a="set" data-k="gridPer" data-v="cal">1日〜末日</button><button class="${per?'on':''}" data-a="set" data-k="gridPer" data-v="pay">締め（11日〜10日）</button></div><span class="sp"></span>${ed?`<button class="btn" data-a="gReset">変更を取り消す</button><button class="btn primary" data-a="gSave">この表を保存<span id="g-count"></span></button>`:''}</div>
+  ${ed?'<p class="note">マスをクリックして <b>8-17</b> のように入力します。8時30分は <b>8.5-17</b> でも <b>8:30-17</b> でもOK。休みは「休」、消すときは空欄。Enterで下の人、Tabで次の日へ進みます。Excelからコピーした表を貼り付けることもできます。入れ終わったら「この表を保存」を押してください。</p>':'<p class="note">上が出勤、下が退勤の時刻です（8.5＝8時30分）。</p>'}${t}${myMonth(m)}`}
+const GPEND={};
+function gOpen(btn){if(!btn)return;const td=btn.parentElement;if(td.querySelector('.g2in'))return;const inp=document.createElement('input');inp.className='g2in';inp.value=GPEND[btn.dataset.s+'|'+btn.dataset.d]??btn.dataset.v;inp.dataset.s=btn.dataset.s;inp.dataset.d=btn.dataset.d;td.appendChild(inp);inp.focus();inp.select()}
+function gCommit(inp,move){if(!inp.isConnected)return true;const k=inp.dataset.s+'|'+inp.dataset.d;const btn=inp.parentElement.querySelector('.gcell');const v=inp.value.trim();const p=parseGT(v);
+  if(p.err){toast(`「${v}」は読めません。8-17／8.5-17／8:30-17 のように入れてください`);inp.focus();return false}
+  const norm=p.empty?'':p.off?'休':`${decT(p.start)}-${decT(p.end)}`;inp.remove();
+  if(norm!==btn.dataset.v)GPEND[k]=norm;else delete GPEND[k];
+  btn.classList.toggle('chg',k in GPEND);const [a,b]=norm&&norm!=='休'?norm.split('-'):[norm,''];btn.innerHTML=norm?(norm==='休'?'<span class="g2 off">休</span>':`<span class="g2"><b>${a}</b><i>${b}</i></span>`):'';
+  const c=Object.keys(GPEND).length;const g=$('#g-count');if(g)g.textContent=c?`（変更 ${c}件）`:'';
+  if(move){const all=[...document.querySelectorAll('.gcell[data-s]')];const i=all.indexOf(btn);const cols=document.querySelectorAll('.g2t thead th').length-2;const j=move==='right'?i+1:move==='left'?i-1:move==='down'?i+cols:i-cols;if(all[j])gOpen(all[j])}return true}
+function gSave(){const ks=Object.keys(GPEND);if(!ks.length){toast('変更はありません');return}let n=0;
+  ks.forEach(k=>{const [s,d]=k.split('|');const v=GPEND[k];const old=S.shifts.find(x=>x.staffId===s&&x.date===d&&!isTimee(x));S.shifts=S.shifts.filter(x=>!(x.staffId===s&&x.date===d&&!isTimee(x)));n++;if(!v)return;
+    if(v==='休'){S.shifts.push({id:uid(),staffId:s,date:d,off:true,start:'',end:'',brk:0,note:old&&old.off?old.note||'':''});return}
+    const p=parseGT(v);const same=old&&!old.off&&old.start===p.start&&old.end===p.end;S.shifts.push(Object.assign({id:uid(),staffId:s,date:d,start:p.start,end:p.end,brk:same?old.brk:brkDefault(p.start,p.end),note:old&&!old.off?old.note||'':''},old&&!old.off&&old.act?{act:old.act}:{},old&&!old.off&&old.chk?{chk:old.chk}:{}))});
+  Object.keys(GPEND).forEach(k=>delete GPEND[k]);save();render();toast(`${n}マスを保存しました`)}
+function gPaste(e){const t=e.target;if(!t.classList||!t.classList.contains('g2in'))return;const txt=(e.clipboardData||window.clipboardData).getData('text');if(!/[\t\n]/.test(txt.trim()))return;e.preventDefault();
+  const all=[...document.querySelectorAll('.gcell[data-s]')];const cols=document.querySelectorAll('.g2t thead th').length-2;const btn=t.parentElement.querySelector('.gcell');const i0=all.indexOf(btn);t.remove();let n=0,bad=0;
+  txt.replace(/\r/g,'').replace(/\n$/,'').split('\n').forEach((line,r)=>line.split('\t').forEach((v,c)=>{const ti=i0+r*cols+c;const b=all[ti];if(!b||Math.floor(ti/cols)!==Math.floor(i0/cols)+r)return;const p=parseGT(v.trim());if(p.err){bad++;return}const norm=p.empty?'':p.off?'休':`${decT(p.start)}-${decT(p.end)}`;const k=b.dataset.s+'|'+b.dataset.d;if(norm!==b.dataset.v)GPEND[k]=norm;else delete GPEND[k];b.classList.toggle('chg',k in GPEND);const [x,y]=norm&&norm!=='休'?norm.split('-'):[norm,''];b.innerHTML=norm?(norm==='休'?'<span class="g2 off">休</span>':`<span class="g2"><b>${x}</b><i>${y}</i></span>`):'';n++}));
+  const g=$('#g-count');if(g)g.textContent=Object.keys(GPEND).length?`（変更 ${Object.keys(GPEND).length}件）`:'';toast(`${n}マスに貼り付けました${bad?`（読めないもの ${bad}件は飛ばしました）`:''}。「この表を保存」を押すと保存されます`)}
+
 /* ---- まとめて入力 ---- */
 function parseShiftText(t){t=String(t||'').replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248)).replace(/：/g,':').replace(/[〜～ー−―–—~]/g,'-').replace(/　/g,' ').trim();
   if(!t)return{empty:true};
@@ -1948,6 +2165,7 @@ function vExpense(){if(!adminOK)return phead('EXPENSES','経費')+adminGate('経
 function vExpenseMain(){const t=isAdmin()?UI.expTab:'list';
   let h=phead('EXPENSES','経費',`${isAdmin()&&t==='list'?'<button class="btn" data-a="expCopy">表をコピー（Excel用）</button>':''}${t==='cash'?'<button class="btn" data-a="cashNew">入金を記録</button>':''}<button class="btn primary" data-a="expNew">${isAdmin()?'経費を登録':'立替経費を申請'}</button>`);
   if(isAdmin())h+=`<div class="tabs">${[['list','経費一覧'],['cash','現金出納帳']].map(([k,l])=>`<button class="${t===k?'on':''}" data-a="set" data-k="expTab" data-v="${k}">${l}</button>`).join('')}</div>`;
+  if(isAdmin())h+=xlCard('cash');
   return h+(t==='cash'?cashView():expListView())}
 function expListView(){const m=UI.expMonth,pf=UI.expPay;
   const monthOut=S.expenses.filter(e=>isOut(e)&&e.date.startsWith(m));
@@ -2250,11 +2468,15 @@ function hoCheckModal(id){const h=S.handovers.find(x=>x.id===id);if(!h)return;
   {nofocus:true,saveLabel:'確認しました',save:f=>{if(!f.who){toast('確認した人を選んでください');return false}(h.checks=h.checks||[]).push({staffId:f.who,at:nowStr()});toast(`${staffName(f.who)}さんの確認を記録しました`)}})}
 
 /* ====== リマインド ====== */
+function homeNews(){const ns=[...(S.news||[])].sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:0);const other=newsFeed().filter(x=>x.kind!=='お知らせ');
+  return `${ns.length?`<div class="nlist">${ns.map(n=>`<article class="nitem"><div class="n-h"><span class="pill neo">お知らせ</span><b>${esc(n.title)}</b><span class="when">${dLabel(n.date)}</span>${isAdmin()?`<button class="btn sm ghost" data-a="newsOpen" data-id="${n.id}">開く</button>`:''}</div>${n.body?`<p class="n-b">${esc(n.body).replace(/\n/g,'<br>')}</p>`:''}</article>`).join('')}</div>`:'<p class="empty">お知らせはまだありません</p>'}
+  ${other.length?`<details class="nmore"><summary>そのほかの新着（マニュアル更新・忘れ物など ${other.length}件）</summary><div class="alerts">${other.map(newsRow).join('')}</div></details>`:''}`}
+function quickRem(){return `<div class="qrem"><input class="inp" id="qr-t" placeholder="リマインドを書く（例：薪の発注、タオル補充）" aria-label="リマインドの内容"><div class="qr-row"><div class="chips qr-days">${[['0','今日'],['1','明日'],['2','あさって'],['7','1週間後']].map(([v,l])=>`<button type="button" class="${(UI.qrDay??'1')===v?'on':''}" data-a="qrDay" data-v="${v}">${l}</button>`).join('')}</div><input type="date" class="inp qr-date" id="qr-d" aria-label="日付を指定" value="${UI.qrDate||''}"><select class="inp qr-to" id="qr-to" aria-label="誰に">${[['all','全員'],...activeStaff().map(s=>[s.id,s.name])].map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join('')}</select><button class="btn primary" data-a="qrAdd">追加</button></div></div>`}
 function vRemind(){const all=allReminders();const now=all.filter(r=>r.show);const soon=all.filter(r=>!r.show&&diffDays(r.date,todayStr)<=45);
   const mine=S.reminders.filter(r=>!r.to||r.to==='all'||r.to===me.id).sort((a,b)=>a.date<b.date?-1:1);
   const leadTxt=n=>({0:'当日',1:'前日から',3:'3日前から',7:'1週間前から',14:'2週間前から'}[n]||n+'日前から');
   const row=r=>`<div class="alert ${remCls(r.date)}"><span class="dot"></span><span>${esc(r.title)} <small class="muted">${esc(r.cat)}・${dLabel(r.date)}</small></span><span class="when">${whenTxt(r.date)}</span>${r.custom?`<button class="btn sm ok" data-a="remDone" data-id="${r.id}">完了</button>`:`<button class="btn sm" data-a="go" data-v="${r.go}">開く</button>`}</div>`;
-  return phead('REMINDERS','リマインド・引き継ぎ','<button class="btn" data-a="remNew">リマインドを追加</button>')+handoverCard()+
+  return phead('REMINDERS','リマインド・引き継ぎ','<button class="btn" data-a="remNew">くわしく追加</button>')+`<div class="card"><h2>リマインドをすぐ書く</h2>${quickRem()}</div>`+handoverCard()+
   `<div class="card"><h2>今お知らせしているもの <span class="badge">${now.length}</span></h2>${now.length?`<div class="alerts">${now.map(row).join('')}</div>`:'<p class="empty">今お知らせするものはありません</p>'}</div>
   <div class="card"><h2>これから（45日以内）</h2>${soon.length?`<div class="alerts">${soon.map(row).join('')}</div>`:'<p class="empty">ありません</p>'}</div>
   <div class="card"><h2>自分で作ったリマインド</h2>${mine.length?`<div class="tbl-wrap"><table><thead><tr><th>内容</th><th>日付</th><th>表示</th><th>対象</th><th>状態</th><th></th></tr></thead><tbody>${mine.map(r=>`<tr><td>${esc(r.title)}</td><td>${dLabel(r.date)}</td><td>${leadTxt(+r.lead)}</td><td>${r.to==='all'||!r.to?'全員':esc(staffName(r.to))}</td><td>${r.done?'<span class="pill ok">完了</span>':'<span class="pill">未完了</span>'}</td><td><button class="btn sm" data-a="remEdit" data-id="${r.id}">編集</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">ありません</p>'}</div>
@@ -2271,7 +2493,7 @@ const IMP={
    head:['日付','科目','内容','金額','申請者'],ex:[['2026/10/5','仕入れ・消耗品','白樺ヴィヒタ 20束','18000',''],['2026/10/12','修繕・設備費','小屋サウナ 扉修理','12500','']]},
  pay:{title:'給料（時給・交通費）',desc:'スタッフごとの時給と1出勤あたりの交通費。名前が見つからないスタッフは新しく追加します。区分は「主宰」「社員」「バイト」のどれか（空欄ならバイト）。',
    head:['名前','区分','時給','交通費'],ex:[['バイトA','バイト','1100','500'],['バイトB','バイト','1100','500']]}};
-function vImport(){return phead('IMPORT','スプレッドシート取込')+
+function vImport(){return phead('IMPORT','スプレッドシート取込')+(isAdmin()?xlCard('cash')+xlCard('attend'):'')+
   `<p class="note">ExcelファイルやGoogleスプレッドシートから、シフト・経費・給料のデータを取り込めます。方法は2つです。<br>① ファイルを選ぶ（.xlsx／.xls／.csv）。Googleスプレッドシートは「ファイル」→「ダウンロード」→「Microsoft Excel（.xlsx）」で保存したファイルを選んでください。<br>② スプレッドシートのセルを見出しごと範囲選択してコピーし、下の枠に貼り付ける。</p>`+
   Object.entries(IMP).map(([k,o])=>{const st=UI.imp[k];return `<div class="card"><h2>${o.title}の取込<span class="r"><button class="btn sm" data-a="impTpl" data-k="${k}">見出しと例をコピー</button></span></h2><p class="muted" style="font-size:14px">${o.desc}</p>
   <div class="tbl-wrap"><table><thead><tr>${o.head.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${o.ex.map(r=>`<tr>${r.map(c=>`<td class="num">${esc(c)||'<span class="muted">空欄</span>'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
@@ -2343,7 +2565,7 @@ const ACT={
  msave:()=>{if(modalSave&&modalSave(fd())===false)return;save();closeModal();render()},
  set:d=>{UI[d.k]=/^\d+$/.test(d.v)&&['planQ'].includes(d.k)?+d.v:d.v;render()},
  toggle:d=>{UI[d.k]=!UI[d.k];render()},
- mnav:d=>{UI[d.k]=monthAdd(UI[d.k],+d.n);render()},
+ mnav:d=>{if(UI.shiftTab==='grid'&&Object.keys(GPEND).length&&view==='shift'){toast('先に「この表を保存」か「変更を取り消す」を押してください');return}UI[d.k]=monthAdd(UI[d.k],+d.n);render()},
  fy:d=>{UI.planFY+=+d.n;render()},
  cellEdit:d=>{const x=S.shifts.find(s=>s.staffId===d.s&&s.date===d.d);if(x)shiftModal(x.id);else shiftModal(null,{staffId:d.s,date:d.d})},
  shEdit:d=>shiftModal(d.id),
@@ -2351,7 +2573,7 @@ const ACT={
  gateLock:()=>{adminOK=false;UI.payPrint=false;render();toast('管理用の画面を閉じました')},
  payXlsx:()=>payXlsx(),payPrint:()=>{UI.payPrint=true;render();window.scrollTo(0,0)},payBack:()=>{UI.payPrint=false;render()},
  salesSave:()=>{const cs=[...document.querySelectorAll('.si.chg')];if(!cs.length){toast('変更はありません');return}if(document.querySelector('.si.err')){toast('赤い枠のマスは数字だけにしてください');return}cs.forEach(el=>{const m=el.dataset.m,f=el.dataset.f;const v=el.value.replace(/[¥,円\s]/g,'');S.plans.months[m]=Object.assign({},S.plans.months[m]||{},{[f]:v===''?'':String(+v)})});new Set(cs.filter(el=>VK.some(([k])=>k===el.dataset.f)).map(el=>el.dataset.m)).forEach(m=>{const p=S.plans.months[m];p.visA=hasVB(m)?String(VT.reduce((a,[k])=>a+(pv(m,k)||0),0)):''});save();render();toast(`${cs.length}マスを保存しました`)},
- salesXlsx:()=>salesXlsx(),anaXlsx:()=>anaXlsx(),anaPre:d=>{UI.anaPre=d.v;UI.anaFrom=UI.anaTo=null;render()},
+ salesXlsx:()=>salesXlsx(),xlCommit:()=>xlCommit(),xlCancel:()=>{UI.xl=null;render()},cashXlsx:()=>cashXlsx(),anaXlsx:()=>anaXlsx(),cmpLY:()=>{UI.cmpBset=0;UI.cmpB=monthAdd(UI.cmpA||lastDataMonth(),-12);render()},anaPre:d=>{UI.anaPre=d.v;UI.anaFrom=UI.anaTo=null;render()},
  siSec:d=>{if(document.querySelector('.si.chg')){toast('先に「保存」を押してください（変更が消えないように）');return}UI.siSec=+d.v;render()},
  sxCancel:()=>{UI.sx=null;SXWB=null;render()},
  sxSave:()=>{const r=sxRows();if(!r||!r.agg.length){toast('取り込める内訳がありません');return}const rep=$('#sx-rep')&&$('#sx-rep').checked,act=$('#sx-act')&&$('#sx-act').checked;if(rep)S.sales=coll('sales').filter(x=>!r.months.includes(x.month));const at=todayStr;r.agg.forEach(x=>coll('sales').push({id:uid(),month:x.month,cat:x.cat,item:x.item,amount:Math.round(x.amount),qty:x.qty,src:UI.sx.name,at}));if(act)r.months.forEach(m=>{const t=r.agg.filter(x=>x.month===m).reduce((a,x)=>a+x.amount,0);S.plans.months[m]=Object.assign({},S.plans.months[m]||{},{salesA:String(Math.round(t))})});UI.sx=null;SXWB=null;save();render();toast(`${r.months.length}か月分の内訳を保存しました`)},
@@ -2389,7 +2611,9 @@ const ACT={
  lostReturn:d=>{const l=S.lost.find(x=>x.id===d.id);modal(`「${lostTitle(l)}」の返却を記録`,`<div class="frow">${fld('返却日',inp('returnDate',todayStr,'date'))}${fld('返却方法',sel('method',['来店','郵送','その他'],'来店'))}</div>${fld('メモ（受け取った方・送付先など）',inp('rnote',''))}`,{save:f=>{Object.assign(l,{status:'返却済',returnDate:f.returnDate,method:f.method,note:[l.note,f.rnote].filter(Boolean).join('／')})},saveLabel:'返却済みにする'})},
  lostDispose:d=>{const l=S.lost.find(x=>x.id===d.id);l.status='処分';l.disposedDate=todayStr;save();render();toast('処分済みにしました（記録は残ります）')},
  lostKeep:d=>{const l=S.lost.find(x=>x.id===d.id);l.keepUntil=addDays(todayStr,+S.settings.lostDays);save();render();toast(`${dLabel(l.keepUntil)}まで保管を続けます`)},
- remNew:()=>remModal(),remEdit:d=>remModal(d.id),
+ remNew:()=>remModal(),
+ qrDay:d=>{UI.qrDay=d.v;UI.qrDate='';document.querySelectorAll('.qr-days button').forEach(b=>b.classList.toggle('on',b.dataset.v===d.v));const x=$('#qr-d');if(x)x.value=''},
+ qrAdd:()=>{const t=($('#qr-t')||{}).value||'';if(!t.trim()){toast('内容を書いてください');const i=$('#qr-t');if(i)i.focus();return}const dv=($('#qr-d')||{}).value;const date=dv||addDays(todayStr,+(UI.qrDay??'1'));const to=($('#qr-to')||{}).value||'all';S.reminders.push({id:uid(),title:t.trim(),date,lead:date<=addDays(todayStr,1)?0:1,cat:'その他',to,done:false,by:me?me.id:''});UI.qrDate='';save();render();toast(`${dLabel(date)}のリマインドに追加しました`)},remEdit:d=>remModal(d.id),
  remDone:d=>{const r=S.reminders.find(x=>x.id===d.id);r.done=true;save();render();toast('完了にしました')},
  askDel:d=>{const z=$('#delzone');z.innerHTML=`<div class="confirm">本当に削除しますか？元に戻せません。<span class="sp"></span><button type="button" class="btn sm" data-a="noDel">やめる</button><button type="button" class="btn sm danger" data-a="doDel" data-k="${d.k}" data-id="${d.id}">削除する</button></div>`},
  noDel:()=>{const z=$('#delzone');z.innerHTML='<p class="muted" style="font-size:13px">削除をやめました</p>'},
@@ -2400,6 +2624,7 @@ const ACT={
  impTpl:d=>{const o=IMP[d.k];copyText(tsv([o.head,...o.ex]),'見出しと例をコピーしました。スプレッドシートのA1セルに貼り付けて使ってください')},
  impPaste:d=>{const t=($('#imp-'+d.k).value||'').trim();if(!t){toast('貼り付ける枠が空です');return}const sep=t.includes('\t')?'\t':',';const rows=t.split(/\r?\n/).map(l=>l.split(sep).map(c=>c.replace(/^"|"$/g,'').trim()));UI.imp[d.k]=parseImport(d.k,rows);render()},
  impCommit:d=>impCommit(d.k),
+ gEdit:(d,el)=>gOpen(el),gSave:()=>gSave(),gReset:()=>{Object.keys(GPEND).forEach(k=>delete GPEND[k]);render()},
  wnav:d=>{if(UI.shiftTab==='bulk'&&bkDirty()){toast('保存していない変更があります。「この表を保存」か「変更を取り消す」を押してください');return}const n=+d.n;UI.weekStart=n===0?mondayOf(todayStr):addDays(UI.weekStart,n*(UI.shiftTab==='bulk'?(UI.bulkDays||7):7));render()},
  paint:d=>{UI.paint=d.v==='__off'?null:d.v;const keep=[...document.querySelectorAll('.bkc.chg')].map(c=>{const r=bkRead(c);return [c.dataset.s,c.dataset.d,r]});render();keep.forEach(([s,dd,r])=>{const c=document.querySelector(`.bkc[data-s="${s}"][data-d="${dd}"]`);if(c)bkSet(c,r.st==='off'?'休':r.st?`${r.st}-${r.en}`:'',r.nt)})},
  bkReset:()=>{document.querySelectorAll('.bkc.chg').forEach(c=>{const o=c.dataset.o;const [t,nt]=o.split('|');bkSet(c,!o?'':t==='off'?'休':t,nt||'')});toast('変更を取り消しました')},
@@ -2435,8 +2660,11 @@ cashNew:()=>cashModal(),cashEdit:d=>cashModal(d.id),
 };
 document.addEventListener('click',e=>{const a=e.target.closest('[data-a]');if(!a)return;const fn=ACT[a.dataset.a];if(!fn)return;if(a.tagName==='BUTTON'||a.tagName==='A')e.preventDefault();fn(a.dataset,a,e)});
 document.addEventListener('submit',e=>{if(e.target.id==='mform'){e.preventDefault();ACT.msave()}});
-document.addEventListener('paste',siPaste);
+document.addEventListener('paste',siPaste);document.addEventListener('paste',gPaste);
+document.addEventListener('keydown',e=>{const t=e.target;if(!t.classList||!t.classList.contains('g2in'))return;if(e.key==='Enter'){e.preventDefault();gCommit(t,e.shiftKey?'up':'down')}else if(e.key==='Tab'){e.preventDefault();gCommit(t,e.shiftKey?'left':'right')}else if(e.key==='Escape'){e.preventDefault();e.stopPropagation();t.remove()}},true);
+document.addEventListener('focusout',e=>{const t=e.target;if(t.classList&&t.classList.contains('g2in'))setTimeout(()=>{if(t.isConnected)gCommit(t)},0)});
 document.addEventListener('input',e=>{if(e.target.classList&&e.target.classList.contains('si'))siMark(e.target)});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='qr-t'&&!e.isComposing){e.preventDefault();ACT.qrAdd();return}});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='gate-pw'){e.preventDefault();ACT.gateGo();return}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').hidden)closeModal();
   const t=e.target;if(t.classList&&t.classList.contains('bk')&&(e.key==='Enter'||e.key==='ArrowDown'||e.key==='ArrowUp')){e.preventDefault();const all=[...document.querySelectorAll(`input.bk[data-d="${t.dataset.d}"]`)];const i=all.indexOf(t)+(e.key==='ArrowUp'?-1:1);if(all[i]){all[i].focus();all[i].select()}}});
@@ -2455,10 +2683,13 @@ document.addEventListener('change',async e=>{const t=e.target,c=t.dataset.c;
   if(t.dataset.wc!==undefined){const d=+t.dataset.wc;const a=new Set(S.settings.weeklyClosed||[]);t.checked?a.add(d):a.delete(d);S.settings.weeklyClosed=[...a];save();toast('定休日を保存しました');return}
   if(t.dataset.we!==undefined){const w=S.settings.weeklyEvents[+t.dataset.we];if(!w)return;const k=t.dataset.p;if(k==='tasks')w.tasks=t.value.split('\n').map(x=>x.trim()).filter(Boolean).map(x=>{const m=x.match(/^(\d{1,2})[:：](\d{2})\s*(.*)$/);return m?{time:pad(+m[1])+':'+m[2],text:m[3]||''}:{time:'',text:x}});else w[k]=k==='dow'?+t.value:t.value;save();toast('保存しました');return}
   if(c==='anaFrom'||c==='anaTo'){const def=anaPreset(UI.anaPre||'m12');UI.anaFrom=UI.anaFrom||def[0];UI.anaTo=UI.anaTo||def[1];UI[c]=t.value;if(UI.anaFrom>UI.anaTo){if(c==='anaFrom')UI.anaTo=UI.anaFrom;else UI.anaFrom=UI.anaTo}render();return}
+  if(['cmpA','cmpB','cmpFA','cmpFB'].includes(c)){UI[c]=t.value;if(c==='cmpA'&&!UI.cmpBset)UI.cmpB=monthAdd(t.value,-12);if(c==='cmpB')UI.cmpBset=1;if(c==='cmpFA')UI.cmpFB=String(+t.value-1);render();return}
+  if(c==='cmpFull'){UI.cmpFull=t.checked?'1':'';render();return}
   if(c==='anaCmp'){UI.anaCmp=t.value;render();return}
   if(c==='attPay'){UI.attPay=t.value;render();return}
   if(c==='attBy'){UI.attBy=t.value;S.settings.attChecker=t.value;save();toast(`確認する人を「${t.value}」にしました`);return}
   if(t.dataset.salesfile&&t.files&&t.files[0]){if(typeof XLSX==='undefined'){toast('ファイル読込の部品を読み込めませんでした');return}const f=t.files[0];try{const wb=XLSX.read(await f.arrayBuffer(),{type:'array',cellDates:true});SXWB={};wb.SheetNames.forEach(n=>{SXWB[n]=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:true,defval:''})});const first=wb.SheetNames.find(n=>SXWB[n].length>1)||wb.SheetNames[0];UI.sx={name:f.name,sheet:first,map:null};render()}catch(e){toast('このファイルは読み込めませんでした')}return}
+  if(t.dataset.xlfile&&t.files&&t.files[0]){if(typeof XLSX==='undefined'){toast('Excelの部品を読み込めませんでした。通信を確認してください');return}const f=t.files[0];try{const wb=XLSX.read(await f.arrayBuffer(),{type:'array',cellDates:false});UI.xl=Object.assign(xlPlan(t.dataset.xlfile,wb),{name:f.name});if(!UI.xl.rows.length)toast('このファイルから読み取れる行がありませんでした');render()}catch(e){console.error(e);toast('このファイルは読み込めませんでした')}return}
   if(c==='sxSheet'){UI.sx.sheet=t.value;UI.sx.map=null;render();return}
   if(c==='sxCol'){UI.sx.map[t.dataset.k]=+t.value;render();return}
   if(c==='weekAll'){UI.weekAll=t.checked;render();return}
