@@ -992,6 +992,25 @@ button.gcell:hover{background:color-mix(in srgb,var(--n2) 12%,transparent)}
 .xl-body{display:grid;gap:10px;padding:0 18px 16px}
 .xl-drop{display:flex;flex-wrap:wrap;gap:10px;align-items:end}.xl-drop .fld{flex:1;min-width:260px;margin:0}
 .xl-help{font-size:12.5px;margin:0;line-height:1.7}
+
+/* v25 シフト表 */
+.shell.wide{grid-template-columns:minmax(0,1fr)}.shell.wide .side{display:none}
+.shell.wide .main,.shell.wide .wrap{max-width:none}
+.g2bar{gap:10px;flex-wrap:wrap}.g2title{font-family:var(--mincho);font-size:17px}
+.g2 b{font-size:11.5px}.g2:not(.two) b::after{content:none}.g2.two b::after{content:none}
+.g2.two{line-height:1.05}.g2.two i{font-size:10.5px}
+.gcell{position:relative}
+.g2dot{position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;background:var(--flame)}
+.g2t tfoot .g2x td{font-size:10.5px;height:20px}
+.g2t tfoot .g2x td b{font-family:var(--display);font-weight:700}
+.g2t tfoot .g2x td b.hb{display:inline-block;background:var(--n3);color:#2c2410;border-radius:3px;padding:0 4px}
+.g2ev{display:block;font-size:9px;line-height:1.1;color:var(--n2);overflow:hidden;white-space:nowrap}
+.gpop{position:absolute;top:100%;left:0;z-index:20;background:var(--surface);border:2px solid var(--n2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.2);padding:10px;display:grid;gap:6px;width:210px;text-align:left}
+.gp-h{font-weight:700;font-size:12.5px;font-family:var(--mincho)}
+.gpop label{display:grid;gap:2px;font-size:11px;color:var(--muted);font-weight:700}
+.gpop input,.gpop select{font-size:15px;padding:5px 7px;border:1px solid var(--line);border-radius:5px;background:#fffdf8;color:#222;min-height:36px}
+.gpop .g2in{position:static;transform:none;width:auto;box-shadow:none;border:2px solid var(--n2);text-align:left;font-size:17px}
+.gp-a{display:flex;justify-content:space-between;gap:6px}
 </style>
 </head>
 <body>
@@ -1048,7 +1067,7 @@ function seed(){
   for(let i=1;i<=8;i++)st.push({id:'s'+(i+6),name:`バイト${pad(i)}（仮）`,role:'バイト'});
   st.forEach(s=>{s.pw='1234';s.pat='14789';s.payroll=s.role==='バイト'});
   const S={
-    settings:{facility:'神崎サンガサウナ',fiscalEnd:8,closeDay:10,hopeDeadline:20,wage:1100,transit:500,lostDays:30,defaultBreak:-1,
+    settings:{facility:'神崎サンガサウナ',fiscalEnd:6,parentFiscalEnd:8,closeDay:10,hopeDeadline:20,wage:1100,transit:500,lostDays:30,defaultBreak:-1,
       presets:[{name:'朝担当',s:'08:00',e:'10:00'},{name:'早番',s:'08:00',e:'17:00'},{name:'中番',s:'13:00',e:'22:00'},{name:'遅番',s:'17:00',e:'22:00'}],
       leads:{shift:3,equip:3,event:3,lost:3},skillOn:false,
       stockCats:['ドリンク・食品','アメニティ','サウナ消耗品','物販グッズ'],
@@ -1119,9 +1138,12 @@ function seed(){
   S.reminders.push({id:uid(),title:'消防設備点検の業者立ち会い',date:addDays(todayStr,6),lead:7,cat:'点検・交換',to:'all',done:false},{id:uid(),title:'年末年始の営業時間をSNSで告知',date:addDays(todayStr,20),lead:7,cat:'その他',to:'all',done:false});
   return S;
 }
-function fyStartMonth(){return S.settings.fiscalEnd%12+1}
-function fyOf(dstr){const y=+dstr.slice(0,4),m=+dstr.slice(5,7);const sm=(S?S.settings.fiscalEnd:8)%12+1;return m>=sm?y:y-1}
-function fyMonths(fy){const sm=(S?S.settings.fiscalEnd:8)%12+1;const out=[];let m=`${fy}-${pad(sm)}`;for(let i=0;i<12;i++){out.push(m);m=monthAdd(m,1)}return out}
+const fyB=()=>{try{return UI.fyBasis}catch(e){return null}};
+const fiscalEndNow=()=>{if(!S||!S.settings)return 6;return fyB()==='parent'?+(S.settings.parentFiscalEnd||8):+(S.settings.fiscalEnd||6)};
+const fyBasisName=()=>fyB()==='parent'?(S.settings.parentName||'本体')+'の決算':'サンガの決算';
+function fyStartMonth(){return fiscalEndNow()%12+1}
+function fyOf(dstr){const y=+dstr.slice(0,4),m=+dstr.slice(5,7);const sm=fiscalEndNow()%12+1;return m>=sm?y:y-1}
+function fyMonths(fy){const sm=fiscalEndNow()%12+1;const out=[];let m=`${fy}-${pad(sm)}`;for(let i=0;i<12;i++){out.push(m);m=monthAdd(m,1)}return out}
 function fyLabel(fy){const ms=fyMonths(fy);return `${fy}年度（${ms[0].replace('-','/')}〜${ms[11].replace('-','/')}）`}
 
 let S=null;
@@ -1566,11 +1588,11 @@ function salesSumInner(){const ms=salesMonths().filter(m=>m<=ym(TODAY));const fy
   const yRows=ys.map((y,i)=>{const r=yA(y);const sp=same([...Array(12)].map((_,k)=>`${y}-${pad(k+1)}`));return `<tr><th>${y}年<small>1月〜12月</small></th><td class="r num">${r.n}か月</td><td class="r num"><b>${yen(r.a)}</b></td><td class="r num">${fmtN(r.v)}人</td><td class="r num">${r.v?yen(Math.round(r.a/r.v)):'—'}</td><td class="r">${sp!=null?pctPill(sp):'<span class="muted">—</span>'}</td></tr>`}).join('');
   const mx=Math.max(1,...ms.map(m=>Math.max(pv(m,'salesA')||0,pv(m,'salesT')||0)));
   const bars=ms.map(m=>{const a=pv(m,'salesA'),t=pv(m,'salesT');return `<div class="bar ${m.endsWith('-01')?'ystart':''}"><span>${m.replace('-','/')}</span><div class="track"><div class="fill" style="width:${(a||0)/mx*100}%;background:${a!=null&&t&&a>=t?'var(--ok)':'var(--n1)'}"></div>${t?`<div class="tgt" style="left:${t/mx*100}%"></div>`:''}</div><span class="v">${a!=null?yen(a):'—'}</span></div>`}).join('');
-  const smStart=(+S.settings.fiscalEnd)%12+1;const order=[...Array(12)].map((_,i)=>(smStart-1+i)%12+1);
+  const smStart=fiscalEndNow()%12+1;const order=[...Array(12)].map((_,i)=>(smStart-1+i)%12+1);
   const mat=`<table class="mtx"><thead><tr><th>月</th>${fys.map(f=>`<th class="r">${f}年度</th>`).join('')}<th class="r">前年比</th></tr></thead><tbody>${order.map(mo=>{const vals=fys.map(f=>{const m=fyMonths(f).find(x=>+x.slice(5)===mo);return m>=SALES_START&&inPer(m)?pv(m,'salesA'):null});const L=vals.length;const yoy=L>1&&vals[L-1]!=null&&vals[L-2]?pct(vals[L-1],vals[L-2]):null;return `<tr><th>${mo}月</th>${vals.map(v=>`<td class="r num">${v!=null?yen(v):'<span class="muted">—</span>'}</td>`).join('')}<td class="r">${yoy!=null?pctPill(yoy):'<span class="muted">—</span>'}</td></tr>`}).join('')}</tbody><tfoot><tr><th>合計</th>${fys.map(f=>`<td class="r num"><b>${yen(fyAgg(f).a)}</b></td>`).join('')}<td></td></tr></tfoot></table>`;
   const tot=ms.reduce((a,m)=>a+(pv(m,'salesA')||0),0);const nIn=ms.filter(m=>pv(m,'salesA')!=null).length;
   return `<div class="stats"><div class="stat"><span>この期間の売上合計</span><b>${yen(tot)}</b><span>${nIn}か月分</span></div><div class="stat"><span>今の年度（${fyOf(todayStr)}年度）</span><b>${yen(fyAgg(fyOf(todayStr)).a)}</b><span>目標 ${yen(fyAgg(fyOf(todayStr)).t)}</span></div><div class="stat"><span>月の平均売上</span><b>${nIn?yen(Math.round(tot/nIn)):'—'}</b></div></div>
-  <div class="card"><h2>決算期（年度）ごとの売上<span class="r muted">決算月 ${S.settings.fiscalEnd}月</span></h2><div class="tbl-wrap"><table><thead><tr><th>年度</th><th class="r">入力済み</th><th class="r">売上実績</th><th class="r">売上目標</th><th class="r">達成率</th><th class="r">来客数</th><th class="r">客単価</th><th class="r">前年同期比</th></tr></thead><tbody>${fyRows}</tbody></table></div><p class="note">${fys[0]}年度は営業開始の${mLabel(SALES_START)}からの${fyAgg(fys[0]).ms.length}か月だけです。前年同期比は、前の年の同じ月が入っている月どうしで比べています。</p></div>
+  <div class="card"><h2>決算期（年度）ごとの売上<span class="r muted">${fyBasisName()}（${fiscalEndNow()}月決算）</span></h2><div class="tbl-wrap"><table><thead><tr><th>年度</th><th class="r">入力済み</th><th class="r">売上実績</th><th class="r">売上目標</th><th class="r">達成率</th><th class="r">来客数</th><th class="r">客単価</th><th class="r">前年同期比</th></tr></thead><tbody>${fyRows}</tbody></table></div><p class="note">${fys[0]}年度は営業開始の${mLabel(SALES_START)}からの${fyAgg(fys[0]).ms.length}か月だけです。前年同期比は、前の年の同じ月が入っている月どうしで比べています。</p></div>
   <div class="card"><h2>年（1月〜12月）ごとの売上</h2><div class="tbl-wrap"><table><thead><tr><th>年</th><th class="r">入力済み</th><th class="r">売上実績</th><th class="r">来客数</th><th class="r">客単価</th><th class="r">前年同期比</th></tr></thead><tbody>${yRows}</tbody></table></div></div>
   ${visCard(fys)}
   ${salesBreakCard(fys)}
@@ -1656,7 +1678,7 @@ function anaPeriodCtl(withCmp){const {from,to,ms}=anaPeriod();const cmp=UI.anaCm
    <p class="muted" style="margin:0">いま見ている期間：<b>${from.replace('-','/')}〜${to.replace('-','/')}（${ms.length}か月・売上入力済み${n}か月）</b></p></div>`}
 /* 指標の表と文章 */
 const fC=u=>v=>v==null?'—':fmtN(Math.round(v))+u;
-const fY=v=>v==null?'—':yen(Math.round(v)),fN=v=>v==null?'—':fmtN(Math.round(v))+'人',fH=v=>v==null?'—':(Math.round(v*10)/10).toLocaleString('ja-JP')+'時間',fP=v=>v==null?'—':(Math.round(v*1000)/10)+'%',fD=v=>v==null?'—':(Math.round(v*10)/10).toLocaleString('ja-JP')+'人';
+const fY=v=>v==null?'—':v<0?'−'+yen(Math.round(-v)):yen(Math.round(v)),fN=v=>v==null?'—':fmtN(Math.round(v))+'人',fH=v=>v==null?'—':(Math.round(v*10)/10).toLocaleString('ja-JP')+'時間',fP=v=>v==null?'—':(Math.round(v*1000)/10)+'%',fD=v=>v==null?'—':(Math.round(v*10)/10).toLocaleString('ja-JP')+'人';
 const chg=(a,b)=>a!=null&&b?a/b-1:null;const pp=(a,b)=>a!=null&&b!=null?(a-b)*100:null;
 const sgn=v=>v==null?'—':(v>=0?'+':'')+(Math.round(v*1000)/10)+'%';const sgnp=v=>v==null?'—':(v>=0?'+':'')+(Math.round(v*10)/10)+'ポイント';
 let ANA_L={cur:'今回',prev:'比較',prevShort:'比較'};
@@ -1767,28 +1789,29 @@ function cmpTexts(A,B,la,lb){const o=[];const g=(a,b)=>a!=null&&b?a/b-1:null;
   if(A.days&&B.days&&A.days!==B.days)o.push(`営業日数が ${B.days}日 → ${A.days}日 と違うので、1営業日あたりでも見てください（売上 ${sgn(g(A.saDay,B.saDay))}、来客 ${sgn(g(A.visDay,B.visDay))}）。`);
   return o}
 function fyOpts(v){const a=[];const f0=fyOf(SALES_START+'-01'),f1=fyOf(todayStr);for(let f=f0;f<=f1;f++)a.push(f);return a.map(f=>`<option value="${f}" ${f==v?'selected':''}>${fyLabel(f)}</option>`).join('')}
-function vCompare(){const mode=UI.cmpMode||'month';const last=lastDataMonth();let ma,mb,la,lb;
+function vCompare(){const mode=UI.cmpMode||'fy';const last=lastDataMonth();let ma,mb,la,lb;
   if(mode==='month'){const a=UI.cmpA||last,b=UI.cmpB||monthAdd(a,-12);ma=[a];mb=[b];la=a.replace('-','年')+'月';lb=b.replace('-','年')+'月'}
   else{const fa=+(UI.cmpFA||fyOf(todayStr)),fb=+(UI.cmpFB||fa-1);const full=UI.cmpFull==='1';const A=fyMonths(fa),B=fyMonths(fb);const done=A.filter(m=>pv(m,'salesA')!=null).length;
     ma=full?A:A.slice(0,Math.max(1,done));mb=full?B:B.slice(0,ma.length);la=`${fa}年度${full?'':`（${ma.length}か月目まで）`}`;lb=`${fb}年度${full?'':`（同じ${mb.length}か月）`}`}
   const A=anaAgg(ma),B=anaAgg(mb);const opts=[];for(let m=SALES_START;m<=monthAdd(ym(TODAY),12);m=monthAdd(m,1))opts.push(m);for(let m=monthAdd(SALES_START,-12);m<SALES_START;m=monthAdd(m,1))opts.unshift(m);opts.sort();
   const mo=v=>opts.map(m=>`<option value="${m}" ${m===v?'selected':''}>${m.replace('-','年')}月</option>`).join('');
-  const ctl=`<div class="card ana-ctl"><h2>くらべ方</h2><div class="chips">${[['month','月どうし'],['fy','年度どうし（'+S.settings.fiscalEnd+'月決算）']].map(([k,l])=>`<button class="${mode===k?'on':''}" data-a="set" data-k="cmpMode" data-v="${k}">${l}</button>`).join('')}</div>
+  const ctl=`<div class="card ana-ctl"><h2>くらべ方</h2><div class="chips">${[['month','月どうし'],['fy','年度どうし（'+fiscalEndNow()+'月決算）']].map(([k,l])=>`<button class="${mode===k?'on':''}" data-a="set" data-k="cmpMode" data-v="${k}">${l}</button>`).join('')}</div>
    ${mode==='month'?`<div class="row ana-range"><label class="fld"><span>見る月</span><select class="inp" data-c="cmpA">${mo(ma[0])}</select></label><span class="muted">と</span><label class="fld"><span>くらべる月</span><select class="inp" data-c="cmpB">${mo(mb[0])}</select></label><button class="btn sm" data-a="cmpLY">1年前にする</button></div>`
    :`<div class="row ana-range"><label class="fld"><span>見る年度</span><select class="inp" data-c="cmpFA">${fyOpts(UI.cmpFA||fyOf(todayStr))}</select></label><span class="muted">と</span><label class="fld"><span>くらべる年度</span><select class="inp" data-c="cmpFB">${fyOpts(UI.cmpFB||(+(UI.cmpFA||fyOf(todayStr))-1))}</select></label><label class="check"><input type="checkbox" data-c="cmpFull" ${UI.cmpFull==='1'?'checked':''}>年度の12か月全部でくらべる（外すと、今年度の進んでいる月数にそろえます）</label></div>`}</div>`;
   const tbl=`<div class="card"><h2>${esc(la)} と ${esc(lb)} の比較</h2><div class="tbl-wrap"><table class="mtx cmptbl"><thead><tr><th>項目</th><th class="r">${esc(la)}</th><th class="r">${esc(lb)}</th><th class="r">差</th><th class="r">増減</th></tr></thead><tbody>${CMP_ROWS.map(r=>cmpRow(r,A,B)).join('')}</tbody></table></div>
    <div class="anatext"><b>分析</b>${cmpTexts(A,B,la,lb).map(t=>`<p>${t}</p>`).join('')||'<p class="muted">数字が入ると、ここに分析が出ます。</p>'}</div></div>`;
   return ctl+tbl+budgetCard(+(UI.cmpFA||fyOf(todayStr)))}
-function budgetCard(fy){const ms=fyMonths(fy);let cb=0,ca=0,cl=0,lastA=null;const rows=ms.map(m=>{const b=pv(m,'salesT'),a=pv(m,'salesA'),ly=pv(monthAdd(m,-12),'salesA');cb+=b||0;if(a!=null){ca+=a;lastA=m}cl+=(a!=null?ly||0:0);return{m,b,a,ly,cb,ca:a!=null?ca:null,cl:a!=null?cl:null}});
+function budgetCard(fy){const ms=fyMonths(fy);let cb=0,ca=0,cl=0,lastA=null;const rows=ms.map(m=>{const b=pv(m,'salesT'),a=pv(m,'salesA'),ly=pv(monthAdd(m,-12),'salesA');cb+=b||0;if(a!=null){ca+=a;lastA=m}cl+=(a!=null?ly||0:0);return{m,b,a,ly,cb,ca:a!=null?ca:null,cl:a!=null?cl:null,vb:pv(m,'visT'),va:visTot(m),vly:visTot(monthAdd(m,-12))}});
   const tb=rows.reduce((s,r)=>s+(r.b||0),0);const noB=rows.filter(r=>!r.b).map(r=>+r.m.slice(5)+'月');const done=rows.filter(r=>r.a!=null);const ybDone=done.reduce((s,r)=>s+(r.b||0),0);
   const remainB=rows.filter(r=>r.a==null).reduce((s,r)=>s+(r.b||0),0);const fc1=ca+remainB;
   const lyRate=done.length&&done.every(r=>r.ly)?ca/done.reduce((s,r)=>s+r.ly,0):null;const fc2=lyRate?ca+rows.filter(r=>r.a==null).reduce((s,r)=>s+(r.ly||r.b||0)*lyRate,0):null;
   const ch=svgChart({title:'累計の売上',labels:ms.map(m=>+m.slice(5)+'月'),bars:[{name:'月の実績',values:rows.map(r=>r.a),color:'var(--n1)',op:.55}],lines:[{name:'予算の累計',values:rows.map(r=>r.cb||null),color:'var(--n2)'},{name:'実績の累計',values:rows.map(r=>r.ca),color:'var(--ink)'},{name:'前年の累計（同じ月まで）',values:rows.map(r=>r.cl),color:'var(--muted)',dash:1}],yFmt:shortN,tipFmt:v=>yen(v)});
-  return `<div class="card"><h2>${fyLabel(fy)} の予算と実績<span class="r muted">${S.settings.fiscalEnd}月決算</span></h2>
+  return `<div class="card"><h2>${fyLabel(fy)} の予算と実績<span class="r muted">${fyBasisName()}（${fiscalEndNow()}月決算）</span></h2>
   <div class="kpis"><div class="kpi"><span class="k-l">年度の売上予算${noB.length?'（入っている月の合計）':''}</span><b class="k-v">${fY(tb)}</b>${noB.length?`<span class="k-s" style="color:var(--bad)">${noB.length}か月分の予算が未入力</span>`:''}</div><div class="kpi"><span class="k-l">ここまでの実績（${done.length}か月）</span><b class="k-v">${fY(ca)}</b><span class="k-s">同じ月までの予算 ${fY(ybDone)}・予算比 ${fP(ybDone?ca/ybDone:null)}</span></div><div class="kpi"><span class="k-l">年度の予算に対する進み具合</span><b class="k-v">${fP(tb?ca/tb:null)}</b><span class="k-s">残り ${fY(Math.max(0,tb-ca))}</span></div><div class="kpi"><span class="k-l">着地見込み（残りを予算どおり）</span><b class="k-v">${fY(fc1)}</b><span class="k-s">予算比 ${fP(tb?fc1/tb:null)}</span></div>${fc2?`<div class="kpi"><span class="k-l">着地見込み（今の前年比のペース・前年実績から計算）</span><b class="k-v">${fY(fc2)}</b><span class="k-s">前年比 ${fP(lyRate)} で計算${noB.length?'':`・予算比 ${fP(tb?fc2/tb:null)}`}</span></div>`:''}</div>
   ${ch}
   <div class="tbl-wrap"><table class="mtx"><thead><tr><th>月</th><th class="r">予算</th><th class="r">実績</th><th class="r">予算比</th><th class="r">予算との差</th><th class="r">前年実績</th><th class="r">前年比</th><th class="r">累計予算</th><th class="r">累計実績</th><th class="r">累計予算比</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.a==null?'fut':''}"><th>${r.m.replace('-','/')}</th><td class="r num">${r.b!=null?fmtN(r.b):'—'}</td><td class="r num"><b>${r.a!=null?fmtN(r.a):'—'}</b></td><td class="r">${r.a!=null&&r.b?pctPill(pct(r.a,r.b)):'<span class="muted">—</span>'}</td><td class="r num">${r.a!=null&&r.b?(r.a-r.b>=0?'+':'')+fmtN(r.a-r.b):'—'}</td><td class="r num muted">${r.ly!=null?fmtN(r.ly):'—'}</td><td class="r">${r.a!=null&&r.ly?pctPill(pct(r.a,r.ly)):'<span class="muted">—</span>'}</td><td class="r num">${fmtN(r.cb)}</td><td class="r num">${r.ca!=null?fmtN(r.ca):'—'}</td><td class="r">${r.ca!=null&&r.cb?pctPill(pct(r.ca,r.cb)):'<span class="muted">—</span>'}</td></tr>`).join('')}</tbody>
   <tfoot><tr><th>年度計</th><td class="r num"><b>${fmtN(tb)}</b></td><td class="r num"><b>${fmtN(ca)}</b></td><td class="r">${ybDone?pctPill(pct(ca,ybDone)):'—'}</td><td class="r num">${ybDone?(ca-ybDone>=0?'+':'')+fmtN(ca-ybDone):'—'}</td><td class="r num muted">${fmtN(cl)}</td><td class="r">${cl?pctPill(pct(ca,cl)):'—'}</td><td></td><td></td><td></td></tr></tfoot></table></div>
+  <h3 class="sub">来客の予算と実績</h3><div class="tbl-wrap"><table class="mtx"><thead><tr><th>月</th><th class="r">来客の目標</th><th class="r">来客の実績</th><th class="r">目標比</th><th class="r">前年の来客</th><th class="r">前年比</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.a==null?'fut':''}"><th>${r.m.replace('-','/')}</th><td class="r num">${r.vb!=null?fmtN(r.vb):'—'}</td><td class="r num"><b>${r.va!=null?fmtN(r.va):'—'}</b></td><td class="r">${r.va!=null&&r.vb?pctPill(pct(r.va,r.vb)):'<span class="muted">—</span>'}</td><td class="r num muted">${r.vly!=null?fmtN(r.vly):'—'}</td><td class="r">${r.va!=null&&r.vly?pctPill(pct(r.va,r.vly)):'<span class="muted">—</span>'}</td></tr>`).join('')}</tbody><tfoot><tr><th>計</th>${(()=>{const d=rows.filter(r=>r.va!=null);const vb=d.reduce((s,r)=>s+(r.vb||0),0),va=d.reduce((s,r)=>s+r.va,0),vl=d.reduce((s,r)=>s+(r.vly||0),0);return `<td class="r num">${fmtN(vb)}</td><td class="r num"><b>${fmtN(va)}</b></td><td class="r">${vb?pctPill(pct(va,vb)):'—'}</td><td class="r num muted">${fmtN(vl)}</td><td class="r">${vl?pctPill(pct(va,vl)):'—'}</td>`})()}</tr></tfoot></table></div>
   <div class="anatext"><b>分析</b>${noB.length?`<p><b style="color:var(--bad)">${noB.join('・')} の売上予算（目標）がまだ入っていません。</b>「まとめて入力」①の「売上目標」に入れると、年度の予算比と着地見込みが正しく出ます。</p>`:''}<p>${fyLabel(fy)} の売上予算は ${fY(tb)}。${done.length}か月が終わって実績は ${fY(ca)}、同じ月までの予算に対して <b>${fP(ybDone?ca/ybDone:null)}</b>${cl?`、前年の同じ月までにくらべて ${sgn(ca/cl-1)}`:''} です。</p><p>残りの月を予算どおりに進めると、年度の着地は <b>${fY(fc1)}</b>（予算比 ${fP(tb?fc1/tb:null)}）。${fc2?`今の前年比（${fP(lyRate)}）のペースが続くと、年度の売上は <b>${fY(fc2)}</b> になる見込みです${noB.length?'':`（予算比 ${fP(fc2/tb)}）`}。`:''}${tb&&fc1<tb?`予算に届くには、残りの月であと ${fY(tb-ca)}（1か月あたり ${fY((tb-ca)/Math.max(1,12-done.length))}）が必要です。`:''}</p></div></div>`}
 /* ====== 経営の視点（コンサルの見かた） ====== */
 function consultCard(A,R,PG,cmp){const g=PG(['sa']);const gv=PG(['vis']);const yo=g.n?chg(g.A.sa,g.B.sa):null;const vy=gv.n?chg(gv.A.vis,gv.B.vis):null;
@@ -1959,7 +1982,7 @@ function navBadge(k){if(!me)return '';
   if(k==='lost'){const n=S.lost.filter(l=>l.status==='保管中'&&lostDue(l)<todayStr).length;return n?`<span class="badge">${n}</span>`:''}
   return ''}
 document.documentElement.style.setProperty('--logo',`url(${LOGO_SRC})`);
-function render(){if(CLOUD&&!me)me=SHARED;if(!me){renderLogin();return}
+function render(){GOPEN=null;if(CLOUD&&!me)me=SHARED;if(!me){renderLogin();return}setTimeout(()=>{const sh=document.querySelector('.shell');if(sh)sh.classList.toggle('wide',!!UI.gWide&&view==='shift'&&['grid','bulk'].includes(UI.shiftTab))},0);
   const V={order:vOrder,cancel:vCancel,home:vHome,menu:vMenu,shift:vShift,pay:vPay,expense:vExpense,stock:vStock,equip:vEquip,event:vEvent,people:vPeople,manual:vManual,plan:vPlan,lost:vLost,remind:vRemind,import:vImport,settings:vSettings};
   if(!V[view]||((NAV.find(n=>n[0]===view)||[])[2]&&!isAdmin()))view='home';
   const onMain=k=>k==='menu'?(view!=='home'&&!MAIN.some(m=>m[0]===view)):view===k;
@@ -2034,52 +2057,70 @@ const presetChips=()=>`<div class="fld"><span>よく使う時間（タップで�
 const mondayOf=d=>addDays(d,-((parseD(d).getDay()+6)%7));
 const ROLE_ORDER={'主宰':0,'社員':1,'バイト':2};
 const sortStaff=a=>[...a].sort((x,y)=>(ROLE_ORDER[x.role]??3)-(ROLE_ORDER[y.role]??3)||S.staff.indexOf(x)-S.staff.indexOf(y));
-function vShift(){const tabs=[['day','日ごと'],['week','週の表'],['grid','月の表']];if(isAdmin())tabs.push(['bulk','まとめて入力'],['att','出勤確認・出勤簿']);tabs.push(['hope','希望を提出']);if(isAdmin())tabs.push(['hopes','希望一覧']);
+function vShift(){const tabs=[['day','日ごと'],['week','週の表'],['grid','月の表']];if(isAdmin())tabs.push(['bulk','まとめて入力（1か月）'],['att','出勤確認・出勤簿']);tabs.push(['hope','希望を提出']);if(isAdmin())tabs.push(['hopes','希望一覧']);
   if(!tabs.some(t=>t[0]===UI.shiftTab))UI.shiftTab='day';
   if(UI.attPrint&&UI.shiftTab==='att')return attPrintView();
   let h=phead('SHIFT','シフト')+`<div class="tabs">${tabs.map(([k,l])=>`<button class="${UI.shiftTab===k?'on':''}" data-a="set" data-k="shiftTab" data-v="${k}">${l}</button>`).join('')}</div>`;
-  const V={day:dayView,week:weekView,grid:gridView,bulk:bulkView,hope:hopeView,hopes:hopesAdminView,att:attView};return h+V[UI.shiftTab]()}
+  const V={day:dayView,week:weekView,grid:()=>gridView(false),bulk:()=>gridView(true),hope:hopeView,hopes:hopesAdminView,att:attView};return h+V[UI.shiftTab]()}
 function weekNav(){const st=UI.weekStart,en=addDays(st,(UI.shiftTab==='bulk'?(UI.bulkDays||7):7)-1);return `<div class="row wnav"><button class="btn" data-a="wnav" data-n="-1">‹ 前へ</button><button class="btn" data-a="wnav" data-n="0">今週</button><button class="btn" data-a="wnav" data-n="1">次へ ›</button><b class="wnav-l">${+st.slice(5,7)}/${+st.slice(8)}(${WD[parseD(st).getDay()]}) 〜 ${+en.slice(5,7)}/${+en.slice(8)}(${WD[parseD(en).getDay()]})</b></div>`}
 function weekHeadCells(days){return days.map(d=>{const w=parseD(d).getDay();const cl=closureOf(d);const ws=weeklyOn(d);return `<th class="wh ${w===0?'sun':w===6?'sat':''} ${d===todayStr?'today':''} ${cl?(cl.weekly?'tue':'closed'):''}"><div class="wh-d">${+d.slice(5,7)}/${+d.slice(8)}<small>${WD[w]}</small></div><div class="wh-p">${cl?`<span class="pill cl">${esc(cl.kind)}</span>`:''}${ws.map(x=>`<span class="pill evw">${esc(x.name.replace(/Day$/,''))}</span>`).join('')}</div></th>`}).join('')}
-/* ====== 月の表（横＝日付・縦＝名前・8-17で入力） ====== */
+/* ====== 月のシフト表（横＝日付・縦＝名前、元のスプレッドシートに近い形） ====== */
 const decT=t=>{if(!t)return '';const [h,m]=t.split(':').map(Number);const v=h+(m||0)/60;return String(Math.round(v*100)/100)};
 const gLabel=x=>x?(x.off?'休':`${decT(x.start)}-${decT(x.end)}`):'';
 function parseGT(t){t=String(t||'').replace(/[０-９．：]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248)).replace(/[〜～ー−―–—~]/g,'-').replace(/\s/g,'');
   if(!t)return{empty:true};if(/^(休|やすみ|休み|x|×|off)$/i.test(t))return{off:true};
   const one=s=>{let m=s.match(/^(\d{1,2}):(\d{1,2})$/);if(m)return [+m[1],+m[2]];m=s.match(/^(\d{1,2})(?:\.(\d{1,2}))?$/);if(m){const h=+m[1],f=m[2]?+('0.'+m[2]):0;return [h,Math.round(f*60)]}m=s.match(/^(\d{1,2})(\d{2})$/);if(m)return [+m[1],+m[2]];return null};
   const p=t.split('-');if(p.length!==2)return{err:true};const a=one(p[0]),b=one(p[1]);if(!a||!b||a[0]>29||b[0]>30||a[1]>59||b[1]>59)return{err:true};
-  const q=v=>pad(v[0]%24)+':'+pad(Math.round(v[1]/15)*15===60?45:Math.round(v[1]/15)*15);const s=q(a),e=q(b);if(s===e)return{err:true};return{start:s,end:e}}
-function gridDays(){const m=UI.shiftMonth;if(UI.gridPer==='pay'){const {from,to}=payRange(monthAdd(m,1));const a=[];for(let d=from;d<=to;d=addDays(d,1))a.push(d);return a}return daysIn(m)}
-function gridView(){const m=UI.shiftMonth,days=gridDays(),ed=isAdmin();const idx={};S.shifts.forEach(x=>{if(x.date>=days[0]&&x.date<=days[days.length-1]&&!isTimee(x))idx[x.staffId+'|'+x.date]=x});
-  const staff=sortStaff(S.staff.filter(st=>st.active!==false||S.shifts.some(x=>x.staffId===st.id&&x.date>=days[0]&&x.date<=days[days.length-1])));
+  const q=v=>{let mm=Math.round(v[1]/15)*15,hh=v[0];if(mm===60){mm=0;hh++}return pad(hh%24)+':'+pad(mm)};const s=q(a),e=q(b);if(s===e)return{err:true};return{start:s,end:e}}
+const normGT=v=>{const p=parseGT(v);return p.err?null:p.empty?'':p.off?'休':`${decT(p.start)}-${decT(p.end)}`};
+function gridDays(edit){const m=UI.shiftMonth;const per=UI.gridPer||(edit?'pay':'pay');if(per==='pay'){const {from,to}=payRange(monthAdd(m,1));const a=[];for(let d=from;d<=to;d=addDays(d,1))a.push(d);return a}return daysIn(m)}
+const GPEND={};let GOPEN=null;
+const gCur=(s,d)=>{const k=s+'|'+d;const x=S.shifts.find(y=>y.staffId===s&&y.date===d&&!isTimee(y));const p=GPEND[k];return{v:p?p.v:gLabel(x),brk:p&&p.brk!=null?p.brk:(x&&!x.off?+x.brk||0:null),note:p&&p.note!=null?p.note:(x?x.note||'':''),x}};
+function gCellHTML(v,brk,note){if(!v)return '';if(v==='休')return `<span class="g2 off">休</span>${note?'<i class="g2dot"></i>':''}`;const two=v.length>5;const [a,b]=v.split('-');
+  return `<span class="g2 ${two?'two':''}">${two?`<b>${a}-</b><i>${b}</i>`:`<b>${v}</b>`}</span>${note?'<i class="g2dot" title="'+esc(note)+'"></i>':''}`}
+function gridView(edit){const m=UI.shiftMonth,days=gridDays(edit),ed=edit&&isAdmin();const D0=days[0],D1=days[days.length-1];const idx={};S.shifts.forEach(x=>{if(x.date>=D0&&x.date<=D1&&!isTimee(x))idx[x.staffId+'|'+x.date]=x});
+  const staff=sortStaff(S.staff.filter(st=>st.active!==false||S.shifts.some(x=>x.staffId===st.id&&x.date>=D0&&x.date<=D1)));
   const cls=d=>{const w=parseD(d).getDay();const cl=closureOf(d);return [w===0?'sun':w===6?'sat':'',w===1?'mon':'',d===todayStr?'today':'',cl?(cl.weekly?'tue':'closed'):''].join(' ')};
-  const cell=(st,d)=>{let x=idx[st.id+'|'+d];if(x&&!x.off&&st.offOnly&&!closureOf(d))x=null;const v=gLabel(x);const [a,b]=v&&v!=='休'?v.split('-'):[v,''];
-    const inner=v?(v==='休'?'<span class="g2 off">休</span>':`<span class="g2"><b>${a}</b><i>${b}</i></span>`):'';
-    return `<td class="${cls(d).replace(/sun|sat|today/g,'')}">${ed?`<button type="button" class="gcell" data-a="gEdit" data-s="${st.id}" data-d="${d}" data-v="${esc(v)}" aria-label="${esc(st.name)} ${d} ${esc(v)||'なし'}">${inner}</button>`:`<div class="gcell">${inner}</div>`}</td>`};
-  let t=`<div class="g2wrap"><table class="g2t"><colgroup><col class="g2n">${days.map(()=>'<col>').join('')}<col class="g2h"></colgroup><thead><tr><th class="g2n">名前</th>${days.map(d=>`<th class="${cls(d)}"><b>${+d.slice(8)}</b><small>${WD[parseD(d).getDay()]}</small></th>`).join('')}<th class="g2h">時間</th></tr></thead><tbody>`;
-  staff.forEach(st=>{let tot=0;days.forEach(d=>{const x=idx[st.id+'|'+d];if(x&&!x.off&&!(st.offOnly&&!closureOf(d)))tot+=shMin(x)});t+=`<tr class="${me&&st.id===me.id?'mine':''}"><th class="g2n">${esc(st.name)}</th>${days.map(d=>cell(st,d)).join('')}<td class="g2h num">${tot?Math.round(tot/60):''}</td></tr>`});
-  t+=`</tbody><tfoot><tr><th class="g2n">人数</th>${days.map(d=>`<td class="num">${dayShifts(d).filter(x=>!isAbsent(x)).length||''}</td>`).join('')}<td></td></tr></tfoot></table></div>`;
-  const per=UI.gridPer==='pay';
-  return `<div class="row">${monthNav('shiftMonth',m)}<div class="chips"><button class="${per?'':'on'}" data-a="set" data-k="gridPer" data-v="cal">1日〜末日</button><button class="${per?'on':''}" data-a="set" data-k="gridPer" data-v="pay">締め（11日〜10日）</button></div><span class="sp"></span>${ed?`<button class="btn" data-a="gReset">変更を取り消す</button><button class="btn primary" data-a="gSave">この表を保存<span id="g-count"></span></button>`:''}</div>
-  ${ed?'<p class="note">マスをクリックして <b>8-17</b> のように入力します。8時30分は <b>8.5-17</b> でも <b>8:30-17</b> でもOK。休みは「休」、消すときは空欄。Enterで下の人、Tabで次の日へ進みます。Excelからコピーした表を貼り付けることもできます。入れ終わったら「この表を保存」を押してください。</p>':'<p class="note">上が出勤、下が退勤の時刻です（8.5＝8時30分）。</p>'}${t}${myMonth(m)}`}
-const GPEND={};
-function gOpen(btn){if(!btn)return;const td=btn.parentElement;if(td.querySelector('.g2in'))return;const inp=document.createElement('input');inp.className='g2in';inp.value=GPEND[btn.dataset.s+'|'+btn.dataset.d]??btn.dataset.v;inp.dataset.s=btn.dataset.s;inp.dataset.d=btn.dataset.d;td.appendChild(inp);inp.focus();inp.select()}
-function gCommit(inp,move){if(!inp.isConnected)return true;const k=inp.dataset.s+'|'+inp.dataset.d;const btn=inp.parentElement.querySelector('.gcell');const v=inp.value.trim();const p=parseGT(v);
-  if(p.err){toast(`「${v}」は読めません。8-17／8.5-17／8:30-17 のように入れてください`);inp.focus();return false}
-  const norm=p.empty?'':p.off?'休':`${decT(p.start)}-${decT(p.end)}`;inp.remove();
-  if(norm!==btn.dataset.v)GPEND[k]=norm;else delete GPEND[k];
-  btn.classList.toggle('chg',k in GPEND);const [a,b]=norm&&norm!=='休'?norm.split('-'):[norm,''];btn.innerHTML=norm?(norm==='休'?'<span class="g2 off">休</span>':`<span class="g2"><b>${a}</b><i>${b}</i></span>`):'';
-  const c=Object.keys(GPEND).length;const g=$('#g-count');if(g)g.textContent=c?`（変更 ${c}件）`:'';
-  if(move){const all=[...document.querySelectorAll('.gcell[data-s]')];const i=all.indexOf(btn);const cols=document.querySelectorAll('.g2t thead th').length-2;const j=move==='right'?i+1:move==='left'?i-1:move==='down'?i+cols:i-cols;if(all[j])gOpen(all[j])}return true}
-function gSave(){const ks=Object.keys(GPEND);if(!ks.length){toast('変更はありません');return}let n=0;
-  ks.forEach(k=>{const [s,d]=k.split('|');const v=GPEND[k];const old=S.shifts.find(x=>x.staffId===s&&x.date===d&&!isTimee(x));S.shifts=S.shifts.filter(x=>!(x.staffId===s&&x.date===d&&!isTimee(x)));n++;if(!v)return;
-    if(v==='休'){S.shifts.push({id:uid(),staffId:s,date:d,off:true,start:'',end:'',brk:0,note:old&&old.off?old.note||'':''});return}
-    const p=parseGT(v);const same=old&&!old.off&&old.start===p.start&&old.end===p.end;S.shifts.push(Object.assign({id:uid(),staffId:s,date:d,start:p.start,end:p.end,brk:same?old.brk:brkDefault(p.start,p.end),note:old&&!old.off?old.note||'':''},old&&!old.off&&old.act?{act:old.act}:{},old&&!old.off&&old.chk?{chk:old.chk}:{}))});
+  const cell=(st,d)=>{const k=st.id+'|'+d;let x=idx[k];if(x&&!x.off&&st.offOnly&&!closureOf(d)&&!GPEND[k])x=null;const c=GPEND[k]?gCur(st.id,d):{v:gLabel(x),brk:x&&!x.off?+x.brk||0:null,note:x?x.note||'':''};
+    const tip=c.v?`${c.v}${c.brk?' 休憩'+c.brk+'分':''}${c.note?' '+c.note:''}`:'';const inner=gCellHTML(c.v,c.brk,c.note);
+    return `<td class="${cls(d).replace(/sun|sat|today/g,'')}">${ed?`<button type="button" class="gcell ${GPEND[k]?'chg':''}" data-a="gEdit" data-s="${st.id}" data-d="${d}" title="${esc(tip)}" aria-label="${esc(st.name)} ${d} ${esc(tip)||'なし'}">${inner}</button>`:`<div class="gcell" title="${esc(tip)}">${inner}</div>`}</td>`};
+  const tm=d=>S.shifts.filter(x=>isTimee(x)&&x.date===d);
+  const evs=d=>{const a=[];const cl=closureOf(d);if(cl&&!cl.weekly)a.push(cl.kind);S.events.filter(e=>e.date===d).forEach(e=>a.push((e.start?fmtT(e.start)+' ':'')+e.title));return a};
+  const herb=d=>S.events.filter(e=>e.date===d&&e.type===HERB).length;
+  let t=`<div class="g2wrap"><table class="g2t"><colgroup><col class="g2n">${days.map(()=>'<col>').join('')}<col class="g2h"></colgroup><thead><tr><th class="g2n">日付</th>${days.map(d=>`<th class="${cls(d)}"><b>${+d.slice(8)}</b><small>${WD[parseD(d).getDay()]}</small></th>`).join('')}<th class="g2h">時間</th></tr></thead><tbody>`;
+  staff.forEach(st=>{let tot=0;days.forEach(d=>{const x=idx[st.id+'|'+d];if(x&&!x.off&&!(st.offOnly&&!closureOf(d)))tot+=shMin(x)});t+=`<tr class="${me&&st.id===me.id?'mine':''}"><th class="g2n" title="${esc(st.name)}">${esc(st.name)}</th>${days.map(d=>cell(st,d)).join('')}<td class="g2h num">${tot?Math.round(tot/60):''}</td></tr>`});
+  t+=`</tbody><tfoot><tr class="g2x"><th class="g2n">タイミー</th>${days.map(d=>{const l=tm(d);return `<td title="${esc(l.map(x=>`${x.who||'タイミー'} ${shLabel(x)}`).join('\n'))}">${l.length?`<b>${l.length}</b>`:''}</td>`}).join('')}<td></td></tr>
+   <tr class="g2x"><th class="g2n">ハーバル</th>${days.map(d=>{const n=herb(d);return `<td>${n?`<b class="hb">${n}</b>`:''}</td>`}).join('')}<td></td></tr>
+   <tr class="g2x ev"><th class="g2n">その他</th>${days.map(d=>{const a=evs(d).filter(x=>!/ハーバル/.test(x));return `<td title="${esc(a.join('\n'))}">${a.length?`<span class="g2ev">${esc(a[0].replace(/Day$/,'').slice(0,4))}</span>`:''}</td>`}).join('')}<td></td></tr>
+   <tr><th class="g2n">人数</th>${days.map(d=>`<td class="num">${dayShifts(d).filter(x=>!isAbsent(x)).length||''}</td>`).join('')}<td></td></tr></tfoot></table></div>`;
+  const per=(UI.gridPer||'pay')==='pay';const pal=[...S.settings.presets.map(p=>[`${decT(p.s)}-${decT(p.e)}`,`${p.name} ${decT(p.s)}-${decT(p.e)}`]),['休','休み'],['','消す']];
+  const title=per?`${+m.slice(5)}月シフト表（${md(D0)}〜${md(D1)}）`:`${mLabel(m)}のシフト`;
+  return `<div class="row g2bar">${monthNav('shiftMonth',m)}<b class="g2title">${title}</b><div class="chips"><button class="${per?'on':''}" data-a="set" data-k="gridPer" data-v="pay">11日〜10日</button><button class="${per?'':'on'}" data-a="set" data-k="gridPer" data-v="cal">1日〜末日</button></div><span class="sp"></span><button class="btn" data-a="gWide">${UI.gWide?'メニューを表示':'画面を広く使う'}</button>${ed?`<button class="btn" data-a="gReset">変更を取り消す</button><button class="btn primary" data-a="gSave">この表を保存<span id="g-count">${Object.keys(GPEND).length?`（変更 ${Object.keys(GPEND).length}件）`:''}</span></button>`:''}</div>
+  ${ed?`<div class="bk-tools"><span class="bk-tl">ボタンで入れる：</span>${pal.map(([v,l])=>`<button type="button" class="bk-pal ${UI.gPaint===v?'on':''}" data-a="gPaint" data-v="${esc(v)}">${esc(l)}</button>`).join('')}<button type="button" class="bk-pal ${UI.gPaint==null?'on':''}" data-a="gPaint" data-v="__off">マスで直接入力</button></div>
+  <p class="note">${UI.gPaint!=null?`「${esc(UI.gPaint===''?'消す':UI.gPaint)}」を選び中です。マスを押すと入ります。`:'マスを押すと、<b>時間（8-17／8.5-17／8:30-17）・休憩・業務内容</b>を入れる枠が出ます。Enterで下の人、Tabで次の日へ。休みは「休」、消すときは空欄。Excelからコピーした表の貼り付けもできます。'}入れ終わったら「この表を保存」を押してください。</p>`:'<p class="note">8.5＝8時30分です。マスにカーソルを合わせると、休憩・業務内容も見られます。オレンジの点は業務内容のメモがある日です。</p>'}${t}${edit?'':myMonth(m)}`}
+function gSetCell(s,d,val){const k=s+'|'+d;const c=gCur(s,d);const orig=gLabel(c.x);const origBrk=c.x&&!c.x.off?+c.x.brk||0:null;const origNote=c.x?c.x.note||'':'';
+  const n={v:val.v,brk:val.brk,note:val.note};if(n.v===orig&&(n.brk==null||n.brk===origBrk||(n.v===''||n.v==='休'))&&(n.note==null||n.note===origNote))delete GPEND[k];else GPEND[k]=n;
+  const btn=document.querySelector(`.gcell[data-s="${s}"][data-d="${d}"]`);if(btn){const cc=gCur(s,d);btn.innerHTML=gCellHTML(cc.v,cc.brk,cc.note);btn.classList.toggle('chg',k in GPEND);btn.title=cc.v?`${cc.v}${cc.brk?' 休憩'+cc.brk+'分':''}${cc.note?' '+cc.note:''}`:''}
+  const g=$('#g-count');if(g)g.textContent=Object.keys(GPEND).length?`（変更 ${Object.keys(GPEND).length}件）`:''}
+function gOpen(btn){if(!btn)return;if(UI.gPaint!=null){const v=UI.gPaint;gSetCell(btn.dataset.s,btn.dataset.d,{v,brk:null,note:null});return}
+  if(GOPEN&&!gCommit())return;const s=btn.dataset.s,d=btn.dataset.d;const c=gCur(s,d);const td=btn.parentElement;
+  const bo=[['auto','自動'],[0,'なし'],[15,'15分'],[30,'30分'],[45,'45分'],[60,'60分'],[75,'75分'],[90,'90分'],[120,'120分']];if(c.brk!=null&&!bo.some(b=>b[0]===c.brk))bo.push([c.brk,c.brk+'分']);
+  const pop=document.createElement('div');pop.className='gpop';pop.innerHTML=`<div class="gp-h">${esc(staffName(s))}　${dLabel(d)}</div><label>時間<input class="g2in" value="${esc(c.v)}" placeholder="8-17" autocomplete="off"></label><label>休憩<select class="gp-b">${bo.map(([v,l])=>`<option value="${v}" ${(c.brk==null&&v==='auto')||v===c.brk?'selected':''}>${l}</option>`).join('')}</select></label><label>業務内容<input class="gp-n" value="${esc(c.note)}" list="gp-notes" placeholder="例：煙突掃除"></label><datalist id="gp-notes">${(S.settings.shiftNotes||[]).map(n=>`<option value="${esc(n)}">`).join('')}</datalist><div class="gp-a"><button type="button" class="btn sm" data-a="gPopClear">消す</button><button type="button" class="btn sm primary" data-a="gPopOk">OK</button></div>`;
+  td.appendChild(pop);GOPEN={s,d,pop};const r=pop.getBoundingClientRect();if(r.right>innerWidth-8)pop.style.left=(innerWidth-8-r.width-td.getBoundingClientRect().left)+'px';const i=pop.querySelector('.g2in');i.focus();i.select()}
+function gCommit(move){if(!GOPEN)return true;const {s,d,pop}=GOPEN;const v=pop.querySelector('.g2in').value.trim();const n=normGT(v);if(n==null){toast(`「${v}」は読めません。8-17／8.5-17／8:30-17 のように入れてください`);pop.querySelector('.g2in').focus();return false}
+  const bv=pop.querySelector('.gp-b').value;const p=n&&n!=='休'?parseGT(n):null;const brk=p?(bv==='auto'?brkDefault(p.start,p.end):+bv):0;const note=pop.querySelector('.gp-n').value.trim();
+  pop.remove();GOPEN=null;gSetCell(s,d,{v:n,brk:n&&n!=='休'?brk:null,note});
+  if(move){const all=[...document.querySelectorAll('.gcell[data-s]')];const btn=document.querySelector(`.gcell[data-s="${s}"][data-d="${d}"]`);const i=all.indexOf(btn);const cols=document.querySelectorAll('.g2t thead th').length-2;const j=move==='right'?i+1:move==='left'?i-1:move==='down'?i+cols:i-cols;if(all[j])gOpen(all[j])}return true}
+function gSave(){if(GOPEN&&!gCommit())return;const ks=Object.keys(GPEND);if(!ks.length){toast('変更はありません');return}let n=0;
+  ks.forEach(k=>{const [s,d]=k.split('|');const P=GPEND[k];const old=S.shifts.find(x=>x.staffId===s&&x.date===d&&!isTimee(x));S.shifts=S.shifts.filter(x=>!(x.staffId===s&&x.date===d&&!isTimee(x)));n++;const note=P.note!=null?P.note:(old?old.note||'':'');if(!P.v)return;
+    if(P.v==='休'){S.shifts.push({id:uid(),staffId:s,date:d,off:true,start:'',end:'',brk:0,note});return}
+    const p=parseGT(P.v);const same=old&&!old.off&&old.start===p.start&&old.end===p.end;const brk=P.brk!=null?P.brk:(same?old.brk:brkDefault(p.start,p.end));
+    S.shifts.push(Object.assign({id:uid(),staffId:s,date:d,start:p.start,end:p.end,brk,note},old&&!old.off&&old.act?{act:old.act}:{},old&&!old.off&&old.chk?{chk:old.chk}:{}))});
   Object.keys(GPEND).forEach(k=>delete GPEND[k]);save();render();toast(`${n}マスを保存しました`)}
 function gPaste(e){const t=e.target;if(!t.classList||!t.classList.contains('g2in'))return;const txt=(e.clipboardData||window.clipboardData).getData('text');if(!/[\t\n]/.test(txt.trim()))return;e.preventDefault();
-  const all=[...document.querySelectorAll('.gcell[data-s]')];const cols=document.querySelectorAll('.g2t thead th').length-2;const btn=t.parentElement.querySelector('.gcell');const i0=all.indexOf(btn);t.remove();let n=0,bad=0;
-  txt.replace(/\r/g,'').replace(/\n$/,'').split('\n').forEach((line,r)=>line.split('\t').forEach((v,c)=>{const ti=i0+r*cols+c;const b=all[ti];if(!b||Math.floor(ti/cols)!==Math.floor(i0/cols)+r)return;const p=parseGT(v.trim());if(p.err){bad++;return}const norm=p.empty?'':p.off?'休':`${decT(p.start)}-${decT(p.end)}`;const k=b.dataset.s+'|'+b.dataset.d;if(norm!==b.dataset.v)GPEND[k]=norm;else delete GPEND[k];b.classList.toggle('chg',k in GPEND);const [x,y]=norm&&norm!=='休'?norm.split('-'):[norm,''];b.innerHTML=norm?(norm==='休'?'<span class="g2 off">休</span>':`<span class="g2"><b>${x}</b><i>${y}</i></span>`):'';n++}));
-  const g=$('#g-count');if(g)g.textContent=Object.keys(GPEND).length?`（変更 ${Object.keys(GPEND).length}件）`:'';toast(`${n}マスに貼り付けました${bad?`（読めないもの ${bad}件は飛ばしました）`:''}。「この表を保存」を押すと保存されます`)}
+  const all=[...document.querySelectorAll('.gcell[data-s]')];const cols=document.querySelectorAll('.g2t thead th').length-2;const {s,d}=GOPEN;GOPEN.pop.remove();GOPEN=null;const btn=document.querySelector(`.gcell[data-s="${s}"][data-d="${d}"]`);const i0=all.indexOf(btn);let n=0,bad=0;
+  txt.replace(/\r/g,'').replace(/\n$/,'').split('\n').forEach((line,r)=>line.split('\t').forEach((v,c)=>{const ti=i0+r*cols+c;const b=all[ti];if(!b||Math.floor(ti/cols)!==Math.floor(i0/cols)+r)return;const nv=normGT(v.trim());if(nv==null){bad++;return}gSetCell(b.dataset.s,b.dataset.d,{v:nv,brk:null,note:null});n++}));
+  toast(`${n}マスに貼り付けました${bad?`（読めないもの ${bad}件は飛ばしました）`:''}。「この表を保存」を押すと保存されます`)}
 
 /* ---- まとめて入力 ---- */
 function parseShiftText(t){t=String(t||'').replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248)).replace(/：/g,':').replace(/[〜～ー−―–—~]/g,'-').replace(/　/g,' ').trim();
@@ -2387,7 +2428,7 @@ function manModal(id){const m=S.manuals.find(x=>x.id===id)||{cat:S.settings.manu
 function planNums(months){const P=S.plans.months;let r={salesT:0,salesA:0,visT:0,visA:0,budget:0,exp:0,hasA:false};months.forEach(m=>{const p=P[m]||{};r.salesT+=+p.salesT||0;r.salesA+=+p.salesA||0;r.visT+=+p.visT||0;r.visA+=+p.visA||0;r.budget+=+p.budget||0;if(p.salesA!==''&&p.salesA!==undefined)r.hasA=true;r.exp+=S.expenses.filter(e=>e.date.startsWith(m)&&e.status==='承認').reduce((a,e)=>a+ +e.amount,0)});return r}
 const rate=(a,t)=>t?Math.round(a/t*100):0;
 function vPlan(){const fy=UI.planFY;const ms=fyMonths(fy);const mode=UI.planMode;const ad=isAdmin()&&adminOK;
-  let h=phead('PLANNING','計画表',`${ad?`<label class="row" style="gap:6px;font-size:13px">決算月 <select class="inp" style="width:auto" data-c="fiscalEnd" aria-label="決算月">${[1,2,3,4,5,6,7,8,9,10,11,12].map(n=>`<option value="${n}" ${n==S.settings.fiscalEnd?'selected':''}>${n}月</option>`).join('')}</select></label>`:''}${gateLockBtn()}<button class="btn" data-a="iniNew">施策を追加</button><button class="btn" data-a="clNew">休業日を追加</button>`)+
+  let h=phead('PLANNING','計画表',`${ad?`<div class="chips fybasis" role="group" aria-label="年度の区切り"><button class="${fyB()!=='parent'?'on':''}" data-a="fyBasis" data-v="store">サンガ（${S.settings.fiscalEnd||6}月決算）</button><button class="${fyB()==='parent'?'on':''}" data-a="fyBasis" data-v="parent">${esc(S.settings.parentName||'本体')}（${S.settings.parentFiscalEnd||8}月決算）</button></div><label class="row" style="gap:6px;font-size:13px">決算月 <select class="inp" style="width:auto" data-c="fiscalEnd" aria-label="決算月">${[1,2,3,4,5,6,7,8,9,10,11,12].map(n=>`<option value="${n}" ${n==fiscalEndNow()?'selected':''}>${n}月</option>`).join('')}</select></label>`:''}${gateLockBtn()}<button class="btn" data-a="iniNew">施策を追加</button><button class="btn" data-a="clNew">休業日を追加</button>`)+
   `<div class="row"><div class="monthnav"><button class="btn sm" data-a="fy" data-n="-1" aria-label="前の年度">‹</button><b style="min-width:auto">${fyLabel(fy)}</b><button class="btn sm" data-a="fy" data-n="1" aria-label="次の年度">›</button></div><span class="sp"></span><div class="tabs">${[['sales','売上'],['year','年間'],['quarter','四半期'],['month','月間']].map(([k,l])=>`<button class="${mode===k?'on':''}" data-a="set" data-k="planMode" data-v="${k}">${l}</button>`).join('')}</div></div>`;
   if(!ad&&mode!=='sales')h+='<p class="note">売上・来客数・経費予算は、「売上」タブで管理用パスワードを入れると見られます。施策と休業日は全員に公開されています。</p>';
   const iniInRange=(a,b)=>S.plans.initiatives.filter(i=>i.from<=b&&i.to>=a);
@@ -2565,7 +2606,7 @@ const ACT={
  msave:()=>{if(modalSave&&modalSave(fd())===false)return;save();closeModal();render()},
  set:d=>{UI[d.k]=/^\d+$/.test(d.v)&&['planQ'].includes(d.k)?+d.v:d.v;render()},
  toggle:d=>{UI[d.k]=!UI[d.k];render()},
- mnav:d=>{if(UI.shiftTab==='grid'&&Object.keys(GPEND).length&&view==='shift'){toast('先に「この表を保存」か「変更を取り消す」を押してください');return}UI[d.k]=monthAdd(UI[d.k],+d.n);render()},
+ mnav:d=>{if(['grid','bulk'].includes(UI.shiftTab)&&Object.keys(GPEND).length&&view==='shift'){toast('先に「この表を保存」か「変更を取り消す」を押してください');return}UI[d.k]=monthAdd(UI[d.k],+d.n);render()},
  fy:d=>{UI.planFY+=+d.n;render()},
  cellEdit:d=>{const x=S.shifts.find(s=>s.staffId===d.s&&s.date===d.d);if(x)shiftModal(x.id);else shiftModal(null,{staffId:d.s,date:d.d})},
  shEdit:d=>shiftModal(d.id),
@@ -2573,7 +2614,7 @@ const ACT={
  gateLock:()=>{adminOK=false;UI.payPrint=false;render();toast('管理用の画面を閉じました')},
  payXlsx:()=>payXlsx(),payPrint:()=>{UI.payPrint=true;render();window.scrollTo(0,0)},payBack:()=>{UI.payPrint=false;render()},
  salesSave:()=>{const cs=[...document.querySelectorAll('.si.chg')];if(!cs.length){toast('変更はありません');return}if(document.querySelector('.si.err')){toast('赤い枠のマスは数字だけにしてください');return}cs.forEach(el=>{const m=el.dataset.m,f=el.dataset.f;const v=el.value.replace(/[¥,円\s]/g,'');S.plans.months[m]=Object.assign({},S.plans.months[m]||{},{[f]:v===''?'':String(+v)})});new Set(cs.filter(el=>VK.some(([k])=>k===el.dataset.f)).map(el=>el.dataset.m)).forEach(m=>{const p=S.plans.months[m];p.visA=hasVB(m)?String(VT.reduce((a,[k])=>a+(pv(m,k)||0),0)):''});save();render();toast(`${cs.length}マスを保存しました`)},
- salesXlsx:()=>salesXlsx(),xlCommit:()=>xlCommit(),xlCancel:()=>{UI.xl=null;render()},cashXlsx:()=>cashXlsx(),anaXlsx:()=>anaXlsx(),cmpLY:()=>{UI.cmpBset=0;UI.cmpB=monthAdd(UI.cmpA||lastDataMonth(),-12);render()},anaPre:d=>{UI.anaPre=d.v;UI.anaFrom=UI.anaTo=null;render()},
+ salesXlsx:()=>salesXlsx(),fyBasis:d=>{UI.fyBasis=d.v;UI.planFY=fyOf(todayStr);UI.cmpFA=null;UI.cmpFB=null;render();toast(d.v==='parent'?`${S.settings.parentName||'本体'}の決算（${S.settings.parentFiscalEnd||8}月決算）で見ています`:`サンガの決算（${S.settings.fiscalEnd||6}月決算）で見ています`)},xlCommit:()=>xlCommit(),xlCancel:()=>{UI.xl=null;render()},cashXlsx:()=>cashXlsx(),anaXlsx:()=>anaXlsx(),cmpLY:()=>{UI.cmpBset=0;UI.cmpB=monthAdd(UI.cmpA||lastDataMonth(),-12);render()},anaPre:d=>{UI.anaPre=d.v;UI.anaFrom=UI.anaTo=null;render()},
  siSec:d=>{if(document.querySelector('.si.chg')){toast('先に「保存」を押してください（変更が消えないように）');return}UI.siSec=+d.v;render()},
  sxCancel:()=>{UI.sx=null;SXWB=null;render()},
  sxSave:()=>{const r=sxRows();if(!r||!r.agg.length){toast('取り込める内訳がありません');return}const rep=$('#sx-rep')&&$('#sx-rep').checked,act=$('#sx-act')&&$('#sx-act').checked;if(rep)S.sales=coll('sales').filter(x=>!r.months.includes(x.month));const at=todayStr;r.agg.forEach(x=>coll('sales').push({id:uid(),month:x.month,cat:x.cat,item:x.item,amount:Math.round(x.amount),qty:x.qty,src:UI.sx.name,at}));if(act)r.months.forEach(m=>{const t=r.agg.filter(x=>x.month===m).reduce((a,x)=>a+x.amount,0);S.plans.months[m]=Object.assign({},S.plans.months[m]||{},{salesA:String(Math.round(t))})});UI.sx=null;SXWB=null;save();render();toast(`${r.months.length}か月分の内訳を保存しました`)},
@@ -2624,7 +2665,7 @@ const ACT={
  impTpl:d=>{const o=IMP[d.k];copyText(tsv([o.head,...o.ex]),'見出しと例をコピーしました。スプレッドシートのA1セルに貼り付けて使ってください')},
  impPaste:d=>{const t=($('#imp-'+d.k).value||'').trim();if(!t){toast('貼り付ける枠が空です');return}const sep=t.includes('\t')?'\t':',';const rows=t.split(/\r?\n/).map(l=>l.split(sep).map(c=>c.replace(/^"|"$/g,'').trim()));UI.imp[d.k]=parseImport(d.k,rows);render()},
  impCommit:d=>impCommit(d.k),
- gEdit:(d,el)=>gOpen(el),gSave:()=>gSave(),gReset:()=>{Object.keys(GPEND).forEach(k=>delete GPEND[k]);render()},
+ gEdit:(d,el)=>gOpen(el),gSave:()=>gSave(),gReset:()=>{GOPEN=null;Object.keys(GPEND).forEach(k=>delete GPEND[k]);render()},gPaint:d=>{UI.gPaint=d.v==='__off'?null:d.v;if(GOPEN){GOPEN.pop.remove();GOPEN=null}render()},gPopOk:()=>gCommit(),gPopClear:()=>{if(GOPEN){GOPEN.pop.querySelector('.g2in').value='';gCommit()}},gWide:()=>{UI.gWide=!UI.gWide;render()},
  wnav:d=>{if(UI.shiftTab==='bulk'&&bkDirty()){toast('保存していない変更があります。「この表を保存」か「変更を取り消す」を押してください');return}const n=+d.n;UI.weekStart=n===0?mondayOf(todayStr):addDays(UI.weekStart,n*(UI.shiftTab==='bulk'?(UI.bulkDays||7):7));render()},
  paint:d=>{UI.paint=d.v==='__off'?null:d.v;const keep=[...document.querySelectorAll('.bkc.chg')].map(c=>{const r=bkRead(c);return [c.dataset.s,c.dataset.d,r]});render();keep.forEach(([s,dd,r])=>{const c=document.querySelector(`.bkc[data-s="${s}"][data-d="${dd}"]`);if(c)bkSet(c,r.st==='off'?'休':r.st?`${r.st}-${r.en}`:'',r.nt)})},
  bkReset:()=>{document.querySelectorAll('.bkc.chg').forEach(c=>{const o=c.dataset.o;const [t,nt]=o.split('|');bkSet(c,!o?'':t==='off'?'休':t,nt||'')});toast('変更を取り消しました')},
@@ -2661,8 +2702,8 @@ cashNew:()=>cashModal(),cashEdit:d=>cashModal(d.id),
 document.addEventListener('click',e=>{const a=e.target.closest('[data-a]');if(!a)return;const fn=ACT[a.dataset.a];if(!fn)return;if(a.tagName==='BUTTON'||a.tagName==='A')e.preventDefault();fn(a.dataset,a,e)});
 document.addEventListener('submit',e=>{if(e.target.id==='mform'){e.preventDefault();ACT.msave()}});
 document.addEventListener('paste',siPaste);document.addEventListener('paste',gPaste);
-document.addEventListener('keydown',e=>{const t=e.target;if(!t.classList||!t.classList.contains('g2in'))return;if(e.key==='Enter'){e.preventDefault();gCommit(t,e.shiftKey?'up':'down')}else if(e.key==='Tab'){e.preventDefault();gCommit(t,e.shiftKey?'left':'right')}else if(e.key==='Escape'){e.preventDefault();e.stopPropagation();t.remove()}},true);
-document.addEventListener('focusout',e=>{const t=e.target;if(t.classList&&t.classList.contains('g2in'))setTimeout(()=>{if(t.isConnected)gCommit(t)},0)});
+document.addEventListener('keydown',e=>{if(!GOPEN||!GOPEN.pop.contains(e.target))return;if(e.isComposing)return;if(e.key==='Enter'){e.preventDefault();gCommit(e.shiftKey?'up':'down')}else if(e.key==='Tab'&&e.target.classList.contains('g2in')){e.preventDefault();gCommit(e.shiftKey?'left':'right')}else if(e.key==='Escape'){e.preventDefault();e.stopPropagation();GOPEN.pop.remove();GOPEN=null}},true);
+document.addEventListener('mousedown',e=>{if(GOPEN&&!GOPEN.pop.contains(e.target)&&!(e.target.closest&&e.target.closest('.gcell')))gCommit()});
 document.addEventListener('input',e=>{if(e.target.classList&&e.target.classList.contains('si'))siMark(e.target)});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='qr-t'&&!e.isComposing){e.preventDefault();ACT.qrAdd();return}});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='gate-pw'){e.preventDefault();ACT.gateGo();return}});
@@ -2695,7 +2736,7 @@ document.addEventListener('change',async e=>{const t=e.target,c=t.dataset.c;
   if(c==='weekAll'){UI.weekAll=t.checked;render();return}
   if(c==='bulk14'){if(bkDirty()){t.checked=!t.checked;toast('先に「この表を保存」を押してください');return}UI.bulkDays=t.checked?14:7;render();return}
   if(c==='hopeStaff'){UI.hopeStaff=t.value;render();return}
-  if(c==='fiscalEnd'){S.settings.fiscalEnd=+t.value;UI.planFY=fyOf(todayStr);save();render();toast(`決算月を${t.value}月にしました`);return}
+  if(c==='fiscalEnd'){if(fyB()==='parent')S.settings.parentFiscalEnd=+t.value;else S.settings.fiscalEnd=+t.value;UI.planFY=fyOf(todayStr);save();render();toast(`決算月を${t.value}月にしました`);return}
   if(c==='evChk'){const ev=S.events.find(x=>x.id===t.dataset.id);ev.checklist[+t.dataset.i].done=t.checked;save();render();return}
   if(c==='iniDone'){const i=S.plans.initiatives.find(x=>x.id===t.dataset.id);i.done=t.checked;save();render();return}
   if(c==='skillOn'){S.settings.skillOn=t.checked;save();toast(t.checked?'スキルチェックをONにしました':'スキルチェックをOFFにしました');return}
