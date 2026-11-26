@@ -7,7 +7,19 @@
 <meta name="theme-color" content="#1c1b19">
 <link rel="icon" href="logo.webp" type="image/webp">
 <link rel="apple-touch-icon" href="logo.png">
-<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}.sccard .sc-top{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.sc-ring{--c:#2f5d46;width:150px;height:150px;border-radius:50%;background:conic-gradient(var(--c) var(--deg),rgba(0,0,0,.08) 0);display:grid;place-items:center;flex:none}
+.sc-ring>div{width:118px;height:118px;border-radius:50%;background:var(--card,#f6f0e4);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.sc-ring b{font-size:40px;font-family:var(--mono,monospace)}.sc-ring small{font-size:11px;color:var(--muted,#777)}.sc-ring span{font-size:12px;font-weight:700;margin-top:4px}
+.sc-ring.g-A{--c:#3f7a5a}.sc-ring.g-B{--c:#b8862b}.sc-ring.g-C{--c:#c46a2a}.sc-ring.g-D{--c:#a8402e}
+.sc-cats{flex:1;min-width:240px}.sc-msg{margin:0 0 8px;font-size:14px}
+.sc-cat{display:grid;grid-template-columns:84px 1fr 58px;align-items:center;gap:8px;font-size:13px;margin:5px 0}.sc-cat i{height:8px;border-radius:4px;background:rgba(0,0,0,.08);overflow:hidden}.sc-cat em{display:block;height:100%;border-radius:4px}.sc-cat em.ok{background:#3f7a5a}.sc-cat em.mid{background:#c9962f}.sc-cat em.bad{background:#b04a32}.sc-cat b{text-align:right;font-family:var(--mono,monospace)}.sc-cat small{color:var(--muted,#777);font-weight:400}
+.sc-h{font-size:14px;margin:16px 0 6px}.sc-fix{list-style:none;padding:0;margin:0 0 8px}.sc-fix li{display:grid;grid-template-columns:62px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px dashed rgba(0,0,0,.15)}
+.sc-fix p{margin:2px 0;font-size:13px}.sc-fix .pill{margin-left:6px}.sc-up{font-weight:700;color:#2f5d46;font-family:var(--mono,monospace);font-size:15px;text-align:center;background:rgba(47,93,70,.1);border-radius:6px;padding:4px 0}
+.sc-det{margin-top:8px}.sc-det summary{cursor:pointer;font-size:13px}
+.pt-tot td small{display:block;font-size:11px;color:var(--muted,#777)}.pt-tot .mcol{min-width:96px}
+@media(max-width:640px){.sc-fix li{grid-template-columns:52px 1fr}.sc-fix li .btn{grid-column:2;justify-self:start}.sc-ring{width:120px;height:120px}.sc-ring>div{width:94px;height:94px}.sc-ring b{font-size:32px}}
+</style>
 <title>神崎サンガサウナ 管理</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Zen+Old+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
@@ -1355,7 +1367,6 @@ function shMin(sh){if(sh.off||isAbsent(sh))return 0;const E=eff(sh);let m=toMin(
 const shLabel=sh=>`${fmtT(sh.start)}-${fmtT(sh.end)}`;
 const brkDefault=(s,e)=>S.settings.breakRule==='legal'?legalBreak(spanOf(s,e)):+S.settings.defaultBreak<0?autoBreak(s,e):+S.settings.defaultBreak;
 function payRange(label){const cd=+S.settings.closeDay;const [y,m]=label.split('-').map(Number);if(cd>=31)return{from:label+'-01',to:ymd(new Date(y,m,0))};return{from:ymd(new Date(y,m-2,cd+1)),to:ymd(new Date(y,m-1,cd))}}
-function payroll(label){const {from,to}=payRange(label);return S.staff.map(st=>{const sh=S.shifts.filter(x=>x.staffId===st.id&&!x.off&&!isAbsent(x)&&x.date>=from&&x.date<=to).sort((a,b)=>a.date<b.date?-1:1);const min=sh.reduce((a,x)=>a+shMin(x),0);const days=new Set(sh.map(x=>x.date)).size;const on=st.payroll!==false;const wage=wageAt(st,label);const tr1=transitAt(st,label);const pay=on?Math.floor(min*wage/60):0;const tr=on?days*tr1:0;return{st,sh,min,days,wage,pay,tr,total:pay+tr,on}})}
 const lostDue=l=>l.keepUntil||addDays(l.date,+S.settings.lostDays);
 const lostTitle=l=>l.cat==='その他'||!l.cat?(l.name||'その他'):`${l.cat}${l.name?'：'+l.name:''}`;
 const finderTxt=f=>f==='guest'?'お客様':staffName(f);
@@ -2033,6 +2044,11 @@ function breakCard(){const on=S.settings.breakRule==='legal';return `<div class=
   <div class="chips"><button class="${on?'on':''}" data-a="brRule" data-v="legal">労働基準法どおり（6時間をこえたら45分・8時間をこえたら60分）</button><button class="${on?'':'on'}" data-a="brRule" data-v="free">入力した休憩のまま</button></div>
   ${on?`<div class="frow"><label class="fld"><span>この日の勤務から適用</span><input class="inp" type="date" data-s="legalFrom" value="${esc(S.settings.legalFrom||'')}"></label></div>`:''}
   <p class="note">「労働基準法どおり」にすると、シフトを入れるときの休憩が自動で法定の長さになります。休憩が法定より短く入っている日は、法定の長さで勤務時間・給与を計算し、出勤確認の画面に「休憩不足」と表示します。<br>目安：出勤〜退勤が6時間以下は0分、6時間をこえると45分、8時間45分をこえると60分（休憩を引いた勤務が8時間をこえないように）。</p></div>`}
+function laborCard(){const p=premOn();return `<div class="card"><h2>割増賃金・労働時間のルール</h2>
+  <div class="chips"><button class="${p?'on':''}" data-a="premSet" data-v="1">割増賃金を計算する（22時〜5時と時間外に25%上乗せ）</button><button class="${p?'':'on'}" data-a="premSet" data-v="0">計算しない</button></div>
+  <div class="frow"><label class="fld"><span>週の労働時間の上限</span><select class="inp" data-s="weekLimit" data-num="1"><option value="44" ${weekLimit()===44?'selected':''}>44時間（従業員10人未満のサウナ・接客娯楽業の特例）</option><option value="40" ${weekLimit()===40?'selected':''}>40時間（通常）</option></select></label>
+  <label class="fld"><span>36協定（時間外・休日労働の協定）</span><select class="inp" data-s="agree36" data-num="1"><option value="0" ${S.settings.agree36?'':'selected'}>まだ届け出ていない</option><option value="1" ${S.settings.agree36?'selected':''}>労働基準監督署に届け出済み</option></select></label></div>
+  <p class="note">岐阜県の最低賃金：${yen(minWageAt(todayStr))}（2026年10月1日から）。時間外は「1日8時間」か「週${weekLimit()}時間」をこえた分です。割増はバイト（給与計算の対象の人）の給与に入ります。</p></div>`}
 /* ====== 基本パターンの読み取り・おすすめシフト ====== */
 const PT_WEEKS=13;
 function basePattern(sid){const to=todayStr,from=addDays(to,-7*PT_WEEKS);const L=S.shifts.filter(x=>x.staffId===sid&&!x.off&&!isAbsent(x)&&!isTimee(x)&&x.date>=from&&x.date<to);
@@ -2071,6 +2087,100 @@ function attendHome(){const today=dayShifts(todayStr).filter(x=>!isOffOnly(x.sta
   return `<div class="card attcard"><h2>勤怠<span class="r"><button class="btn sm" data-a="go" data-v="attend">出勤確認・出勤簿へ</button></span></h2>
    <div class="stats"><div class="stat"><span>今日の出勤</span><b>${today.length}<small> 人</small></b></div><div class="stat ${un.length?'warn':''}"><span>未確認（今の締め期間）</span><b>${un.length}<small> 件</small></b></div><div class="stat"><span>${mLabel(lab)}分の勤務時間（今日まで）</span><b>${hdec(mins)}<small> 時間</small></b><span>${md(from)}〜${md(to)}</span></div>${short?`<div class="stat warn"><span>休憩不足の日</span><b>${short}<small> 件</small></b></div>`:''}</div>
    ${today.length&&isAdmin()?`<div class="att-today">${today.sort(byDS).map(x=>`<div class="att-t"><b>${esc(shName(x))}</b><span class="num">${effLabel(x)}</span>${isChecked(x)?`<span class="ckp">✓ ${esc(chkBy(x))}</span>`:`<button class="btn sm ok" data-a="attOk" data-id="${x.id}">✓ 予定どおり</button><button class="btn sm" data-a="attEdit" data-id="${x.id}">時間を直す</button>`}</div>`).join('')}</div>`:''}</div>`}
+
+/* ====== 割増賃金（深夜・時間外） ====== */
+/* 最低賃金（岐阜県）: 発効日ごと */
+const MINWAGE=()=>S.settings.minWageHist||[{from:'2026-10-01',wage:1121}];
+const minWageAt=d=>{let w=0;[...MINWAGE()].sort((a,b)=>a.from<b.from?-1:1).forEach(h=>{if(h.from<=d)w=+h.wage});return w};
+const premOn=()=>S.settings.premium!==false;
+const weekLimit=()=>+(S.settings.weekLimit||44);
+/* 22:00〜翌5:00 に入っている分（休憩は深夜以外で取った前提） */
+function nightMinOf(x){if(!x||x.off||isAbsent(x))return 0;const E=eff(x);let s=toMin(E.start),e=toMin(E.end);if(e<=s)e+=1440;const ov=(a,b)=>Math.max(0,Math.min(e,b)-Math.max(s,a));return Math.min(shMin(x),ov(0,300)+ov(1320,1740)+ov(2760,3180))}
+/* 1人の日ごとの実働（分） */
+function dayMins(sid,from,to){const m={};S.shifts.forEach(x=>{if(x.staffId!==sid||x.off||isAbsent(x)||x.date<from||x.date>to)return;m[x.date]=(m[x.date]||0)+shMin(x)});return m}
+/* 時間外（1日8時間超 ＋ 週の上限超）を日付ごとに返す */
+function overByDay(sid,from,to){const ws=d=>addDays(d,-parseD(d).getDay());const a=ws(from),b=addDays(ws(to),6);const dm=dayMins(sid,a,b);const out={};
+  for(let w=a;w<=b;w=addDays(w,7)){let cum=0;for(let i=0;i<7;i++){const d=addDays(w,i);const m=dm[d]||0;if(!m)continue;const daily=Math.max(0,m-480);const cap=m-daily;const before=cum;cum+=cap;const wk=Math.max(0,cum-weekLimit()*60)-Math.max(0,before-weekLimit()*60);out[d]=daily+wk}}
+  Object.keys(out).forEach(d=>{if(d<from||d>to)delete out[d]});return out}
+function premOf(st,sh,label,from,to){if(!premOn())return{night:0,over:0,prem:0};const night=sh.reduce((a,x)=>a+nightMinOf(x),0);const ob=overByDay(st.id,from,to);const over=Object.values(ob).reduce((a,v)=>a+v,0);const w=wageAt(st,label);return{night,over,prem:Math.floor(w*0.25*(night+over)/60)}}
+function payroll(label){const {from,to}=payRange(label);return S.staff.map(st=>{const sh=S.shifts.filter(x=>x.staffId===st.id&&!x.off&&!isAbsent(x)&&x.date>=from&&x.date<=to).sort((a,b)=>a.date<b.date?-1:1);const min=sh.reduce((a,x)=>a+shMin(x),0);const days=new Set(sh.map(x=>x.date)).size;const on=st.payroll!==false;const wage=wageAt(st,label);const tr1=transitAt(st,label);
+  const base=on?Math.floor(min*wage/60):0;const P=on?premOf(st,sh,label,from,to):{night:0,over:0,prem:0};const pay=base+P.prem;const tr=on?days*tr1:0;return{st,sh,min,days,wage,base,prem:P.prem,night:P.night,over:P.over,pay,tr,total:pay+tr,on}})}
+
+/* ====== スタッフ別の合計（複数か月） ====== */
+function payTotLabels(){const k=UI.payTot||'fy';const cur=curPay();if(k==='3')return[-2,-1,0].map(i=>monthAdd(cur,i));if(k==='6')return[...Array(6)].map((_,i)=>monthAdd(cur,i-5));if(k==='12')return[...Array(12)].map((_,i)=>monthAdd(cur,i-11));
+  const sm=(+S.settings.fiscalEnd||6)%12+1;/* 今年度：締め月（支払いラベル）で数える */let y=+cur.slice(0,4);if(+cur.slice(5)<sm)y--;const out=[];let m=`${y}-${pad(sm)}`;while(m<=cur){out.push(m);m=monthAdd(m,1)}return out}
+function payTotCard(){const labels=payTotLabels();const per=labels.map(l=>({l,rows:payroll(l)}));let staff=S.staff.filter(st=>per.some(p=>{const r=p.rows.find(r=>r.st.id===st.id);return r&&(r.min>0||r.days>0)}));if(!isAdmin())staff=staff.filter(s=>s.id===me.id);
+  const sum=st=>per.reduce((a,p)=>{const r=p.rows.find(r=>r.st.id===st.id);if(r){a.min+=r.min;a.days+=r.days;a.pay+=r.on?r.total:0;a.on=a.on||r.on}return a},{min:0,days:0,pay:0,on:false});
+  const T=staff.map(st=>({st,s:sum(st)}));const all=T.reduce((a,x)=>({min:a.min+x.s.min,days:a.days+x.s.days,pay:a.pay+x.s.pay}),{min:0,days:0,pay:0});
+  const span=`${mLabel(labels[0])}分〜${mLabel(labels[labels.length-1])}分（${md(payRange(labels[0]).from)}〜${md(payRange(labels[labels.length-1]).to)}）`;
+  return `<div class="card"><h2>スタッフ別の合計<span class="r"><select class="inp" style="width:auto" data-c="payTot" aria-label="合計する期間">${[['fy','今年度（7月分から）'.replace('7',(+S.settings.fiscalEnd||6)%12+1)],['3','直近3か月'],['6','直近6か月'],['12','直近12か月']].map(([v,t])=>`<option value="${v}" ${(UI.payTot||'fy')===v?'selected':''}>${t}</option>`).join('')}</select></span></h2>
+  <p class="muted" style="margin:0 0 8px">${span}　支払金額は「給与（割増を含む）＋交通費」の合計です。</p>
+  <div class="stats"><div class="stat"><span>出勤回数の合計</span><b>${all.days}<small> 回</small></b></div><div class="stat"><span>勤務時間の合計</span><b>${hdec(all.min)}<small> 時間</small></b></div><div class="stat"><span>支払金額の合計</span><b>${yen(all.pay)}</b></div></div>
+  <div class="tbl-wrap"><table class="pt-tot"><thead><tr><th>スタッフ</th><th class="r">出勤回数</th><th class="r">勤務時間</th><th class="r">支払金額</th>${per.map(p=>`<th class="r mcol">${mLabel(p.l)}分</th>`).join('')}</tr></thead><tbody>${T.map(({st,s})=>`<tr><td><b>${esc(st.name)}</b> <span class="pill">${st.role}</span></td><td class="r num"><b>${s.days}</b>回</td><td class="r num"><b>${hdec(s.min)}</b>h</td><td class="r num">${s.on?`<b>${yen(s.pay)}</b>`:'<span class="muted">対象外</span>'}</td>${per.map(p=>{const r=p.rows.find(r=>r.st.id===st.id);return `<td class="r num mcol">${r&&r.days?`${r.on?yen(r.total):''}<small>${r.days}回・${hdec(r.min)}h</small>`:'<span class="muted">—</span>'}</td>`}).join('')}</tr>`).join('')||`<tr><td colspan="${4+per.length}" class="muted">この期間の勤務はありません</td></tr>`}</tbody>
+  ${isAdmin()&&T.length?`<tfoot><tr><td>合計</td><td class="r num">${all.days}回</td><td class="r num">${hdec(all.min)}h</td><td class="r num">${yen(all.pay)}</td>${per.map(p=>{const on=p.rows.filter(r=>r.on);return `<td class="r num mcol">${yen(on.reduce((a,r)=>a+r.total,0))}</td>`}).join('')}</tr></tfoot>`:''}</table></div></div>`}
+
+/* ====== 施設スコア ====== */
+function scoreItems(){const I=[];const add=(cat,label,got,max,detail,fix,go)=>I.push({cat,label,got:Math.max(0,Math.min(max,Math.round(got*10)/10)),max,detail,fix,go});
+  const y=addDays(todayStr,-1),from31=addDays(todayStr,-31);
+  const past=S.shifts.filter(x=>!x.off&&!isAbsent(x)&&!isOffOnly(x.staffId)&&!isTimee(x)&&x.date>=from31&&x.date<=y);
+  /* 勤怠 */
+  const chk=past.filter(isChecked).length;const r1=past.length?chk/past.length:1;
+  add('勤怠','出勤確認の入力',20*r1,20,`過去31日の勤務 ${past.length}件のうち確認済み ${chk}件（${Math.round(r1*100)}%）`,`「出勤確認・出勤簿」で、まだ確認していない ${past.length-chk}件に「予定どおり」か実際の時間を入れる（出勤簿Excelの取り込みでも可）`,'attend');
+  /* 労務・法令 */
+  const lp=past.filter(x=>legalOn(x.date));const sh=lp.filter(x=>brkShort(x));const r2=lp.length?1-sh.length/lp.length:1;
+  add('労務・法令','休憩（6時間超45分・8時間超60分）',8*r2,8,lp.length?`対象 ${lp.length}件のうち休憩不足 ${sh.length}件`:'対象の勤務はまだありません',`休憩が足りない ${sh.length}件の休憩時間を直す。シフトを作るときは6時間を超えたら45分、8時間を超えたら60分の休憩を入れる`,'attend');
+  const pays=S.staff.filter(s=>s.active!==false&&s.payroll!==false&&!s.offOnly);const mw=minWageAt(todayStr);const low=pays.filter(s=>wageAt(s,curPay())<mw);
+  add('労務・法令','最低賃金（岐阜県）',low.length?0:6,6,`岐阜県の最低賃金 ${yen(mw)}／時給 ${[...new Set(pays.map(s=>wageAt(s,curPay())))].map(yen).join('・')}`,`時給が最低賃金より低い人（${low.map(s=>s.name).join('、')}）の時給を上げる（設定 → 時給の履歴）`,'settings');
+  const lab=curPay();const pr=payroll(lab).filter(r=>r.on);const nOver=pr.reduce((a,r)=>a+r.night+r.over,0);
+  add('労務・法令','深夜・時間外の割増賃金',premOn()||!nOver?6:0,6,premOn()?'給与計算で22時以降と時間外に25%を上乗せしています':`22時以降・時間外の勤務が ${hdec(nOver)}時間あります`,'設定で「割増賃金を計算する」をオンにする','settings');
+  /* 休日：直近4週間に4日以上の休み */
+  const f28=addDays(todayStr,-28);const act=S.staff.filter(s=>s.active!==false&&!s.offOnly);const noRest=act.filter(s=>{const ds=new Set(S.shifts.filter(x=>x.staffId===s.id&&!x.off&&!isAbsent(x)&&x.date>f28&&x.date<=todayStr).map(x=>x.date));return ds.size>24});
+  add('労務・法令','休日（4週間に4日以上）',noRest.length?0:5,5,noRest.length?`4週間の休みが4日未満：${noRest.map(s=>s.name).join('、')}`:'全員、4週間に4日以上の休みがあります',`${noRest.map(s=>s.name).join('、')}さんの休みを増やす（4週間で4日以上）`,'shift');
+  /* 時間外：週44時間・1日8時間を超えたら36協定が必要 */
+  const ovs=act.map(s=>({s,o:Object.values(overByDay(s.id,addDays(todayStr,-28),todayStr)).reduce((a,v)=>a+v,0)})).filter(x=>x.o>0);
+  const ok36=!!S.settings.agree36;
+  add('労務・法令','時間外労働（36協定）',!ovs.length||ok36?5:0,5,ovs.length?`直近4週間で1日8時間・週${weekLimit()}時間を超えた人：${ovs.map(x=>`${x.s.name} ${hdec(x.o)}h`).join('、')}${ok36?'（36協定 届け出済み）':''}`:'時間外労働はありません',ok36?'':'時間外労働をさせるときは「36協定」を労働基準監督署に届け出る。届け出済みなら下のボタンを押す','agree36');
+  /* シフト */
+  const open=(a,n)=>[...Array(n)].map((_,i)=>addDays(a,i)).filter(d=>!closureOf(d));const cov=d=>S.shifts.some(x=>x.date===d&&!x.off&&!isAbsent(x)&&!isOffOnly(x.staffId));
+  const n14=open(todayStr,14);const c14=n14.filter(cov);
+  add('シフト','2週間先までのシフト',n14.length?8*c14.length/n14.length:8,8,`営業日 ${n14.length}日のうちシフトあり ${c14.length}日`,`シフトが空の日（${n14.filter(d=>!cov(d)).slice(0,5).map(md).join('・')}）にシフトを入れる`,'shift');
+  const np=monthAdd(curPay(),1);const R=payRange(np);const nd=[];for(let d=R.from;d<=R.to;d=addDays(d,1))if(!closureOf(d))nd.push(d);const cn=nd.filter(cov);const need=+todayStr.slice(8)>=+(S.settings.hopeDeadline||20)||+todayStr.slice(8)<=+(S.settings.closeDay||10);
+  add('シフト','次の期間のシフト作成',need?(nd.length?7*cn.length/nd.length:7):7,7,`${md(R.from)}〜${md(R.to)}：営業日 ${nd.length}日のうちシフトあり ${cn.length}日${need?'':'（希望の締切前なので満点扱い）'}`,`「シフト希望・パターン」のおすすめシフト案を使って、${md(R.from)}からのシフトを作る`,'hope');
+  /* 売上 */
+  const pm=S.plans.months||{};const lm=monthAdd(ym(TODAY),-1);const lm2=+todayStr.slice(8)<=7?monthAdd(lm,-1):lm;const has=m=>pm[m]&&pm[m].salesA!==''&&pm[m].salesA!=null&&+pm[m].salesA>0;
+  add('売上','先月の売上実績の入力',has(lm)||has(lm2)&&lm2!==lm?8:0,8,has(lm)?`${mLabel(lm)}の売上を入力済み（${yen(pm[lm].salesA)}）`:`${mLabel(lm)}の売上実績が未入力`,`「計画表」で${mLabel(lm)}の売上実績を入れる`,'plan');
+  const sm=(+S.settings.fiscalEnd||6)%12+1;let fy=+todayStr.slice(0,4);if(+todayStr.slice(5,7)<sm)fy--;const fms=[...Array(12)].map((_,i)=>monthAdd(`${fy}-${pad(sm)}`,i));const tset=fms.filter(m=>pm[m]&&+pm[m].salesT>0);
+  add('売上','今年度の売上目標',4*tset.length/12,4,`今年度12か月のうち目標あり ${tset.length}か月`,`「計画表」で目標が空の月（${fms.filter(m=>!tset.includes(m)).slice(0,4).map(mLabel).join('・')}${fms.length-tset.length>4?' ほか':''}）に売上目標を入れる`,'plan');
+  const l3=[1,2,3].map(i=>monthAdd(ym(TODAY),-i)).filter(m=>has(m)&&+pm[m].salesT>0);const ach=l3.length?l3.reduce((a,m)=>a+pm[m].salesA/pm[m].salesT,0)/l3.length:0;
+  add('売上','目標の達成（直近3か月）',l3.length?3*Math.min(1,ach/1):0,3,l3.length?`平均 ${Math.round(ach*100)}%（${l3.map(m=>`${mLabel(m)} ${Math.round(pm[m].salesA/pm[m].salesT*100)}%`).join('・')}）`:'比べられる月がありません',`目標に届かなかった月の原因（客数・客単価）を「計画表」の比較で確認し、イベントや物販で客単価を上げる`,'plan');
+  /* 経費 */
+  const pend=S.expenses.filter(e=>e.status==='申請中'&&e.date<addDays(todayStr,-7));
+  add('経費','立替経費の承認（7日以内）',pend.length?Math.max(0,4-pend.length):4,4,pend.length?`7日以上たった申請中 ${pend.length}件`:'たまっている申請はありません',`「経費」で申請中の ${pend.length}件を承認か却下にする`,'expense');
+  const lastE=S.expenses.filter(isOut).map(e=>e.date).filter(d=>d<=todayStr).sort().pop()||'';const dd=lastE?Math.round((parseD(todayStr)-parseD(lastE))/864e5):99;
+  add('経費','経費の記録（こまめに）',dd<=7?3:dd<=14?2:dd<=30?1:0,3,lastE?`最後の経費の記録：${md(lastE)}（${dd}日前）`:'経費の記録がありません','レシートがたまる前に、1週間に1回は「経費」に入力する（出納帳Excelの取り込みでも可）','expense');
+  const lmE=S.expenses.filter(e=>isOut(e)&&e.date.startsWith(lm)).length;
+  add('経費','先月の経費の締め',lmE?3:0,3,`${mLabel(lm)}の経費 ${lmE}件`,`${mLabel(lm)}の経費（レシート・カード明細）を入れる`,'expense');
+  /* 日々の運営 */
+  const od=S.reminders.filter(r=>!r.done&&r.date<todayStr);
+  add('日々の運営','期限切れのリマインド',Math.max(0,4-od.length),4,od.length?`期限が過ぎて未完了 ${od.length}件`:'期限切れはありません',`「リマインド・引き継ぎ」で期限切れの ${od.length}件を終わらせて「完了」にする`,'remind');
+  const ho=S.handovers.filter(h=>!hoDone(h)&&h.date<addDays(todayStr,-3));
+  add('日々の運営','引き継ぎの確認',Math.max(0,3-ho.length),3,ho.length?`3日以上未確認の引き継ぎ ${ho.length}件`:'たまっている引き継ぎはありません',`引き継ぎを読んだ人が「確認」を押す（${ho.length}件）`,'remind');
+  const lo=S.lost.filter(l=>l.status==='保管中'&&lostDue(l)<todayStr);
+  add('日々の運営','忘れ物の保管期限',Math.max(0,3-lo.length),3,lo.length?`保管期限が過ぎた忘れ物 ${lo.length}件`:'期限切れの忘れ物はありません',`「忘れ物」で期限が過ぎた ${lo.length}件を「処分」か「返却済」にする`,'lost');
+  return I}
+const SC_CATS=['勤怠','労務・法令','シフト','売上','経費','日々の運営'];
+function scoreOf(){const I=scoreItems();const got=I.reduce((a,x)=>a+x.got,0),max=I.reduce((a,x)=>a+x.max,0);return{I,score:Math.round(got/max*100)}}
+const scGrade=s=>s>=90?['S','とてもいい運営です']:s>=80?['A','いい運営です']:s>=65?['B','もう少しで「A」です']:s>=50?['C','直すところがあります']:['D','早めに直しましょう'];
+function scoreCard(){if(!isAdmin())return '';const {I,score}=scoreOf();const [g,t]=scGrade(score);
+  const cats=SC_CATS.map(c=>{const L=I.filter(x=>x.cat===c);const a=L.reduce((s,x)=>s+x.got,0),b=L.reduce((s,x)=>s+x.max,0);return{c,a,b,p:b?a/b:1}});
+  const fix=I.filter(x=>x.got<x.max&&x.fix).sort((a,b)=>(b.max-b.got)-(a.max-a.got));
+  const deg=Math.round(score*3.6);
+  return `<div class="card sccard"><h2>施設スコア<span class="muted" style="font-size:12px;font-weight:400;margin-left:8px">勤怠・労務・シフト・売上・経費・日々の運営を100点で採点（毎日自動で計算）</span></h2>
+  <div class="sc-top"><div class="sc-ring g-${g}" style="--deg:${deg}deg"><div><b>${score}</b><small>/100点</small><span>ランク ${g}</span></div></div>
+   <div class="sc-cats"><p class="sc-msg"><b>${t}</b>${fix.length?`　下の${Math.min(fix.length,5)}つを直すと <b>+${Math.round(fix.slice(0,5).reduce((a,x)=>a+x.max-x.got,0))}点</b> 上がります`:'　直すところはありません'}</p>${cats.map(k=>`<div class="sc-cat"><span>${k.c}</span><i><em style="width:${Math.round(k.p*100)}%" class="${k.p>=.9?'ok':k.p>=.6?'mid':'bad'}"></em></i><b>${Math.round(k.a)}<small>/${k.b}</small></b></div>`).join('')}</div></div>
+  ${fix.length?`<h3 class="sc-h">点数を上げるには（効果が大きい順）</h3><ol class="sc-fix">${fix.slice(0,UI.scAll?99:5).map(x=>`<li><span class="sc-up">+${Math.round((x.max-x.got)*10)/10}点</span><div><b>${esc(x.label)}</b><span class="pill">${x.cat}</span><p>${esc(x.fix)}</p><small class="muted">今：${esc(x.detail)}</small></div>${x.go==='agree36'?`<button class="btn sm" data-a="agree36">届け出済みにする</button>`:`<button class="btn sm" data-a="go" data-v="${x.go}">直しに行く ›</button>`}</li>`).join('')}</ol>${fix.length>5?`<button class="btn ghost sm" data-a="set" data-k="scAll" data-v="${UI.scAll?'':'1'}">${UI.scAll?'たたむ':`残り${fix.length-5}件も見る`}</button>`:''}`:''}
+  <details class="sc-det"><summary>採点の中身をすべて見る</summary><div class="tbl-wrap"><table><thead><tr><th>分野</th><th>項目</th><th class="r">点数</th><th>今の状態</th></tr></thead><tbody>${I.map(x=>`<tr><td>${x.cat}</td><td>${esc(x.label)}</td><td class="r num">${x.got}/${x.max}</td><td class="muted">${esc(x.detail)}</td></tr>`).join('')}</tbody></table></div>
+  <p class="note" style="margin-top:8px">法律の基準：休憩は労働基準法34条（6時間超45分・8時間超60分）、深夜（22時〜5時）と時間外は25%以上の割増（37条）、休日は4週間に4日以上（35条）。時間外の上限は、従業員10人未満のサウナ・接客娯楽業の特例で週${weekLimit()}時間・1日8時間として計算しています。最低賃金は岐阜県 ${yen(minWageAt(todayStr))}（2026年10月1日から）。法律の判断が必要なときは社会保険労務士に確認してください。</p></details></div>`}
 
 /* ====== リマインド計算 ====== */
 function allReminders(){const L=S.settings.leads,out=[];if(!me)return out;
@@ -2161,7 +2271,7 @@ function cxToday(){const dl=+((S.settings.cancel||{}).deadlineDays||5);const dd=
 function vHome(){const d=TODAY;const today=dayShifts(todayStr);const mine=today.find(x=>x.staffId===me.id);
   const closed=S.plans.closures.find(c=>c.date===todayStr);
   const news=newsFeed();const rem=allReminders().filter(r=>r.show);
-  return `<section class="hero">${logoImg('hero-logo')}<div class="hero-txt"><span class="date">${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}.</span><h1>${isShared()?`おつかれさまです。${closed?`今日は${esc(closed.kind)}の日です`:`今日の出勤は${today.length}人です`}`:`${esc(me.name)}さん、${closed?`今日は${esc(closed.kind)}の日です`:mine?`今日は ${shLabel(mine)} の勤務です`:'今日はお休みです'}`}</h1>${cxToday()}</div></section>${attendHome()}
+  return `<section class="hero">${logoImg('hero-logo')}<div class="hero-txt"><span class="date">${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}.</span><h1>${isShared()?`おつかれさまです。${closed?`今日は${esc(closed.kind)}の日です`:`今日の出勤は${today.length}人です`}`:`${esc(me.name)}さん、${closed?`今日は${esc(closed.kind)}の日です`:mine?`今日は ${shLabel(mine)} の勤務です`:'今日はお休みです'}`}</h1>${cxToday()}</div></section>${scoreCard()}${attendHome()}
   ${todayCard()}
   <div class="grid2">
    <div class="card"><h2>新着情報<span class="r">${isAdmin()?'<button class="btn sm" data-a="newsNew">お知らせを書く</button>':''}<button class="btn sm" data-a="newsAll">すべて見る</button></span></h2>${homeNews()}</div>
@@ -2336,12 +2446,12 @@ function vPayMain(){const label=UI.pay;let rows=payroll(label);if(!isAdmin())row
   const on=rows.filter(r=>r.on);const tot={min:rows.reduce((a,r)=>a+r.min,0),pay:on.reduce((a,r)=>a+r.pay,0),tr:on.reduce((a,r)=>a+r.tr,0),days:on.reduce((a,r)=>a+r.days,0)};
   const opts=[];for(let i=-6;i<=2;i++)opts.push(monthAdd(curPay(),i));const cd=+S.settings.closeDay;
   return phead('WORK HOURS & PAY','勤務時間・給与',`${gateLockBtn()}<button class="btn" data-a="payPrint">印刷・PDF</button><button class="btn" data-a="payCopy">表をコピー</button><button class="btn primary" data-a="payXlsx">一覧表をダウンロード（Excel）</button>`)+
-  `<div class="row"><select class="inp" style="width:auto" data-c="pay" aria-label="対象の月">${opts.map(o=>`<option value="${o}" ${o===label?'selected':''}>${mLabel(o)}分（${payRange(o).from.slice(5).replace('-','/')}〜${payRange(o).to.slice(5).replace('-','/')}）</option>`).join('')}</select><span class="muted">${cd>=31?'月末締め':`毎月${cd}日締め`}・バイト時給${yen(S.settings.wage)}・交通費 1出勤${yen(S.settings.transit)}</span></div>
-  <div class="stats"><div class="stat"><span>勤務時間の合計</span><b>${hdec(tot.min)}<small> 時間</small></b></div><div class="stat"><span>給与（時給×時間）</span><b>${yen(tot.pay)}</b></div><div class="stat"><span>交通費（${tot.days}出勤）</span><b>${yen(tot.tr)}</b></div><div class="stat"><span>支給合計</span><b>${yen(tot.pay+tot.tr)}</b></div></div>
-  <div class="tbl-wrap"><table><thead><tr><th>スタッフ</th><th>区分</th><th class="r">出勤日数</th><th class="r">勤務時間</th><th class="r">時給</th><th class="r">給与</th><th class="r">交通費</th><th class="r">支給合計</th><th></th></tr></thead><tbody>${rows.map(r=>`<tr><td><b>${esc(r.st.name)}</b></td><td><span class="pill">${r.st.role}</span></td><td class="r num">${r.days}日</td><td class="r num">${hdec(r.min)}h</td>${r.on?`<td class="r num">${yen(r.wage)}</td><td class="r num">${yen(r.pay)}</td><td class="r num">${yen(r.tr)}</td><td class="r num"><b>${yen(r.total)}</b></td>`:'<td class="r muted" colspan="4">給与計算の対象外（勤務時間のみ集計）</td>'}<td><button class="btn sm" data-a="payDetail" data-id="${r.st.id}">明細</button></td></tr>`).join('')}</tbody>${isAdmin()?`<tfoot><tr><td colspan="2">合計</td><td class="r num">${rows.reduce((a,r)=>a+r.days,0)}日</td><td class="r num">${hdec(tot.min)}h</td><td></td><td class="r num">${yen(tot.pay)}</td><td class="r num">${yen(tot.tr)}</td><td class="r num">${yen(tot.pay+tot.tr)}</td><td></td></tr></tfoot>`:''}</table></div>
-  <p class="note">勤務時間は「出勤〜退勤 − 休憩」で計算しています。シフト →「出勤確認・出勤簿」で実際の時間に直した日は、直した時間で計算します。給与は1円未満切り捨て。社会保険料・所得税などの控除は含まない概算です。主宰・社員は勤務時間だけ集計し、給与計算の対象外にしています（設定 → スタッフで変更できます）。</p>`}
+  `<div class="row"><select class="inp" style="width:auto" data-c="pay" aria-label="対象の月">${opts.map(o=>`<option value="${o}" ${o===label?'selected':''}>${mLabel(o)}分（${payRange(o).from.slice(5).replace('-','/')}〜${payRange(o).to.slice(5).replace('-','/')}）</option>`).join('')}</select><span class="muted">${cd>=31?'月末締め':`毎月${cd}日締め`}・バイト時給${yen(rateAt(label).wage)}・交通費 1出勤${yen(rateAt(label).transit)}</span></div>
+  <div class="stats"><div class="stat"><span>勤務時間の合計</span><b>${hdec(tot.min)}<small> 時間</small></b></div><div class="stat"><span>給与（割増を含む）</span><b>${yen(tot.pay)}</b></div><div class="stat"><span>交通費（${tot.days}出勤）</span><b>${yen(tot.tr)}</b></div><div class="stat"><span>支給合計</span><b>${yen(tot.pay+tot.tr)}</b></div></div>
+  <div class="tbl-wrap"><table><thead><tr><th>スタッフ</th><th>区分</th><th class="r">出勤日数</th><th class="r">勤務時間</th><th class="r">時給</th><th class="r">給与</th><th class="r">うち割増</th><th class="r">交通費</th><th class="r">支給合計</th><th></th></tr></thead><tbody>${rows.map(r=>`<tr><td><b>${esc(r.st.name)}</b></td><td><span class="pill">${r.st.role}</span></td><td class="r num">${r.days}日</td><td class="r num">${hdec(r.min)}h</td>${r.on?`<td class="r num">${yen(r.wage)}</td><td class="r num">${yen(r.pay)}</td><td class="r num">${r.prem?`${yen(r.prem)}<small class="muted">${r.night?` 深夜${hdec(r.night)}h`:''}${r.over?` 時間外${hdec(r.over)}h`:''}</small>`:'<span class="muted">—</span>'}</td><td class="r num">${yen(r.tr)}</td><td class="r num"><b>${yen(r.total)}</b></td>`:'<td class="r muted" colspan="5">給与計算の対象外（勤務時間のみ集計）</td>'}<td><button class="btn sm" data-a="payDetail" data-id="${r.st.id}">明細</button></td></tr>`).join('')}</tbody>${isAdmin()?`<tfoot><tr><td colspan="2">合計</td><td class="r num">${rows.reduce((a,r)=>a+r.days,0)}日</td><td class="r num">${hdec(tot.min)}h</td><td></td><td class="r num">${yen(tot.pay)}</td><td class="r num">${yen(on.reduce((a,r)=>a+r.prem,0))}</td><td class="r num">${yen(tot.tr)}</td><td class="r num">${yen(tot.pay+tot.tr)}</td><td></td></tr></tfoot>`:''}</table></div>
+  <p class="note">勤務時間は「出勤〜退勤 − 休憩」で計算しています。シフト →「出勤確認・出勤簿」で実際の時間に直した日は、直した時間で計算します。給与は1円未満切り捨て。${premOn()?`給与には、22時〜5時（深夜）と時間外（1日8時間・週${weekLimit()}時間をこえた分）の25%割増を含みます。`:''}社会保険料・所得税などの控除は含まない概算です。主宰・社員は勤務時間だけ集計し、給与計算の対象外にしています（設定 → スタッフで変更できます）。</p>${payTotCard()}`}
 function payDetailModal(id){const r=payroll(UI.pay).find(x=>x.st.id===id);if(!r)return;
-  modal(`${r.st.name}　${mLabel(UI.pay)}分の明細`,`<div class="tbl-wrap"><table><thead><tr><th>日付</th><th>時間</th><th class="r">休憩</th><th class="r">勤務</th></tr></thead><tbody>${r.sh.map(x=>`<tr><td>${dLabel(x.date)}</td><td class="num">${effLabel(x)}${isChanged(x)?` <small class="muted">予定 ${shLabel(x)}</small>`:''}</td><td class="r num">${eff(x).brk}分</td><td class="r num">${hdec(shMin(x))}h</td></tr>`).join('')||'<tr><td colspan="4" class="muted">勤務なし</td></tr>'}</tbody></table></div><div class="stats"><div class="stat"><span>勤務時間</span><b>${hdec(r.min)}h</b></div>${r.on?`<div class="stat"><span>給与</span><b>${yen(r.pay)}</b></div><div class="stat"><span>交通費</span><b>${yen(r.tr)}</b></div><div class="stat"><span>合計</span><b>${yen(r.total)}</b></div>`:''}</div>`,{wide:true})}
+  modal(`${r.st.name}　${mLabel(UI.pay)}分の明細`,`<div class="tbl-wrap"><table><thead><tr><th>日付</th><th>時間</th><th class="r">休憩</th><th class="r">勤務</th></tr></thead><tbody>${r.sh.map(x=>`<tr><td>${dLabel(x.date)}</td><td class="num">${effLabel(x)}${isChanged(x)?` <small class="muted">予定 ${shLabel(x)}</small>`:''}</td><td class="r num">${eff(x).brk}分</td><td class="r num">${hdec(shMin(x))}h</td></tr>`).join('')||'<tr><td colspan="4" class="muted">勤務なし</td></tr>'}</tbody></table></div><div class="stats"><div class="stat"><span>勤務時間</span><b>${hdec(r.min)}h</b></div>${r.on?`<div class="stat"><span>給与</span><b>${yen(r.pay)}</b>${r.prem?`<span>うち割増 ${yen(r.prem)}（深夜${hdec(r.night)}h・時間外${hdec(r.over)}h）</span>`:''}</div><div class="stat"><span>交通費</span><b>${yen(r.tr)}</b></div><div class="stat"><span>合計</span><b>${yen(r.total)}</b></div>`:''}</div>`,{wide:true})}
 
 /* ====== 経費 ====== */
 const PAYS=()=>S.settings.payMethods||['現金','Amazon','アミカ','楽天','その他'];
@@ -2712,7 +2822,7 @@ function impCommit(k){const st=UI.imp[k];if(!st)return;let n=0;
 /* ====== 設定 ====== */
 function vSettings(){const s=S.settings;
   return phead('SETTINGS','設定')+
-  wageCard()+breakCard()+`<div class="card"><h2>基本</h2><div class="frow">${fld('施設名',`<input class="inp" data-s="facility" value="${esc(s.facility)}">`)}${fld('決算月',`<select class="inp" data-c="fiscalEnd">${[1,2,3,4,5,6,7,8,9,10,11,12].map(n=>`<option value="${n}" ${n==s.fiscalEnd?'selected':''}>${n}月</option>`).join('')}</select>`)}${fld('給与の締め日',`<select class="inp" data-s="closeDay" data-num="1">${[[5,'5日'],[10,'10日'],[15,'15日'],[20,'20日'],[25,'25日'],[31,'月末']].map(([v,l])=>`<option value="${v}" ${v==s.closeDay?'selected':''}>${l}</option>`).join('')}</select>`)}${fld('シフト希望の提出締切（毎月）',`<select class="inp" data-s="hopeDeadline" data-num="1">${[10,15,20,25].map(v=>`<option value="${v}" ${v==s.hopeDeadline?'selected':''}>${v}日</option>`).join('')}</select>`)}</div>
+  wageCard()+breakCard()+laborCard()+`<div class="card"><h2>基本</h2><div class="frow">${fld('施設名',`<input class="inp" data-s="facility" value="${esc(s.facility)}">`)}${fld('決算月',`<select class="inp" data-c="fiscalEnd">${[1,2,3,4,5,6,7,8,9,10,11,12].map(n=>`<option value="${n}" ${n==s.fiscalEnd?'selected':''}>${n}月</option>`).join('')}</select>`)}${fld('給与の締め日',`<select class="inp" data-s="closeDay" data-num="1">${[[5,'5日'],[10,'10日'],[15,'15日'],[20,'20日'],[25,'25日'],[31,'月末']].map(([v,l])=>`<option value="${v}" ${v==s.closeDay?'selected':''}>${l}</option>`).join('')}</select>`)}${fld('シフト希望の提出締切（毎月）',`<select class="inp" data-s="hopeDeadline" data-num="1">${[10,15,20,25].map(v=>`<option value="${v}" ${v==s.hopeDeadline?'selected':''}>${v}日</option>`).join('')}</select>`)}</div>
    <div class="frow">${fld('時給（初期値）',`<input class="inp" type="number" data-s="wage" data-num="1" value="${s.wage}">`)}${fld('交通費（1出勤あたり）',`<input class="inp" type="number" data-s="transit" data-num="1" value="${s.transit}">`)}${fld('休憩の初期値',`<select class="inp" data-s="defaultBreak" data-num="1">${[[-1,'勤務時間から自動'],[0,'なし'],[15,'15分'],[30,'30分'],[45,'45分'],[60,'60分']].map(([v,l])=>`<option value="${v}" ${v==s.defaultBreak?'selected':''}>${l}</option>`).join('')}</select>`)}${fld('忘れ物の保管期間',`<select class="inp" data-s="lostDays" data-num="1">${[[14,'2週間'],[30,'1か月'],[60,'2か月'],[90,'3か月']].map(([v,l])=>`<option value="${v}" ${v==s.lostDays?'selected':''}>${l}</option>`).join('')}</select>`)}</div></div>
   ${adminOK?`<div class="card"><h2>管理用パスワード（給与・売上の画面）</h2><p class="muted" style="margin:0">勤務時間・給与と、計画表の「売上」を開くときのパスワードです。</p><div class="frow"><label class="fld"><span>新しいパスワード</span><input class="inp" type="password" id="apw1" autocomplete="new-password"></label><label class="fld"><span>もう一度</span><input class="inp" type="password" id="apw2" autocomplete="new-password"></label></div><div class="row"><span class="sp"></span><button class="btn" data-a="setAdminPw">パスワードを変える</button></div></div>`:''}
   <div class="card"><h2>よく使う時間（シフト入力のボタン）</h2><div class="list" style="gap:8px">${s.presets.map((p,i)=>`<div class="row" style="flex-wrap:wrap"><input class="inp" style="width:8em" data-pre="${i}" data-p="name" value="${esc(p.name)}" aria-label="名前"><input class="inp" type="time" style="width:auto" data-pre="${i}" data-p="s" value="${p.s}" aria-label="出勤">〜<input class="inp" type="time" style="width:auto" data-pre="${i}" data-p="e" value="${p.e}" aria-label="退勤"><button class="btn sm danger" data-a="preDel" data-i="${i}">削除</button></div>`).join('')}</div><div><button class="btn sm" data-a="preAdd">＋ 時間を追加</button></div><p class="note">シフト制なので、ここの時間はシフト入力を早くするためのボタンです。シフト表には「8:00-17:00」のように時間で表示され、出勤が早い順に並びます。</p></div>
@@ -2779,6 +2889,7 @@ const ACT={
  hopeClear:()=>{const who=hopeWho();S.hopes=S.hopes.filter(h=>!(h.staffId===who&&h.date.startsWith(UI.hopeMonth)));save();render();toast('この月の希望を消しました')},
  hopeApply:()=>{let n=0;S.hopes.filter(h=>h.date.startsWith(UI.hopeMonth)&&h.kind==='時間指定'&&h.start&&h.end).forEach(h=>{if(!S.shifts.some(x=>x.staffId===h.staffId&&x.date===h.date)){S.shifts.push({id:uid(),staffId:h.staffId,date:h.date,start:h.start,end:h.end,brk:brkDefault(h.start,h.end)});n++}});save();UI.shiftMonth=UI.hopeMonth;UI.shiftTab='day';render();toast(`${n}件をシフトに入れました`)},
  payDetail:d=>payDetailModal(d.id),
+ premSet:d=>{S.settings.premium=d.v==='1';save();render();toast(d.v==='1'?'割増賃金を計算します':'割増賃金を計算しません')},agree36:()=>{S.settings.agree36=1;save();render();toast('36協定を届け出済みにしました')},
  payCopy:()=>{const rows=payroll(UI.pay);const {from,to}=payRange(UI.pay);copyText(tsv([[`${mLabel(UI.pay)}分（${from}〜${to}）`],['スタッフ','区分','出勤日数','勤務時間(h)','時給','給与','交通費','支給合計'],...rows.map(r=>[r.st.name,r.st.role,r.days,hdec(r.min),r.on?r.wage:'対象外',r.on?r.pay:'',r.on?r.tr:'',r.on?r.total:''])]))},
  expNew:()=>expModal(),expEdit:d=>expModal(d.id),
  expStatus:d=>{const e=S.expenses.find(x=>x.id===d.id);e.status=d.v;save();render();toast(d.v==='承認'?'承認しました':'却下しました')},
@@ -2865,7 +2976,7 @@ document.addEventListener('input',e=>{const t=e.target;if(t.dataset.c==='manQ'){
 document.addEventListener('change',async e=>{const t=e.target,c=t.dataset.c;
   if(t.dataset.img&&t.files&&t.files[0]){const url=await compress(t.files[0]);const h=document.getElementById(t.dataset.img);h.value=url;const p=document.getElementById(t.dataset.img.replace('f-','p-'));if(p){p.src=url;p.hidden=!url}return}
   if(t.dataset.impfile&&t.files&&t.files[0]){const k=t.dataset.impfile;if(typeof XLSX==='undefined'){toast('ファイル読込の部品を読み込めませんでした。貼り付けで取り込んでください');return}const buf=await t.files[0].arrayBuffer();try{const wb=XLSX.read(buf,{type:'array',cellDates:true});const ws=wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''});UI.imp[k]=parseImport(k,rows);render()}catch(err){toast('ファイルを読み込めませんでした。形式を確認してください')}return}
-  if(c==='pay'){UI.pay=t.value;render();return}
+  if(c==='pay'){UI.pay=t.value;render();return}if(c==='payTot'){UI.payTot=t.value;render();return}
   if(c==='oiPick'){const k=knownItems()[+t.value];if(k){const l=$('#oi-list');const first=l&&l.children.length===1&&!l.querySelector('input[name=i_name]').value;if(first)l.innerHTML='';l.insertAdjacentHTML('beforeend',oiRow({...k,qty:''}));const q=l.lastElementChild.querySelector('input[name=i_qty]');if(q)q.focus()}t.value='';return}
   if(t.dataset.cs){const k=t.dataset.cs,C=S.settings.cancel;if(k==='slots'){const v=t.value.split('\n').map(x=>x.trim()).filter(Boolean);if(!v.length)return;C.slots=v}else if(k==='rules'){const v=t.value.split('\n').map(x=>x.split(/[,，、]/)).filter(x=>x[0]&&x[0].trim()).map(x=>({name:x[0].trim(),rate:+(x[1]||0)}));if(!v.length)return;C.rules=v}else C[k]=(k==='price'||k==='deadlineDays')?+t.value:t.value;save();toast('保存しました');return}
   if(t.dataset.co){S.settings.cashOpening=Object.assign({date:'',amount:0},S.settings.cashOpening,{[t.dataset.co]:t.dataset.co==='amount'?+t.value:t.value});save();toast('保存しました');return}
