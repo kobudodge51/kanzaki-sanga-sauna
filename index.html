@@ -19,6 +19,12 @@
 .sc-det{margin-top:8px}.sc-det summary{cursor:pointer;font-size:13px}
 .pt-tot td small{display:block;font-size:11px;color:var(--muted,#777)}.pt-tot .mcol{min-width:96px}
 @media(max-width:640px){.sc-fix li{grid-template-columns:52px 1fr}.sc-fix li .btn{grid-column:2;justify-self:start}.sc-ring{width:120px;height:120px}.sc-ring>div{width:94px;height:94px}.sc-ring b{font-size:32px}}
+.sc-grid{display:grid;grid-template-columns:minmax(260px,330px) 1fr;gap:20px;align-items:start}
+.sc-grid .sc-top{flex-direction:column;align-items:stretch;gap:12px}.sc-grid .sc-ring{align-self:center}.sc-grid .sc-cats{min-width:0}
+.sc-right{border-left:1px dashed rgba(0,0,0,.15);padding-left:18px}.sc-right .sc-h{margin:0 0 4px}
+.sc-fix li{padding:5px 0;gap:8px;line-height:1.35}.sc-fix li:first-child{border-top:0}.sc-fix b{font-size:13px}.sc-fix p{margin:1px 0 0;font-size:12px}.sc-fix p small{font-size:11px;margin-left:2px}.sc-fix .pill{font-size:10px;padding:0 6px}
+.sc-up{font-size:13px;padding:2px 0}.sc-fix .btn.sm{padding:3px 8px;font-size:12px}
+@media(max-width:860px){.sc-grid{grid-template-columns:1fr}.sc-right{border-left:0;padding-left:0;border-top:1px dashed rgba(0,0,0,.15);padding-top:10px}}
 </style>
 <title>神崎サンガサウナ 管理</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2176,9 +2182,9 @@ function scoreCard(){if(!isAdmin())return '';const {I,score}=scoreOf();const [g,
   const fix=I.filter(x=>x.got<x.max&&x.fix).sort((a,b)=>(b.max-b.got)-(a.max-a.got));
   const deg=Math.round(score*3.6);
   return `<div class="card sccard"><h2>施設スコア<span class="muted" style="font-size:12px;font-weight:400;margin-left:8px">勤怠・労務・シフト・売上・経費・日々の運営を100点で採点（毎日自動で計算）</span></h2>
-  <div class="sc-top"><div class="sc-ring g-${g}" style="--deg:${deg}deg"><div><b>${score}</b><small>/100点</small><span>ランク ${g}</span></div></div>
-   <div class="sc-cats"><p class="sc-msg"><b>${t}</b>${fix.length?`　下の${Math.min(fix.length,5)}つを直すと <b>+${Math.round(fix.slice(0,5).reduce((a,x)=>a+x.max-x.got,0))}点</b> 上がります`:'　直すところはありません'}</p>${cats.map(k=>`<div class="sc-cat"><span>${k.c}</span><i><em style="width:${Math.round(k.p*100)}%" class="${k.p>=.9?'ok':k.p>=.6?'mid':'bad'}"></em></i><b>${Math.round(k.a)}<small>/${k.b}</small></b></div>`).join('')}</div></div>
-  ${fix.length?`<h3 class="sc-h">点数を上げるには（効果が大きい順）</h3><ol class="sc-fix">${fix.slice(0,UI.scAll?99:5).map(x=>`<li><span class="sc-up">+${Math.round((x.max-x.got)*10)/10}点</span><div><b>${esc(x.label)}</b><span class="pill">${x.cat}</span><p>${esc(x.fix)}</p><small class="muted">今：${esc(x.detail)}</small></div>${x.go==='agree36'?`<button class="btn sm" data-a="agree36">届け出済みにする</button>`:`<button class="btn sm" data-a="go" data-v="${x.go}">直しに行く ›</button>`}</li>`).join('')}</ol>${fix.length>5?`<button class="btn ghost sm" data-a="set" data-k="scAll" data-v="${UI.scAll?'':'1'}">${UI.scAll?'たたむ':`残り${fix.length-5}件も見る`}</button>`:''}`:''}
+  <div class="sc-grid"><div class="sc-left"><div class="sc-top"><div class="sc-ring g-${g}" style="--deg:${deg}deg"><div><b>${score}</b><small>/100点</small><span>ランク ${g}</span></div></div>
+   <div class="sc-cats"><p class="sc-msg"><b>${t}</b>${fix.length?`　下の${Math.min(fix.length,5)}つを直すと <b>+${Math.round(fix.slice(0,5).reduce((a,x)=>a+x.max-x.got,0))}点</b> 上がります`:'　直すところはありません'}</p>${cats.map(k=>`<div class="sc-cat"><span>${k.c}</span><i><em style="width:${Math.round(k.p*100)}%" class="${k.p>=.9?'ok':k.p>=.6?'mid':'bad'}"></em></i><b>${Math.round(k.a)}<small>/${k.b}</small></b></div>`).join('')}</div></div></div>
+  <div class="sc-right">${fix.length?`<h3 class="sc-h">点数を上げるには（効果が大きい順）</h3><ol class="sc-fix">${fix.slice(0,UI.scAll?99:5).map(x=>`<li><span class="sc-up">+${Math.round((x.max-x.got)*10)/10}点</span><div><b>${esc(x.label)}</b><span class="pill">${x.cat}</span><p>${esc(x.fix)}<small class="muted">（今：${esc(x.detail)}）</small></p></div>${x.go==='agree36'?`<button class="btn sm" data-a="agree36">届け出済みにする</button>`:`<button class="btn sm" data-a="go" data-v="${x.go}">直しに行く ›</button>`}</li>`).join('')}</ol>${fix.length>5?`<button class="btn ghost sm" data-a="set" data-k="scAll" data-v="${UI.scAll?'':'1'}">${UI.scAll?'たたむ':`残り${fix.length-5}件も見る`}</button>`:''}`:'<p class="muted">直すところはありません。</p>'}</div></div>
   <details class="sc-det"><summary>採点の中身をすべて見る</summary><div class="tbl-wrap"><table><thead><tr><th>分野</th><th>項目</th><th class="r">点数</th><th>今の状態</th></tr></thead><tbody>${I.map(x=>`<tr><td>${x.cat}</td><td>${esc(x.label)}</td><td class="r num">${x.got}/${x.max}</td><td class="muted">${esc(x.detail)}</td></tr>`).join('')}</tbody></table></div>
   <p class="note" style="margin-top:8px">法律の基準：休憩は労働基準法34条（6時間超45分・8時間超60分）、深夜（22時〜5時）と時間外は25%以上の割増（37条）、休日は4週間に4日以上（35条）。時間外の上限は、従業員10人未満のサウナ・接客娯楽業の特例で週${weekLimit()}時間・1日8時間として計算しています。最低賃金は岐阜県 ${yen(minWageAt(todayStr))}（2026年10月1日から）。法律の判断が必要なときは社会保険労務士に確認してください。</p></details></div>`}
 
