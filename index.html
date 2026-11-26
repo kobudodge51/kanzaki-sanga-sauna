@@ -2277,13 +2277,14 @@ function cxToday(){const dl=+((S.settings.cancel||{}).deadlineDays||5);const dd=
 function vHome(){const d=TODAY;const today=dayShifts(todayStr);const mine=today.find(x=>x.staffId===me.id);
   const closed=S.plans.closures.find(c=>c.date===todayStr);
   const news=newsFeed();const rem=allReminders().filter(r=>r.show);
-  return `<section class="hero">${logoImg('hero-logo')}<div class="hero-txt"><span class="date">${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}.</span><h1>${isShared()?`おつかれさまです。${closed?`今日は${esc(closed.kind)}の日です`:`今日の出勤は${today.length}人です`}`:`${esc(me.name)}さん、${closed?`今日は${esc(closed.kind)}の日です`:mine?`今日は ${shLabel(mine)} の勤務です`:'今日はお休みです'}`}</h1>${cxToday()}</div></section>${scoreCard()}${attendHome()}
+  return `<section class="hero">${logoImg('hero-logo')}<div class="hero-txt"><span class="date">${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}.</span><h1>${isShared()?`おつかれさまです。${closed?`今日は${esc(closed.kind)}の日です`:`今日の出勤は${today.length}人です`}`:`${esc(me.name)}さん、${closed?`今日は${esc(closed.kind)}の日です`:mine?`今日は ${shLabel(mine)} の勤務です`:'今日はお休みです'}`}</h1>${cxToday()}</div></section>
   ${todayCard()}
   <div class="grid2">
    <div class="card"><h2>新着情報<span class="r">${isAdmin()?'<button class="btn sm" data-a="newsNew">お知らせを書く</button>':''}<button class="btn sm" data-a="newsAll">すべて見る</button></span></h2>${homeNews()}</div>
    <div class="card"><h2>リマインド${rem.length?` <span class="badge">${rem.length}</span>`:''}<span class="r"><button class="btn sm" data-a="go" data-v="remind">すべて見る</button></span></h2>${quickRem()}${rem.length?`<div class="alerts">${rem.map(r=>`<div class="alert ${remCls(r.date)}"><span class="dot"></span><button class="al-txt linkish" data-a="${r.custom?'remEdit':'go'}" data-id="${r.id||''}" data-v="${r.go}">${esc(r.title)}</button><span class="when">${whenTxt(r.date)}</span>${r.custom?`<button class="btn sm ok" data-a="remDone" data-id="${r.id}" aria-label="完了">✓</button>`:''}</div>`).join('')}</div>`:'<p class="empty">今日のリマインドはありません</p>'}</div>
   </div>
   <div class="card"><h2>今日のシフト<span class="r"><button class="btn sm" data-a="go" data-v="shift">シフト表へ</button></span></h2>${today.length||dayOffs(todayStr).length?todayTimeline(today,dayOffs(todayStr)):'<p class="empty">今日のシフトはありません</p>'}</div>
+  ${attendHome()}${scoreCard()}
   ${S.sample?`<p class="note">今はサンプルデータが入っています。バイトの名前は「バイト01（仮）」のように仮の名前です。設定 → スタッフ、またはスプレッドシート取込から実際の名前に入れ替えられます。この試作版のデータは、今使っているブラウザの中だけに保存されます。</p>`:''}`}
 const NAV_GROUPS=[['勤怠',['home','shift','attend','pay','hope']],['毎日使う',['lost','event','expense','equip','remind']],['お店の運営',['stock','order','cancel','manual','plan','people']],['管理',['import','settings']]];
 const navLabel=k=>(NAV.find(n=>n[0]===k)||[,''])[1];
