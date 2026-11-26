@@ -2283,8 +2283,9 @@ function vHome(){const d=TODAY;const today=dayShifts(todayStr);const mine=today.
    <div class="card"><h2>新着情報<span class="r">${isAdmin()?'<button class="btn sm" data-a="newsNew">お知らせを書く</button>':''}<button class="btn sm" data-a="newsAll">すべて見る</button></span></h2>${homeNews()}</div>
    <div class="card"><h2>リマインド${rem.length?` <span class="badge">${rem.length}</span>`:''}<span class="r"><button class="btn sm" data-a="go" data-v="remind">すべて見る</button></span></h2>${quickRem()}${rem.length?`<div class="alerts">${rem.map(r=>`<div class="alert ${remCls(r.date)}"><span class="dot"></span><button class="al-txt linkish" data-a="${r.custom?'remEdit':'go'}" data-id="${r.id||''}" data-v="${r.go}">${esc(r.title)}</button><span class="when">${whenTxt(r.date)}</span>${r.custom?`<button class="btn sm ok" data-a="remDone" data-id="${r.id}" aria-label="完了">✓</button>`:''}</div>`).join('')}</div>`:'<p class="empty">今日のリマインドはありません</p>'}</div>
   </div>
+  ${scoreCard()}
   <div class="card"><h2>今日のシフト<span class="r"><button class="btn sm" data-a="go" data-v="shift">シフト表へ</button></span></h2>${today.length||dayOffs(todayStr).length?todayTimeline(today,dayOffs(todayStr)):'<p class="empty">今日のシフトはありません</p>'}</div>
-  ${attendHome()}${scoreCard()}
+  ${attendHome()}
   ${S.sample?`<p class="note">今はサンプルデータが入っています。バイトの名前は「バイト01（仮）」のように仮の名前です。設定 → スタッフ、またはスプレッドシート取込から実際の名前に入れ替えられます。この試作版のデータは、今使っているブラウザの中だけに保存されます。</p>`:''}`}
 const NAV_GROUPS=[['勤怠',['home','shift','attend','pay','hope']],['毎日使う',['lost','event','expense','equip','remind']],['お店の運営',['stock','order','cancel','manual','plan','people']],['管理',['import','settings']]];
 const navLabel=k=>(NAV.find(n=>n[0]===k)||[,''])[1];
